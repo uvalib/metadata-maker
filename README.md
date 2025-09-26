@@ -1,6 +1,18 @@
 # MetadataMaker
 Metadata Maker is a web application that is used for creating *good enough* quality metadata in four different formats depending on the needs of the system to which the metadata will be ingested. A live version of the tool hosted by the University of Illinois can be found at http://quest.library.illinois.edu/marcmaker/
 
+## Local development
+
+### Prerequisites
+- [Node.js](https://nodejs.org/) 18 or newer (includes npm)
+
+### Quick start
+1. Install dependencies with `npm install`.
+2. Start the live-reload dev server with `npm run dev` (serves on `http://localhost:3000` by default).
+3. Set a custom port by running `PORT=8080 npm run dev` if the default is in use.
+
+The command uses [`live-server`](https://www.npmjs.com/package/live-server) to serve the static files from the repository root and automatically reloads the browser when HTML, CSS, or JavaScript files change.
+
 ## Editing institution information
 
 By default the records produced by MetadataMaker list the University of Illinois at Urbana-Champaign as the institution that created the records, and as the location of the physical holding. To change the default institution in code, edit the strings created in **`generateInstitutionInfo()`** in **`metadatamaker/submitForm.js`**. The institution information can also be customized by setting certain values in the url. These values largely correspond to the variables in **`generateInstitutionInfo()`** are:
@@ -37,6 +49,8 @@ The information for the organization creating the record can be altered via the 
 
 **03-14-2023:** Folded the many branches into the default branch to make updating and deploying easier. The files from the other branches lack the development history, but the README for each page includes a link to the corresponding branch, which stores that history up until today.
 
+**07-30-2024:** Added an npm-based development workflow with `live-server` for local development.
+
 ## Contact info
 
-Comments and questions can be directed to Deren Kudeki at Myung-Ja Han at mhan3@illinois.edu
+Comments and questions can be directed to Deren Kudeki and Myung-Ja Han at mhan3@illinois.edu.
