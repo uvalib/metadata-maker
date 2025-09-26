@@ -18,15 +18,15 @@ function get(name) {
 function generateInstitutionInfo() {
 	var output = {
 		//040 $a, 040 $c
-		marc: 'UIU',
+		marc: 'ViU',
 		mods: {
-			physicalLocation: 'University of Illinois at Urbana-Champaign, Library',
-			recordContentSource: 'UIU'
+			physicalLocation: 'University of Virginia Library',
+			recordContentSource: 'ViU'
 		},
 		//"seller" info
 		html: {
-			url: 'http://id.loc.gov/authorities/names/n79066210',
-			name: 'University of Illinois at Urbana-Champaign'
+			url: 'https://id.loc.gov/authorities/names/n79127895',
+			name: 'University of Virginia Library'
 		}
 	};
 

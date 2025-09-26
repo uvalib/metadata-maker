@@ -43,10 +43,6 @@ Metadata Maker walks catalogers through 17 descriptive elements. Five elements m
 - Choose one or more output formats, then click **Make** to download the generated metadata to your workstation.
 - The application retains entered values until you click **Clear**, making it easy to generate multiple formats from the same description.
 
-### Browser support
-
-Metadata Maker works best in Chrome and Firefox. Internet Explorer and Safari are not fully supported, and Opera has only received light compatibility testing.
-
 ### Open source
 
 The complete source code lives in this repository. Forks and pull requests are welcome.
@@ -67,7 +63,7 @@ The command uses [`live-server`](https://www.npmjs.com/package/live-server) to s
 
 ## Editing institution information
 
-By default the records produced by MetadataMaker list the University of Illinois at Urbana-Champaign as the institution that created the records, and as the location of the physical holding. To change the default institution in code, edit the strings created in **`generateInstitutionInfo()`** in **`metadatamaker/submitForm.js`**. The institution information can also be customized by setting certain values in the url. These values largely correspond to the variables in **`generateInstitutionInfo()`** are:
+By default the records produced by MetadataMaker list the University of Virginia Library as the institution that created the records and as the location of the physical holding. To change the default institution in code, edit the strings created in **`generateInstitutionInfo()`** in **`metadatamaker/submitForm.js`**. The institution information can also be customized by setting certain values in the URL. These values correspond to the variables in **`generateInstitutionInfo()`**:
 
 - **marc** - corresponds to `output['marc']`
 - **physicalLocation** - corresponds to `output['mods']['physicalLocation']`
@@ -75,9 +71,9 @@ By default the records produced by MetadataMaker list the University of Illinois
 - **lcn** - organization's LC authority number, used to construct the url in `output['html']['url']`
 - **n** - corresponds to `output['html']['name']`
 
-A custom url should look something like:
+A custom URL should look something like:
 
-`http://quest.library.illinois.edu/marcmaker/?marc=_&physicalLocation=_&recordContentSource=_&lcn=_&n=_`
+`https://staging.d8imevtfmovd7.amplifyapp.com/?marc=ViU&physicalLocation=University%20of%20Virginia%20Library&recordContentSource=ViU&lcn=n79127895&n=University%20of%20Virginia%20Library`
 
 ## Updates
 
