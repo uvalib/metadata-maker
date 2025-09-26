@@ -1,5 +1,5 @@
 # MetadataMaker
-Metadata Maker is a web application that is used for creating *good enough* quality metadata in four different formats depending on the needs of the system to which the metadata will be ingested. A live version of the tool hosted by the University of Illinois can be found at [http://quest.library.illinois.edu/marcmaker/](http://quest.library.illinois.edu/marcmaker/).
+Metadata Maker is a web application that is used for creating *good enough* quality metadata in four different formats depending on the needs of the system to which the metadata will be ingested. A live version of the tool hosted by the University of Virginia can be found at [https://staging.d8imevtfmovd7.amplifyapp.com/](https://staging.d8imevtfmovd7.amplifyapp.com/).
 
 ## Using MetadataMaker
 
