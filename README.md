@@ -69,7 +69,7 @@ The command uses [`live-server`](https://www.npmjs.com/package/live-server) to s
 
 ## Editing institution information
 
-By default the records produced by MetadataMaker list the University of Virginia Library as the institution that created the records and as the location of the physical holding. To change the default institution in code, edit the strings created in **`generateInstitutionInfo()`** in **`metadatamaker/submitForm.js`**. The institution information can also be customized by setting certain values in the URL. These values correspond to the variables in **`generateInstitutionInfo()`**:
+By default the records produced by MetadataMaker list the University of Virginia as the institution that created the records and "University of Virginia. Library" as the location of the physical holding. To change the default institution in code, edit the strings created in **`generateInstitutionInfo()`** in **`metadatamaker/submitForm.js`**. The institution information can also be customized by setting certain values in the URL. These values correspond to the variables in **`generateInstitutionInfo()`**:
 
 - **marc** - corresponds to `output['marc']`
 - **physicalLocation** - corresponds to `output['mods']['physicalLocation']`

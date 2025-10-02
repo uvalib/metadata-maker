@@ -44,8 +44,8 @@ function setUpInstitution() {
 	}
 	else {
 		console.log("11111");
-		$('#org_name').attr('placeholder','University of Illinois at Urbana-Champaign');
-		$('#institution_name').html('University of Illinois at Urbana-Champaign');
+		$('#org_name').attr('placeholder','University of Virginia');
+		$('#institution_name').html('University of Virginia');
 	}
 }
 
