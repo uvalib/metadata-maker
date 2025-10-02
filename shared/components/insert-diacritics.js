@@ -1,6 +1,147 @@
 import { LitElement, html } from 'https://cdn.jsdelivr.net/npm/lit@3.1.0/+esm';
 import { SPECIAL_CHARACTERS } from '../data/special-characters.js';
 
+const INSERT_LABEL_SELECTOR = 'label.insert';
+
+function getInsertTarget(label) {
+  if (!label) {
+    return null;
+  }
+  const forAttr = label.getAttribute('for');
+  if (forAttr && forAttr.trim().length > 0) {
+    return forAttr.trim();
+  }
+  const onClick = label.getAttribute('onClick') || label.getAttribute('onclick');
+  if (onClick) {
+    const match = onClick.match(/insertMenu\("([^"\\]+)"\)/);
+    if (match && match[1]) {
+      return match[1];
+    }
+  }
+  return null;
+}
+
+function createInsertComponent(target, className, menuClasses, doc) {
+  const element = (doc || document).createElement('insert-diacritics');
+  element.setAttribute('target', target);
+  if (className && className.length > 0) {
+    element.setAttribute('class', className);
+  }
+  if (menuClasses && menuClasses.length > 0) {
+    element.setAttribute('menu-classes', menuClasses);
+  }
+  return element;
+}
+
+function upgradeInsertLabel(label, doc) {
+  if (!label || !label.parentNode) {
+    return;
+  }
+
+  const target = getInsertTarget(label);
+  if (!target) {
+    return;
+  }
+
+  const documentRef = doc || label.ownerDocument || document;
+  const menuContainer = documentRef.getElementById('insert-' + target);
+  const menuClasses = menuContainer ? (menuContainer.getAttribute('class') || '') : '';
+  const className = label.getAttribute('class') || '';
+  const component = createInsertComponent(target, className, menuClasses, documentRef);
+
+  label.insertAdjacentElement('beforebegin', component);
+
+  if (menuContainer && menuContainer.parentNode) {
+    menuContainer.parentNode.removeChild(menuContainer);
+  }
+
+  if (label.parentNode) {
+    label.parentNode.removeChild(label);
+  }
+}
+
+function upgradeInsertLabels(root) {
+  const scope = root && typeof root.querySelectorAll === 'function' ? root : document;
+  if (!scope) {
+    return;
+  }
+  const labels = scope.querySelectorAll ? scope.querySelectorAll(INSERT_LABEL_SELECTOR) : [];
+  if (!labels || labels.length === 0) {
+    return;
+  }
+
+  const doc = scope.ownerDocument || document;
+  for (let i = 0; i < labels.length; i++) {
+    upgradeInsertLabel(labels[i], doc);
+  }
+}
+
+function scheduleInsertLabelUpgrade(root) {
+  const scope = root || document;
+  upgradeInsertLabels(scope);
+
+  if (typeof window !== 'undefined' && window.customElements && typeof window.customElements.whenDefined === 'function') {
+    window.customElements.whenDefined('insert-diacritics').then(function() {
+      upgradeInsertLabels(scope);
+    }).catch(function(error) {
+      console.warn('[insert-diacritics] Failed waiting for component definition; applying upgrade immediately.', error);
+      upgradeInsertLabels(scope);
+    });
+  } else {
+    upgradeInsertLabels(scope);
+  }
+}
+
+function startAutoUpgrade() {
+  if (startAutoUpgrade._started || typeof document === 'undefined') {
+    return;
+  }
+  startAutoUpgrade._started = true;
+
+  scheduleInsertLabelUpgrade(document);
+
+  if (typeof MutationObserver === 'function' && document.body) {
+    const observer = new MutationObserver(function(mutations) {
+      for (let i = 0; i < mutations.length; i++) {
+        const mutation = mutations[i];
+        for (let j = 0; j < mutation.addedNodes.length; j++) {
+          const node = mutation.addedNodes[j];
+          if (!node || node.nodeType !== 1) {
+            continue;
+          }
+
+          if (typeof node.matches === 'function' && node.matches(INSERT_LABEL_SELECTOR)) {
+            upgradeInsertLabels(node.parentNode || document);
+            continue;
+          }
+
+          if (typeof node.querySelectorAll === 'function') {
+            const nested = node.querySelectorAll(INSERT_LABEL_SELECTOR);
+            if (nested && nested.length > 0) {
+              upgradeInsertLabels(node);
+            }
+          }
+        }
+      }
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
+  }
+}
+
+if (typeof window !== 'undefined') {
+  window.upgradeInsertLabels = upgradeInsertLabels;
+  window.scheduleInsertLabelUpgrade = scheduleInsertLabelUpgrade;
+}
+
+if (typeof document !== 'undefined') {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', startAutoUpgrade, { once: true });
+  } else {
+    startAutoUpgrade();
+  }
+}
+
 export class InsertDiacritics extends LitElement {
   static properties = {
     target: { type: String },

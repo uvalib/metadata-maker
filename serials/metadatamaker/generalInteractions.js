@@ -1,7 +1,16 @@
 $(document).ready(function() {
 	setUpInstitution();
 	setUpPage(0);
+	if (window.scheduleInsertLabelUpgrade) {
+		window.scheduleInsertLabelUpgrade(document);
+	}
 });
+
+function requestInsertLabelUpgrade(root) {
+	if (window.scheduleInsertLabelUpgrade) {
+		window.scheduleInsertLabelUpgrade(root);
+	}
+}
 
 /*
  * If there are non-Latin characters, show transliteration field
@@ -170,6 +179,19 @@ function constructMenu(field,insert_at) {
  *	field: The input field the diacritics menu is linked to
  */
 function insertMenu(field) {
+	if (typeof window.scheduleInsertLabelUpgrade === 'function') {
+		window.scheduleInsertLabelUpgrade(document);
+	}
+	else if (typeof upgradeInsertLabels === 'function') {
+		upgradeInsertLabels(document);
+	}
+
+	var picker = document.querySelector('insert-diacritics[target="' + field + '"]');
+	if (picker && typeof picker.openMenu === 'function') {
+		picker.openMenu();
+		return;
+	}
+
 	if (document.getElementById("insert-popup")) {
 		$("#insert-popup").remove();
 	}

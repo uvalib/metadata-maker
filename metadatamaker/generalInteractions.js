@@ -1,8 +1,16 @@
 $(document).ready(function() {
 	setUpInstitution();
 	setUpPage(0);
-	scheduleInsertLabelUpgrade(document);
+	if (window.scheduleInsertLabelUpgrade) {
+		window.scheduleInsertLabelUpgrade(document);
+	}
 });
+
+function requestInsertLabelUpgrade(root) {
+	if (window.scheduleInsertLabelUpgrade) {
+		window.scheduleInsertLabelUpgrade(root);
+	}
+}
 
 /*
  * If there are non-Latin characters, show transliteration field
@@ -68,65 +76,6 @@ $("#marc-maker").on('keyup', function(e) {
 	}
 });
 
-function buildDiacriticsPicker(target, className, menuClass) {
-	var classAttr = '';
-	var menuAttr = '';
-	if (className && className.length > 0) {
-		classAttr = ' class="' + className + '"';
-	}
-	if (menuClass && menuClass.length > 0) {
-		menuAttr = ' menu-classes="' + menuClass + '"';
-	}
-	return '<insert-diacritics target="' + target + '"' + classAttr + menuAttr + '></insert-diacritics>';
-}
-
-function scheduleInsertLabelUpgrade(root) {
-	var scope = root || document;
-	if (window.customElements && typeof window.customElements.whenDefined === 'function') {
-		window.customElements.whenDefined('insert-diacritics').then(function() {
-			upgradeInsertLabels(scope);
-		}).catch(function(error) {
-			console.warn('[insert-diacritics] Failed waiting for component definition; applying upgrade immediately.', error);
-			upgradeInsertLabels(scope);
-		});
-	} else {
-		upgradeInsertLabels(scope);
-	}
-}
-
-function upgradeInsertLabels(root) {
-	var scope = root && typeof root.querySelectorAll === 'function' ? root : document;
-	var labels = scope.querySelectorAll('label.insert');
-	for (var i = 0; i < labels.length; i++) {
-		var label = labels[i];
-		var target = label.getAttribute('for');
-		if (!target) {
-			var onClick = label.getAttribute('onClick') || label.getAttribute('onclick');
-			if (onClick) {
-				var match = onClick.match(/insertMenu\("([^"]+)"\)/);
-				if (match && match[1]) {
-					target = match[1];
-				}
-			}
-		}
-		if (!target) {
-			continue;
-		}
-
-		var menuContainer = document.getElementById('insert-' + target);
-		var menuClasses = menuContainer ? (menuContainer.getAttribute('class') || '') : '';
-		var pickerMarkup = buildDiacriticsPicker(target, label.getAttribute('class') || '', menuClasses);
-		label.insertAdjacentHTML('beforebegin', pickerMarkup);
-
-		if (menuContainer && menuContainer.parentNode) {
-			menuContainer.parentNode.removeChild(menuContainer);
-		}
-
-		if (label.parentNode) {
-			label.parentNode.removeChild(label);
-		}
-	}
-}
 
 
 /*
@@ -183,7 +132,7 @@ function addAuthor() {
 		newdiv.innerHTML += '<div id="insert-family_name' + aCounter + '" class="additional_menu"></div><div id="insert-given_name' + aCounter + '" class="insert-given_name additional_menu"></div>';
 		newdiv.innerHTML += '<span class="added-author"><input type="text" class="author translit-listen" id="family_name' + aCounter + '" placeholder="Family Name">, <input type="text" class="author translit-listen" id="given_name' + aCounter + '" placeholder="Given Name"> <select name="role' + aCounter + '" id="role'  + aCounter + '"><option value="art">artist</option><option selected value="aut">author</option><option value="ctb">contributor</option><option value="edt">editor</option><option value="ill">illustrator</option><option value="trl">translator</option></select></span>';
 		$("#author-block").append(newdiv);
-		scheduleInsertLabelUpgrade(newdiv);
+		requestInsertLabelUpgrade(newdiv);
 		var translit_div = document.createElement('div');
 		translit_div.className = 'translit-family_name' + aCounter + '-block translit-block translit-author hidden';
 		translit_div.setAttribute('id','translit-family_name' + aCounter + '-block');
@@ -191,7 +140,7 @@ function addAuthor() {
 		translit_div.innerHTML += '<div id="insert-translit_family_name' + aCounter + '"></div><div id="insert-translit_given_name' + aCounter + '"  class="insert-given_name"></div>';
 		translit_div.innerHTML += '<input type="text" id="translit_family_name' + aCounter + '" class="hidden translit translit-family_name' + aCounter + '" placeholder="Transliterated Family Name"><span class="hidden translit-family_name' + aCounter + '">, </span><input type="text" id="translit_given_name' + aCounter + '" class="hidden translit translit-family_name' + aCounter + '" placeholder="Transliterated Given Name">';
 		$("#family_name" + aCounter + '-block').append(translit_div);
-		scheduleInsertLabelUpgrade(translit_div);
+		requestInsertLabelUpgrade(translit_div);
 		aCounter++;
 	}
 }

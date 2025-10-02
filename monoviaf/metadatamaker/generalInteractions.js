@@ -4,7 +4,16 @@
 $(document).ready(function() {
 	setUpInstitution();
 	setUpPage(0);
+	if (window.scheduleInsertLabelUpgrade) {
+		window.scheduleInsertLabelUpgrade(document);
+	}
 });
+
+function requestInsertLabelUpgrade(root) {
+	if (window.scheduleInsertLabelUpgrade) {
+		window.scheduleInsertLabelUpgrade(root);
+	}
+}
 
 function toggleTranslit(id) {
 	//Regex for everything outside the standard character set
@@ -108,6 +117,19 @@ function constructMenu(field) {
  * Insert special characters into field
  */
 function insertMenu(field) {
+	if (typeof window.scheduleInsertLabelUpgrade === 'function') {
+		window.scheduleInsertLabelUpgrade(document);
+	}
+	else if (typeof upgradeInsertLabels === 'function') {
+		upgradeInsertLabels(document);
+	}
+
+	var picker = document.querySelector('insert-diacritics[target="' + field + '"]');
+	if (picker && typeof picker.openMenu === 'function') {
+		picker.openMenu();
+		return;
+	}
+
 	if (document.getElementById("insert-popup")) {
 		$("#insert-popup").remove();
 	}
@@ -177,6 +199,7 @@ function addAuthor() {
 		newdiv.innerHTML += '<div class = "Hviafdiv" id= "hiddenviafdiv' + aCounter + '" style="display: none;" ><a class = "Hviaf" id= "hiddenviaf' + aCounter + '" target="_blank" rel="noopener noreferrer" href="">VIAF Link</a></div>';
 		newdiv.innerHTML += '<div  class = "Hlcdiv" id= "hiddenlcdiv' + aCounter + '" style="display: none;" ><a class = "Hlc" id= "hiddenlc' + aCounter + '" target="_blank" rel="noopener noreferrer" href="">LC Link</a></div>';
 		$("#author-block").append(newdiv);
+		requestInsertLabelUpgrade(newdiv);
 		var translit_div = document.createElement('div');
 		translit_div.className = 'translit-family_name' + aCounter + '-block translit-block translit-author hidden';
 		translit_div.setAttribute('id','translit-family_name' + aCounter + '-block');
@@ -184,6 +207,7 @@ function addAuthor() {
 		translit_div.innerHTML += '<div id="insert-translit_family_name' + aCounter + '"></div>';
 		translit_div.innerHTML += '<input type="text" id="translit_family_name' + aCounter + '" class="hidden translit translit-family_name' + aCounter + '" placeholder="Family Name, Given Name"><span class="hidden translit-family_name' + aCounter + '">, </span>';
 		$("#family_name" + aCounter + '-block').append(translit_div);
+		requestInsertLabelUpgrade(translit_div);
 		aCounter++;
 	}
 }

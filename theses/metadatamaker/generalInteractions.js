@@ -9,6 +9,17 @@
  *		associated name fields has non-roman characters, both the name transliteration 
  *		fields remain visible.
  */
+$(document).ready(function() {
+	if (window.scheduleInsertLabelUpgrade) {
+		window.scheduleInsertLabelUpgrade(document);
+	}
+});
+
+function requestInsertLabelUpgrade(root) {
+	if (window.scheduleInsertLabelUpgrade) {
+		window.scheduleInsertLabelUpgrade(root);
+	}
+}
 function toggleTranslit(id) {
 	//Regex for everything outside the standard character set
 	var nonroman = /[^\u0000-\u024F\u0263\u02B9\u02BA\u02DD\u0300\u0301\u0302\u0303\u0304\u0306\u0308\u0309\u030A\u030C\u0310\u0313\u0315\u0321\u0322\u0323\u0324\u0325\u0327\u0328\u032E\u0332\u0333\u0351\u0357\u0366\u03B1\u04D4\u04D5\u2020\u2070\u2074\u2075\u2076\u2077\u2078\u2079\u207A\u207B\u207D\u207E\u2080\u2081\u2082\u2083\u2084\u2085\u2086\u2087\u2088\u2089\u20AC\u220E\u2113\u01C2\u2117\u266D\u266F\uFE20\uFE21\uFE22\uFE23\u02C7\u0307\u208E\u208D\u208B\u208A]/;
@@ -155,13 +166,27 @@ function constructMenu(field,insert_at) {
  * Insert special characters into field
  */
 function insertMenu(field) {
+	if (typeof window.scheduleInsertLabelUpgrade === 'function') {
+		window.scheduleInsertLabelUpgrade(document);
+	}
+	else if (typeof upgradeInsertLabels === 'function') {
+		upgradeInsertLabels(document);
+	}
+
+	var picker = document.querySelector('insert-diacritics[target="' + field + '"]');
+	if (picker && typeof picker.openMenu === 'function') {
+		picker.openMenu();
+		return;
+	}
+
 	if (document.getElementById("insert-popup")) {
 		$("#insert-popup").remove();
 	}
 	else {
+		var insert_at = $("#" + field)[0].selectionStart;
 		var newdiv = document.createElement('div');
 		newdiv.setAttribute('id','insert-popup');
-		newdiv.innerHTML = constructMenu(field);
+		newdiv.innerHTML = constructMenu(field,insert_at);
 		$("#insert-" + field).append(newdiv);
 	}
 }

@@ -1,8 +1,16 @@
 $(document).ready(function() {
 	setUpInstitution();
 	setUpPage(0);
-	scheduleInsertLabelUpgrade(document);
+	if (window.scheduleInsertLabelUpgrade) {
+		window.scheduleInsertLabelUpgrade(document);
+	}
 });
+
+function requestInsertLabelUpgrade(root) {
+	if (window.scheduleInsertLabelUpgrade) {
+		window.scheduleInsertLabelUpgrade(root);
+	}
+}
 
 /*
  * If there are non-Latin characters, show transliteration field
@@ -27,65 +35,6 @@ function toggleTranslit(id) {
 				}
 			});
 
-			function buildDiacriticsPicker(target, className, menuClass) {
-				var classAttr = '';
-				var menuAttr = '';
-				if (className && className.length > 0) {
-					classAttr = ' class="' + className + '"';
-				}
-				if (menuClass && menuClass.length > 0) {
-					menuAttr = ' menu-classes="' + menuClass + '"';
-				}
-				return '<insert-diacritics target="' + target + '"' + classAttr + menuAttr + '></insert-diacritics>';
-			}
-
-			function scheduleInsertLabelUpgrade(root) {
-				var scope = root || document;
-				if (window.customElements && typeof window.customElements.whenDefined === 'function') {
-					window.customElements.whenDefined('insert-diacritics').then(function() {
-						upgradeInsertLabels(scope);
-					}).catch(function(error) {
-						console.warn('[insert-diacritics] Failed waiting for component definition; applying upgrade immediately.', error);
-						upgradeInsertLabels(scope);
-					});
-				} else {
-					upgradeInsertLabels(scope);
-				}
-			}
-
-			function upgradeInsertLabels(root) {
-				var scope = root && typeof root.querySelectorAll === 'function' ? root : document;
-				var labels = scope.querySelectorAll('label.insert');
-				for (var i = 0; i < labels.length; i++) {
-					var label = labels[i];
-					var target = label.getAttribute('for');
-					if (!target) {
-						var onClick = label.getAttribute('onClick') || label.getAttribute('onclick');
-						if (onClick) {
-							var match = onClick.match(/insertMenu\("([^\"]+)"\)/);
-							if (match && match[1]) {
-								target = match[1];
-							}
-						}
-					}
-					if (!target) {
-						continue;
-					}
-
-					var menuContainer = document.getElementById('insert-' + target);
-					var menuClasses = menuContainer ? (menuContainer.getAttribute('class') || '') : '';
-					var pickerMarkup = buildDiacriticsPicker(target, label.getAttribute('class') || '', menuClasses);
-					label.insertAdjacentHTML('beforebegin', pickerMarkup);
-
-					if (menuContainer && menuContainer.parentNode) {
-						menuContainer.parentNode.removeChild(menuContainer);
-					}
-
-					if (label.parentNode) {
-						label.parentNode.removeChild(label);
-					}
-				}
-			}
 			new_tag += 'row-end';
 		}
 		else {
@@ -109,6 +58,19 @@ function toggleTranslit(id) {
  * Insert special characters into field
  */
 function insertMenu(field) {
+	if (typeof window.scheduleInsertLabelUpgrade === 'function') {
+		window.scheduleInsertLabelUpgrade(document);
+	}
+	else if (typeof upgradeInsertLabels === 'function') {
+		upgradeInsertLabels(document);
+	}
+
+	var picker = document.querySelector('insert-diacritics[target="' + field + '"]');
+	if (picker && typeof picker.openMenu === 'function') {
+		picker.openMenu();
+		return;
+	}
+
 	if (document.getElementById("insert-popup")) {
 		$("#insert-popup").remove();
 	}
@@ -176,7 +138,7 @@ function addAuthor() {
 		newdiv.innerHTML += '<div id="insert-family_name' + aCounter + '" class="additional_menu"></div><div id="insert-given_name' + aCounter + '" class="insert-given_name additional_menu"></div>';
 		newdiv.innerHTML += '<span class="added-author"><input type="text" class="author translit-listen" id="family_name' + aCounter + '" placeholder="Family Name">, <input type="text" class="author translit-listen" id="given_name' + aCounter + '" placeholder="Given Name"> <select name="role' + aCounter + '" id="role'  + aCounter + '"><option value="art">artist</option><option selected value="aut">author</option><option value="ctb">contributor</option><option value="edt">editor</option><option value="ill">illustrator</option><option value="trl">translator</option></select></span>';
 		$("#author-block").append(newdiv);
-		scheduleInsertLabelUpgrade(newdiv);
+		requestInsertLabelUpgrade(newdiv);
 		var translit_div = document.createElement('div');
 		translit_div.className = 'translit-family_name' + aCounter + '-block translit-block translit-author hidden';
 		translit_div.setAttribute('id','translit-family_name' + aCounter + '-block');
@@ -184,7 +146,7 @@ function addAuthor() {
 		translit_div.innerHTML += '<div id="insert-translit_family_name' + aCounter + '"></div><div id="insert-translit_given_name' + aCounter + '"  class="insert-given_name"></div>';
 		translit_div.innerHTML += '<input type="text" id="translit_family_name' + aCounter + '" class="hidden translit translit-family_name' + aCounter + '" placeholder="Transliterated Family Name"><span class="hidden translit-family_name' + aCounter + '">, </span><input type="text" id="translit_given_name' + aCounter + '" class="hidden translit translit-family_name' + aCounter + '" placeholder="Transliterated Given Name">';
 		$("#family_name" + aCounter + '-block').append(translit_div);
-		scheduleInsertLabelUpgrade(translit_div);
+		requestInsertLabelUpgrade(translit_div);
 		aCounter++;
 	}
 }
@@ -199,7 +161,7 @@ function addCorporate() {
 		newdiv.innerHTML += '<div id="insert-corporate_name' + cCounter + '" class="additional_corporate_menu"></div>';
 		newdiv.innerHTML += '<span class="added-corporate"><input type="text" class="corporate translit-listen" id="corporate_name' + cCounter + '"> <select name="role' + cCounter + '" id="corporate_role'  + cCounter + '"><option selected value="cre">creator</option><option value="ctb">contributor</option></select></span>';
 		$("#corporate-block").append(newdiv);
-		scheduleInsertLabelUpgrade(newdiv);
+		requestInsertLabelUpgrade(newdiv);
 		var translit_div = document.createElement('div');
 		translit_div.className = 'translit-corporate_name' + cCounter + '-block translit-block translit-corporate_name' + cCounter + ' hidden';
 		translit_div.setAttribute('id','translit-corporate_name' + cCounter + '-block');
@@ -207,7 +169,7 @@ function addCorporate() {
 		translit_div.innerHTML += '<div id="insert-translit_corporate_name' + cCounter + '"></div>';
 		translit_div.innerHTML += '<input type="text" id="translit_corporate_name' + cCounter + '" class="hidden translit translit-corporate_name' + cCounter + '">';
 		$('#corporate_name' + cCounter + '-block').append(translit_div);
-		scheduleInsertLabelUpgrade(translit_div);
+		requestInsertLabelUpgrade(translit_div);
 		cCounter++;
 	}
 }
