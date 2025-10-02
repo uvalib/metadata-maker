@@ -16,8 +16,8 @@ attaches the autocomplete function to the search box
 var currentSuggestIndexDefault = "suggest50";  //initial default value
 
 function setUpPage(number) {
-	// connect the autoSubject to the input areas
-	$('#keyword' + number).autocomplete( {
+	var $input = $('#keyword' + number);
+	$input.autocomplete({
 		source: autoSubjectExample, 
 		minLength: 1,
 		select: function(event, ui) {
@@ -25,8 +25,14 @@ function setUpPage(number) {
 			$('#fastType' + number).val(ui.item.tag);
 			$('#fastInd' + number).val(ui.item.indicator);
 		} //end select
-	} 
-	).data( "autocomplete" )._renderItem = function( ul, item ) { formatSuggest(ul, item);};
+	});
+
+	var widget = $input.data('ui-autocomplete') || $input.data('autocomplete');
+	if (widget) {
+		widget._renderItem = function(ul, item) {
+			return formatSuggest(ul, item);
+		};
+	}
 }  //end setUpPage()
 
 

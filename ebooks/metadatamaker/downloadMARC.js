@@ -1,4 +1,4 @@
-import { EbookMarcBuilder } from '../shared/variants/ebookMarcBuilder.js';
+import { EbookMarcBuilder } from '../../shared/variants/ebookMarcBuilder.js';
 
 const builder = new EbookMarcBuilder();
 
