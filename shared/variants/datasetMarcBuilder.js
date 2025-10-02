@@ -98,7 +98,7 @@ export class DatasetMarcBuilder extends MarcBuilder {
 
   fillDateCollected(record, head, fieldFunc, subfieldFunc) {
     if (checkExists(record.datecollected)) {
-      const dateCollected = fieldFunc('500', ' ', ' ', [subfieldFunc('a', `Data was collected on ${record.datecollected}.`)]);
+      const dateCollected = fieldFunc('500', ' ', ' ', [subfieldFunc('a', `Data was collected in ${record.datecollected}.`)]);
       return this.returnSingleEntry('500', dateCollected, head);
     }
     return head !== null ? ['', ''] : '';
