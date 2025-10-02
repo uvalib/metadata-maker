@@ -1,4 +1,5 @@
 # MetadataMaker
+
 Metadata Maker is a web application that is used for creating *good enough* quality metadata in four different formats depending on the needs of the system to which the metadata will be ingested. A live version of the tool hosted by the University of Virginia can be found at [https://staging.d8imevtfmovd7.amplifyapp.com/](https://staging.d8imevtfmovd7.amplifyapp.com/).
 
 ## Using MetadataMaker
@@ -60,6 +61,11 @@ The complete source code lives in this repository. Forks and pull requests are w
 3. Set a custom port by running `PORT=8080 npm run dev` if the default is in use.
 
 The command uses [`live-server`](https://www.npmjs.com/package/live-server) to serve the static files from the repository root and automatically reloads the browser when HTML, CSS, or JavaScript files change.
+
+### Running tests
+
+- Execute the unit test suite with `npm test`.
+- Keep the watcher running during development with `npm run test:watch`.
 
 ## Editing institution information
 

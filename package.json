@@ -4,7 +4,8 @@
   "description": "Metadata Maker is a web application that is used for creating *good enough* quality metadata in four different formats depending on the needs of the system to which the metadata will be ingested. A live version of the tool hosted by the University of Illinois can be found at http://quest.library.illinois.edu/marcmaker/",
   "main": "analytics.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
+    "test:watch": "jest --watch",
     "dev": "live-server --port=3000 --entry-file=index.html --watch=.",
     "deploy": "aws s3 sync . s3://metadata-maker/ --exclude \"*\" --include \"*.html\" --include \"*.js\" --include \"*.css\" --include \"*.svg\""
   },
@@ -21,6 +22,10 @@
   },
   "homepage": "https://github.com/uvalib/metadata-maker#readme",
   "devDependencies": {
+    "@babel/preset-env": "^7.25.8",
+    "babel-jest": "^29.7.0",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
     "live-server": "^1.2.2"
   }
 }
