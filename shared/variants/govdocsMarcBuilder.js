@@ -278,7 +278,7 @@ export class GovdocsMarcBuilder extends MarcBuilder {
 
   downloadXML(record, institutionInfo) {
     let text = '<?xml version="1.0" encoding="utf-8"?>\n';
-    text += '<record xmlns="http://www.loc.gov/MARC21/slim" xsi:schemaLocation="http://www.loc.gov/MARC21/slim http://www.loc.gov/standards/marcxml/schema/MARC21slim.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">\n';
+    text += '<record xmlns="http://www.loc.gov/MARC21/slim">\n';
     text += `  <leader>${this.buildXmlLeader()}</leader>\n`;
 
     const formattedDate = getTimestamp();
