@@ -171,7 +171,7 @@ function addAuthor() {
 		var newdiv = document.createElement('div');
 		newdiv.className = 'added';
 		newdiv.setAttribute('id','family_name' + aCounter + '-block');
-		newdiv.innerHTML = '<label for="family_name' + aCounter + '" class="insert insert_family_name additional_insert" onClick=\'insertMenu("family_name' + aCounter + '");\'>Insert Diacritics</label><br>';
+		newdiv.innerHTML = '<label for="family_name' + aCounter + '" class="insert insert_family_name additional_insert" onClick=\'insertMenu("family_name' + aCounter + '");\'>Insert Special Characters</label><br>';
 		newdiv.innerHTML += '<div id="insert-family_name' + aCounter + '" class="additional_menu"></div>';
 		newdiv.innerHTML += '<span class="added-author"><input type="text" class="author translit-listen" id="family_name' + aCounter + '" placeholder="Family Name, Given Name"> <select name="role' + aCounter + '" id="role'  + aCounter + '"><option value="art">artist</option><option selected value="aut">author</option><option value="ctb">contributor</option><option value="edt">editor</option><option value="ill">illustrator</option><option value="trl">translator</option></select></span>';
 		newdiv.innerHTML += '<div class = "Hviafdiv" id= "hiddenviafdiv' + aCounter + '" style="display: none;" ><a class = "Hviaf" id= "hiddenviaf' + aCounter + '" target="_blank" rel="noopener noreferrer" href="">VIAF Link</a></div>';
@@ -180,7 +180,7 @@ function addAuthor() {
 		var translit_div = document.createElement('div');
 		translit_div.className = 'translit-family_name' + aCounter + '-block translit-block translit-author hidden';
 		translit_div.setAttribute('id','translit-family_name' + aCounter + '-block');
-		translit_div.innerHTML = '<label>Please fill out the name in its original language on the resource again:</label><br><label for="translit_family_name' + aCounter + '" class="insert insert_family_name hidden translit translit-family_name' + aCounter + '" onClick=\'insertMenu("translit_family_name' + aCounter + '");\'>Insert Diacritics</label><br>';
+		translit_div.innerHTML = '<label>Please fill out the name in its original language on the resource again:</label><br><label for="translit_family_name' + aCounter + '" class="insert insert_family_name hidden translit translit-family_name' + aCounter + '" onClick=\'insertMenu("translit_family_name' + aCounter + '");\'>Insert Special Characters</label><br>';
 		translit_div.innerHTML += '<div id="insert-translit_family_name' + aCounter + '"></div>';
 		translit_div.innerHTML += '<input type="text" id="translit_family_name' + aCounter + '" class="hidden translit translit-family_name' + aCounter + '" placeholder="Family Name, Given Name"><span class="hidden translit-family_name' + aCounter + '">, </span>';
 		$("#family_name" + aCounter + '-block').append(translit_div);

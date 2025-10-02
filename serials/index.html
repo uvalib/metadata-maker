@@ -142,14 +142,14 @@
 	<div id="content">
 		<form id="marc-maker">
 			<div id="title-block">
-				<label for="title" class="heading">Title<span class="required_marker">*</span></label><label for="title" class="insert insert_normal" onClick='insertMenu("title");'>Insert Diacritics</label><br>
+				<label for="title" class="heading">Title<span class="required_marker">*</span></label><label for="title" class="insert insert_normal" onClick='insertMenu("title");'>Insert Special Characters</label><br>
 				<div id="insert-title"></div>
 				<input type="text" required id="title" class="required translit-listen">
 				<label title="Record the title as it appears on the title page. If the title includes a subtitle, record only the main title here, and the subtitle in the next field."><span class="question-mark">?</span></label>
 			</div>
 
 			<div id="subtitle-block">
-				<label for="subtitle" class="heading">Subtitle</label><label for="subtitle" class="insert insert_normal" onClick='insertMenu("subtitle");'>Insert Diacritics</label><br>
+				<label for="subtitle" class="heading">Subtitle</label><label for="subtitle" class="insert insert_normal" onClick='insertMenu("subtitle");'>Insert Special Characters</label><br>
 				<div id="insert-subtitle"></div>
 				<input type="text" required id="subtitle" class="conditional">
 				<label title="Record the subtitle if one exists"><span class="question-mark">?</span></label><br>
@@ -157,13 +157,13 @@
 			</div>
 
 			<div id="translit-title-block" class="translit-title-block translit-block standard-translit-block translit-title hidden">
-				<label for="translit_title" class="hidden translit heading translit-title">Transliterated title</label><label for="translit_title" class="insert insert_normal hidden translit translit-title" style="left: -13px;" onClick='insertMenu("translit_title");'>Insert Diacritics</label><br>
+				<label for="translit_title" class="hidden translit heading translit-title">Transliterated title</label><label for="translit_title" class="insert insert_normal hidden translit translit-title" style="left: -13px;" onClick='insertMenu("translit_title");'>Insert Special Characters</label><br>
 				<div id="insert-translit_title" class="hidden translit translit-title"></div>
 				<input type="text" id="translit_title" class="hidden translit translit-title">
 			</div>
 
 			<div id="translit-subtitle-block" class="translit-title-block translit-block standard-translit-block translit-title hidden">
-				<label for="translit_subtitle" class="hidden translit heading translit-title">Transliterated subtitle</label><label for="translit_subtitle" class="insert insert_normal hidden translit translit-title" onClick='insertMenu("translit_subtitle");'>Insert Diacritics</label><br>
+				<label for="translit_subtitle" class="hidden translit heading translit-title">Transliterated subtitle</label><label for="translit_subtitle" class="insert insert_normal hidden translit translit-title" onClick='insertMenu("translit_subtitle");'>Insert Special Characters</label><br>
 				<div id="insert-translit_subtitle" class="hidden translit translit-title"></div>
 				<input type="text" id="translit_subtitle" class="hidden translit translit-title">
 			</div>
@@ -682,7 +682,7 @@
 
 			<div id="names_title" class="heading">Names<br></div>
 			<div id="corporate-block">
-				<label for="corporate_name" class="heading">Corporate/Organization</label><label for="corporate_name" class="insert insert_corporate_name" onClick='insertMenu("corporate_name");'>Insert Diacritics</label><br>
+				<label for="corporate_name" class="heading">Corporate/Organization</label><label for="corporate_name" class="insert insert_corporate_name" onClick='insertMenu("corporate_name");'>Insert Special Characters</label><br>
 				<div id="insert-corporate_name"></div>
 				<input type="text" class="corporate conditional translit-listen" required id="corporate_name">
 				<select name="role" id="corporate_role">
@@ -694,14 +694,14 @@
 				<br>
 				<span class="unlisted">Unlisted</span><input type="checkbox" id="corporate_name_listed" class="listed">
 				<div id="translit-corporate_name-block" class="translit-corporate_name-block translit-block translit-corporate_name hidden">
-					<label for="translit_corporate_name" class="hidden translit heading translit-corporate_name">Transliterated name</label><label for="translit_corporate_name" class="insert insert_translit_corporate_name hidden translit translit-corporate_name" onClick='insertMenu("translit_corporate_name");'>Insert Diacritics</label><br>
+					<label for="translit_corporate_name" class="hidden translit heading translit-corporate_name">Transliterated name</label><label for="translit_corporate_name" class="insert insert_translit_corporate_name hidden translit translit-corporate_name" onClick='insertMenu("translit_corporate_name");'>Insert Special Characters</label><br>
 					<div id="insert-translit_corporate_name"></div>
 					<input type="text" id="translit_corporate_name" class="hidden translit translit-corporate_name">
 				</div>
 			</div>
 
 			<div id="publisher-block" class="standard-block">
-				<label for="publisher" class="heading">Name of publisher</label><label for="publisher" class="insert insert_normal" onClick='insertMenu("publisher");'>Insert Diacritics</label><br>
+				<label for="publisher" class="heading">Name of publisher</label><label for="publisher" class="insert insert_normal" onClick='insertMenu("publisher");'>Insert Special Characters</label><br>
 				<div id="insert-publisher"></div>
 				<input type="text" required id="publisher" class="conditional translit-listen">
 				<label title="Record the name of the publisher as it appears on the piece. Prefer the name that appears on the title page."><span class="question-mark">?</span></label><br>
@@ -709,13 +709,13 @@
 			</div>
 
 			<div id="translit-publisher-block" class="translit-publisher-block translit-block hidden standard-translit-block">
-				<label for="translit_publisher" class="hidden translit heading translit-publisher">Transliterated publisher</label><label for="translit_publisher" class="insert insert_normal hidden translit translit-publisher" onClick='insertMenu("translit_publisher");'>Insert Diacritics</label><br>
+				<label for="translit_publisher" class="hidden translit heading translit-publisher">Transliterated publisher</label><label for="translit_publisher" class="insert insert_normal hidden translit translit-publisher" onClick='insertMenu("translit_publisher");'>Insert Special Characters</label><br>
 				<div id="insert-translit_publisher" class="hidden translit translit-publisher"></div>
 				<input type="text" id="translit_publisher" class="hidden translit translit-publisher">
 			</div>
 
 			<div id="place-block" class="standard-block">
-				<label for="place" class="heading">Place of publication</label><label for="place" class="insert insert_normal" onClick='insertMenu("place");'>Insert Diacritics</label><br>
+				<label for="place" class="heading">Place of publication</label><label for="place" class="insert insert_normal" onClick='insertMenu("place");'>Insert Special Characters</label><br>
 				<div id="insert-place"></div>
 				<input type="text" required id="place" class="conditional translit-listen">
 				<label title="Record the place of publication as it appears on the piece. Prefer the place that appears on the title page. If there is more than one place, record only one. E.g., Boston, Massachusetts"><span class="question-mark">?</span></label><br>
@@ -723,7 +723,7 @@
 			</div>
 
 			<div id="translit-place-block" class="translit-place-block translit-block hidden standard-translit-block">
-				<label for="translit_place" class="hidden translit heading translit-place">Transliterated place</label><label for="translit_place" class="insert insert_normal hidden translit translit-publisher" onClick='insertMenu("translit_place");'>Insert Diacritics</label><br>
+				<label for="translit_place" class="hidden translit heading translit-place">Transliterated place</label><label for="translit_place" class="insert insert_normal hidden translit translit-publisher" onClick='insertMenu("translit_place");'>Insert Special Characters</label><br>
 				<div id="insert-translit_place" class="hidden translit translit-publisher"></div>
 				<input type="text" id="translit_place" class="hidden translit translit-place">
 			</div>
@@ -1206,7 +1206,7 @@
 			</div>
 
 			<div id="web-url-block" class="standard-block hidden">
-				<label for="web-url" class="heading">Web URL</label><label for="web-url" class="insert insert_normal" onClick='insertMenu("web-url");'>Insert Diacritics</label><br>
+				<label for="web-url" class="heading">Web URL</label><label for="web-url" class="insert insert_normal" onClick='insertMenu("web-url");'>Insert Special Characters</label><br>
 				<div id="insert-web-url"></div>
 				http://<input type="text" id="web-url"><br>
 			</div>
@@ -1296,6 +1296,7 @@
 		<div id="version">Version 1.1 – Updated on 11/10/2022</div>
 		<a id="code" href="https://github.com/UIUCLibrary/metadata-maker/tree/Serials">GitHub</a></div>
 		
+		<script type="module" src="../shared/components/insert-diacritics.js"></script>
 		<script src="metadatamaker/generalInteractions.js"></script>
 		<script src="metadatamaker/topBar.js"></script>
 		<script type="module" src="metadatamaker/downloadMARC.js"></script>

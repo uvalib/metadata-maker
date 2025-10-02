@@ -1,6 +1,7 @@
 $(document).ready(function() {
 	setUpInstitution();
 	setUpPage(0);
+	scheduleInsertLabelUpgrade(document);
 });
 
 /*
@@ -59,126 +60,72 @@ $("#marc-maker").on('blur','.translit-listen',function() {
 /*
  * If a keyword input being deleted or modified, clear the fastID recorded in case the user is inputing
  * a term not in fast
- *
- *	This specifically listens for keyCode 8 (backspace) and keyCode 46 (delete).
- *	'$(':focus')[0].id.substring(7))'' is the number in the id of the keyword, which is always of the form
- *		id = keyword#
  */
-$("#marc-maker").on('keyup','.keyword', function(e) {
+$("#marc-maker").on('keyup', function(e) {
 	if (e.keyCode === 8 || e.keyCode === 46) {
-		$('#fastID' + $(':focus')[0].id.substring(7)).val('');
-	}
-});
-
-/*
- * When the diacritics insert menu is open ESC will get rid of it
- */
-$(document).keyup(function(e) {
-	if (e.keyCode === 27) {
-		if (document.getElementById("insert-popup")) {
-			$("#insert-popup").remove();
+		if ($(':focus')[0] && $(':focus')[0].id.indexOf('keyword') == 0) {
+			$('#fastID' + $(':focus')[0].id.substring(7)).val('');
 		}
 	}
 });
 
-/*
- * Inserts selected character at the end of the associated input, not where the cursor is
- *	field: The input field the diacritics menu is linked to
- *	insert_value: The character that was selected from the diacritics menu
- *	insert_at: The cursor position when insert_value was selected. Defaults to the end of the string if the input wasn't selected
- */
-function insertChar(field,insert_value,insert_at) {
-	var current_contents = $("#" + field).val();
-	$("#" + field).val(current_contents.substring(0,insert_at) + insert_value + current_contents.substring(insert_at));
-	$("#" + field).focus();
-	$("#insert-popup").remove();
+function buildDiacriticsPicker(target, className, menuClass) {
+	var classAttr = '';
+	var menuAttr = '';
+	if (className && className.length > 0) {
+		classAttr = ' class="' + className + '"';
+	}
+	if (menuClass && menuClass.length > 0) {
+		menuAttr = ' menu-classes="' + menuClass + '"';
+	}
+	return '<insert-diacritics target="' + target + '"' + classAttr + menuAttr + '></insert-diacritics>';
 }
 
-function findClosestFactors(list_length) {
-	closest_value = 10000000;
-	choice = -1;
-
-	for (var i = 10; i <= 20; i++) {
-		new_choice = list_length%i
-
-		if (new_choice == 0) {
-			closest_value = new_choice;
-			choice = i;
-		}
-		else if (i - new_choice < closest_value) {
-			closest_value = i - new_choice;
-			choice = i;
-		}
+function scheduleInsertLabelUpgrade(root) {
+	var scope = root || document;
+	if (window.customElements && typeof window.customElements.whenDefined === 'function') {
+		window.customElements.whenDefined('insert-diacritics').then(function() {
+			upgradeInsertLabels(scope);
+		}).catch(function(error) {
+			console.warn('[insert-diacritics] Failed waiting for component definition; applying upgrade immediately.', error);
+			upgradeInsertLabels(scope);
+		});
+	} else {
+		upgradeInsertLabels(scope);
 	}
-
-	var dimensions = {
-		width: choice,
-		height: Math.ceil(list_length/choice)
-	}
-
-	return dimensions;
 }
 
-/*
- * When the Insert button is pressed, create a floating keyboard with characters to insert into the corresponding field
- *	field: The input field the diacritics menu is linked to
- *	insert_at: The cursor position when insert_value was selected. Defaults to the end of the string if the input wasn't selected
- *
- *	Constructs and returns the HTML div for the popup diacritics menu
- */
-function constructMenu(field,insert_at) {
-	var unicodes = ['0301','04D5','04D4','0357','0351','0306','00A3','0310','0327','030A','0325','0302','005E','00A9','0111','0110','0366','0323','00B7','02DD','0324','FE22','FE23','0333','00DF','00F0','00D0','20AC','220E','0060','0300','030C','0313','0315','0328','00A1','00BF','0142','0141','007B','0321','FE20','FE21','0304','02B9','266D','266F','01A1','01A0','00F8','00D8','0153','0152','2117','00B1','0309','007D','0322','2113','01C2','2080','2081','2082','2083','2084','2085','2086','2087','2088','2089','208D','208B','00AE','208A','208E','0307','2070','00B9','00B2','00B3','2074','2075','2076','2077','2078','2079','207D','207B','207A','207E','00FE','00DE','0303','007E','0131','02BA','01B0','01AF','0308','0332','005F','032E'];
-	var dimensions = findClosestFactors(unicodes.length);
-	var return_string = "	<div id='buttons' style='width: " + dimensions['width'] * 35 + "px; margin-bottom: -" + dimensions['height'] * 35 + "px;'>\n";
-	for (var i = 0; i < unicodes.length; i++) {
-		var new_tag = "<button value='" + String.fromCharCode(parseInt(unicodes[i],16)) + "' id='" + unicodes[i] + "' class='diacritics ";
-
-		//These class tags are for the css so that it looks like there is a 1px black border around everything
-//		if (i%dimensions['width'] === dimensions['width'] - 1 && i + dimensions['width'] > unicodes.length) {
-		if (Math.ceil(i/dimensions['width']) == dimensions['height'] && Math.floor(i/dimensions['width']) != Math.floor((i+1)/dimensions['width'])) {
-			new_tag += 'bottom-right';
-//			console.log(Math.ceil(i/dimensions['width']));
+function upgradeInsertLabels(root) {
+	var scope = root && typeof root.querySelectorAll === 'function' ? root : document;
+	var labels = scope.querySelectorAll('label.insert');
+	for (var i = 0; i < labels.length; i++) {
+		var label = labels[i];
+		var target = label.getAttribute('for');
+		if (!target) {
+			var onClick = label.getAttribute('onClick') || label.getAttribute('onclick');
+			if (onClick) {
+				var match = onClick.match(/insertMenu\("([^\"]+)"\)/);
+				if (match && match[1]) {
+					target = match[1];
+				}
+			}
 		}
-		else if (Math.ceil((i+1)/dimensions['width']) == dimensions['height']) {
-			new_tag += 'last-row';
-//			console.log(Math.ceil(i/dimensions['width']));
-		}
-		else if (Math.floor(i/dimensions['width']) != Math.floor((i+1)/dimensions['width'])) {
-			new_tag += 'row-end';
-		}
-		else {
-			new_tag += 'normal-button';
-//			console.log(Math.ceil(i/dimensions['width']));
+		if (!target) {
+			continue;
 		}
 
-		new_tag += "' type='button' onClick='insertChar(\"" + field + "\",\"" + String.fromCharCode(parseInt(unicodes[i],16)) + "\"," + insert_at + ")'>&#x" + unicodes[i] + "</button>";
+		var menuContainer = document.getElementById('insert-' + target);
+		var menuClasses = menuContainer ? (menuContainer.getAttribute('class') || '') : '';
+		var pickerMarkup = buildDiacriticsPicker(target, label.getAttribute('class') || '', menuClasses);
+		label.insertAdjacentHTML('beforebegin', pickerMarkup);
 
-		if (i%dimensions['width'] === dimensions['width'] - 1) {
-			new_tag += "<br>\n";
+		if (menuContainer && menuContainer.parentNode) {
+			menuContainer.parentNode.removeChild(menuContainer);
 		}
 
-		return_string += new_tag;
-	};
-	return_string += "	</div>";
-	return return_string;
-}
-
-/*
- * Handles the reaction when Insert is clicked. If the menu is already displayed, this function will close it. If it
- *	is not displayed, this function will open it.
- *
- *	field: The input field the diacritics menu is linked to
- */
-function insertMenu(field) {
-	if (document.getElementById("insert-popup")) {
-		$("#insert-popup").remove();
-	}
-	else {
-		var insert_at = $("#" + field)[0].selectionStart;
-		var newdiv = document.createElement('div');
-		newdiv.setAttribute('id','insert-popup');
-		newdiv.innerHTML = constructMenu(field,insert_at);
-		$("#insert-" + field).append(newdiv);
+		if (label.parentNode) {
+			label.parentNode.removeChild(label);
+		}
 	}
 }
 
@@ -232,17 +179,19 @@ function addAuthor() {
 		var newdiv = document.createElement('div');
 		newdiv.className = 'added';
 		newdiv.setAttribute('id','family_name' + aCounter + '-block');
-		newdiv.innerHTML = '<label for="family_name' + aCounter + '" class="insert insert_family_name additional_insert" onClick=\'insertMenu("family_name' + aCounter + '");\'>Insert Diacritics</label><label for="given_name' + aCounter + '" class="insert insert_given_name additional_insert" onClick=\'insertMenu("given_name' + aCounter + '");\'>Insert Diacritics</label><br>';
+		newdiv.innerHTML = '<label for="family_name' + aCounter + '" class="insert insert_family_name additional_insert" onClick=\'insertMenu("family_name' + aCounter + '");\'>Insert Special Characters</label><label for="given_name' + aCounter + '" class="insert insert_given_name additional_insert" onClick=\'insertMenu("given_name' + aCounter + '");\'>Insert Special Characters</label><br>';
 		newdiv.innerHTML += '<div id="insert-family_name' + aCounter + '" class="additional_menu"></div><div id="insert-given_name' + aCounter + '" class="insert-given_name additional_menu"></div>';
 		newdiv.innerHTML += '<span class="added-author"><input type="text" class="author translit-listen" id="family_name' + aCounter + '" placeholder="Family Name">, <input type="text" class="author translit-listen" id="given_name' + aCounter + '" placeholder="Given Name"> <select name="role' + aCounter + '" id="role'  + aCounter + '"><option value="art">artist</option><option selected value="aut">author</option><option value="ctb">contributor</option><option value="edt">editor</option><option value="ill">illustrator</option><option value="trl">translator</option></select></span>';
 		$("#author-block").append(newdiv);
+		scheduleInsertLabelUpgrade(newdiv);
 		var translit_div = document.createElement('div');
 		translit_div.className = 'translit-family_name' + aCounter + '-block translit-block translit-author hidden';
 		translit_div.setAttribute('id','translit-family_name' + aCounter + '-block');
-		translit_div.innerHTML = '<label for="translit_family_name' + aCounter + '" class="insert insert_family_name hidden translit translit-family_name' + aCounter + '" onClick=\'insertMenu("translit_family_name' + aCounter + '");\'>Insert Diacritics</label><label for="translit_given_name' + aCounter + '" class="insert insert_given_name hidden translit translit-family_name' + aCounter + '" onClick=\'insertMenu("translit_given_name' + aCounter + '");\'>Insert Diacritics</label><br>';
+		translit_div.innerHTML = '<label for="translit_family_name' + aCounter + '" class="insert insert_family_name hidden translit translit-family_name' + aCounter + '" onClick=\'insertMenu("translit_family_name' + aCounter + '");\'>Insert Special Characters</label><label for="translit_given_name' + aCounter + '" class="insert insert_given_name hidden translit translit-family_name' + aCounter + '" onClick=\'insertMenu("translit_given_name' + aCounter + '");\'>Insert Special Characters</label><br>';
 		translit_div.innerHTML += '<div id="insert-translit_family_name' + aCounter + '"></div><div id="insert-translit_given_name' + aCounter + '"  class="insert-given_name"></div>';
 		translit_div.innerHTML += '<input type="text" id="translit_family_name' + aCounter + '" class="hidden translit translit-family_name' + aCounter + '" placeholder="Transliterated Family Name"><span class="hidden translit-family_name' + aCounter + '">, </span><input type="text" id="translit_given_name' + aCounter + '" class="hidden translit translit-family_name' + aCounter + '" placeholder="Transliterated Given Name">';
 		$("#family_name" + aCounter + '-block').append(translit_div);
+		scheduleInsertLabelUpgrade(translit_div);
 		aCounter++;
 	}
 }

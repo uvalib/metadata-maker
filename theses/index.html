@@ -137,14 +137,14 @@
 	<div id="content">
 		<form id="marc-maker">
 			<div id="title-block" class="standard-block">
-				<label for="title" class="heading">Title</label><label for="title" class="insert insert_normal" onClick='insertMenu("title");'>Insert Diacritics</label><br>
+				<label for="title" class="heading">Title</label><label for="title" class="insert insert_normal" onClick='insertMenu("title");'>Insert Special Characters</label><br>
 				<div id="insert-title"></div>
 				<input type="text" required id="title">
 				<label title="Record the title as it appears on the title page. If the title includes a subtitle, record only the main title here, and the subtitle in the next field."><span class="question-mark">?</span></label>
 			</div>
 
 			<div id="author-block">
-				<label for="author" class="heading">Names</label><label for="family_name" class="insert insert_family_name" onClick='insertMenu("family_name");'>Insert Diacritics</label><label for="given_name" class="insert insert_given_name" onClick='insertMenu("given_name");'>Insert Diacritics</label><br>
+				<label for="author" class="heading">Names</label><label for="family_name" class="insert insert_family_name" onClick='insertMenu("family_name");'>Insert Special Characters</label><label for="given_name" class="insert insert_given_name" onClick='insertMenu("given_name");'>Insert Special Characters</label><br>
 				<div id="insert-family_name"></div><div id="insert-given_name"></div>
 				<input type="text" class="author conditional" required id="family_name" placeholder="Family Name">, 
 				<input type="text" class="author conditional" required id="given_name" placeholder="Given Name">
@@ -707,6 +707,7 @@
 		<div id="version">Version 1.1 – Updated on 11/10/2022. Metadata Maker for Theses & Dissertations created on 4/21/2015.</div>
 		<a id="code" href="https://github.com/UIUCLibrary/metadata-maker/tree/Theses-%26-Dissertations">GitHub</a></div>
 
+		<script type="module" src="../shared/components/insert-diacritics.js"></script>
 		<script src="metadatamaker/generalInteractions.js"></script>
 		<script src="metadatamaker/topBar.js"></script>
 		<script type="module" src="metadatamaker/downloadMARC.js"></script>
