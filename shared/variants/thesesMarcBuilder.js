@@ -48,8 +48,8 @@ export class ThesesMarcBuilder extends MarcBuilder {
       field[i] = yearTwo[i - 11] || 'u';
     }
 
-    field[15] = 'i';
-    field[16] = 'l';
+    field[15] = 'v';
+    field[16] = 'a';
     field[17] = 'u';
 
     if (checkExists(record.illustrations_yes) && record.illustrations_yes === true) {
@@ -128,8 +128,8 @@ export class ThesesMarcBuilder extends MarcBuilder {
     }
 
     const publication = fieldFunc('264', ' ', '1', [
-      subfieldFunc('a', 'Urbana, Ill. :'),
-      subfieldFunc('b', 'University of Illinois at Urbana-Champaign,'),
+      subfieldFunc('a', 'Charlottesville, Va. :'),
+      subfieldFunc('b', 'University of Virginia,'),
       subfieldFunc('c', `${record.publication_year}.`)
     ]);
 
@@ -167,11 +167,18 @@ export class ThesesMarcBuilder extends MarcBuilder {
       return head !== null ? ['', ''] : '';
     }
 
-    const dissertation = fieldFunc('502', ' ', ' ', [
-      subfieldFunc('b', `${record.dissertation_type}.`),
-      subfieldFunc('c', 'University of Illinois at Urbana-Champaign'),
-      subfieldFunc('d', `${record.publication_year}.`)
-    ]);
+    const subfields = [
+      subfieldFunc('b', `${record.dissertation_type}.`)
+    ];
+
+    if (checkExists(record.major)) {
+      subfields.push(subfieldFunc('g', record.major));
+    }
+
+    subfields.push(subfieldFunc('c', 'University of Virginia'));
+    subfields.push(subfieldFunc('d', `${record.publication_year}.`));
+
+    const dissertation = fieldFunc('502', ' ', ' ', subfields);
 
     return this.returnSingleEntry('502', dissertation, head);
   }
@@ -191,21 +198,6 @@ export class ThesesMarcBuilder extends MarcBuilder {
     ]);
 
     return this.returnSingleEntry('504', bibliography, head);
-  }
-
-  fillMajor(record, head, fieldFunc, subfieldFunc) {
-    if (!checkExists(record.publication_year) || !checkExists(record.major)) {
-      return head !== null ? ['', ''] : '';
-    }
-
-    const majorField = fieldFunc('690', ' ', ' ', [
-      subfieldFunc('a', 'Theses'),
-      subfieldFunc('x', 'UIUC'),
-      subfieldFunc('y', record.publication_year),
-      subfieldFunc('x', record.major)
-    ]);
-
-    return this.returnSingleEntry('690', majorField, head);
   }
 
   downloadMARC(record, institutionInfo) {
@@ -270,9 +262,6 @@ export class ThesesMarcBuilder extends MarcBuilder {
     const bibliography = this.fillBibliography(record, head, this.createContentFill.bind(this), this.createSubfield.bind(this));
     head += this.getByteLength(bibliography[1]);
 
-    const major = this.fillMajor(record, head, this.createContentFill.bind(this), this.createSubfield.bind(this));
-    head += this.getByteLength(major[1]);
-
     const end = String.fromCharCode(30) + String.fromCharCode(29);
 
     const textParts = [
@@ -288,7 +277,6 @@ export class ThesesMarcBuilder extends MarcBuilder {
       default3Directory,
       dissertation[0],
       bibliography[0],
-      major[0],
       timestampContent,
       controlfield008Content,
       catalogingSourceContent,
@@ -301,7 +289,6 @@ export class ThesesMarcBuilder extends MarcBuilder {
       default3Content,
       dissertation[1],
       bibliography[1],
-      major[1],
       end
     ];
 
@@ -321,8 +308,7 @@ export class ThesesMarcBuilder extends MarcBuilder {
       default2Directory.length +
       default3Directory.length +
       dissertation[0].length +
-      bibliography[0].length +
-      major[0].length;
+      bibliography[0].length;
 
     const leader = this.buildMarcLeader(leaderLen, directoryLen);
     this.afterBuildMarc(record, institutionInfo, { leader, text });
@@ -365,7 +351,6 @@ export class ThesesMarcBuilder extends MarcBuilder {
     ]);
     text += this.fillDissertationType(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillBibliography(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
-    text += this.fillMajor(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += '</record>\n';
 
     downloadFile(text, 'xml');
