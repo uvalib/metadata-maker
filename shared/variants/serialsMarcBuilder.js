@@ -118,8 +118,10 @@ export class SerialsMarcBuilder extends MarcBuilder {
     }
 
     field[29] = '0';
-    field[30] = '0';
-    field[31] = '0';
+    field[30] = '|';
+    field[31] = ' ';
+    field[32] = ' ';
+    field[33] = ' ';
     field[34] = '0';
 
     if (checkExists(record.language)) {
