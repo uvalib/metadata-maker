@@ -33,6 +33,8 @@ function buildPersonalName(entry) {
 export class ScoresMarcBuilder extends MarcBuilder {
   constructor(options = {}) {
     super({
+      marcLeaderType: 'ncm',
+      xmlLeaderType: 'ncm',
       ...options
     });
   }
@@ -104,7 +106,8 @@ export class ScoresMarcBuilder extends MarcBuilder {
     field[30] = 'n';
 
     if (checkExists(record.transposition_arrangement)) {
-      field[33] = record.transposition_arrangement;
+      const code = record.transposition_arrangement === '#' ? ' ' : record.transposition_arrangement;
+      field[33] = code;
     }
 
     if (checkExists(record.language)) {
