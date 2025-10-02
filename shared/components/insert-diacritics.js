@@ -150,6 +150,9 @@ export class InsertDiacritics extends LitElement {
     open: { state: true }
   };
 
+  static RECENT_STORAGE_KEY = 'insert-diacritics-recent';
+  static RECENT_LIMIT = 12;
+
   static activeInstance = null;
 
   constructor() {
@@ -165,7 +168,16 @@ export class InsertDiacritics extends LitElement {
     this._previousFocus = null;
     this._previousBodyOverflow = null;
     this._characters = SPECIAL_CHARACTERS;
-    this._hoverName = '';
+    this._characterMap = new Map();
+    if (Array.isArray(this._characters)) {
+      for (const entry of this._characters) {
+        if (entry && typeof entry.code === 'string') {
+          this._characterMap.set(entry.code.toUpperCase(), entry);
+        }
+      }
+    }
+    this._recentCodes = this._loadRecentCodes();
+    this._recentEntries = this._buildRecentEntries();
   }
 
   createRenderRoot() {
@@ -237,6 +249,8 @@ export class InsertDiacritics extends LitElement {
       document.body.style.overflow = 'hidden';
     }
 
+    this._refreshRecentsFromStorage();
+
     this.open = true;
     InsertDiacritics.activeInstance = this;
 
@@ -272,11 +286,6 @@ export class InsertDiacritics extends LitElement {
         this._previousFocus.focus();
       }
     }
-
-    if (this._hoverName) {
-      this._hoverName = '';
-      this.requestUpdate();
-    }
   }
 
   _handleDocumentClick(event) {
@@ -302,18 +311,110 @@ export class InsertDiacritics extends LitElement {
     }
   }
 
-  _setHoverDetail(entry) {
-    const label = entry ? `${entry.name} (U+${entry.code})` : '';
-    if (this._hoverName !== label) {
-      this._hoverName = label;
+  _refreshRecentsFromStorage() {
+    const latest = this._loadRecentCodes();
+    if (!Array.isArray(latest)) {
+      return;
+    }
+
+    const prev = Array.isArray(this._recentCodes) ? this._recentCodes : [];
+    const changed = latest.length !== prev.length || latest.some((code, index) => prev[index] !== code);
+    if (changed) {
+      this._recentCodes = latest;
+      this._recentEntries = this._buildRecentEntries();
+      this.requestUpdate();
+    } else if (!Array.isArray(this._recentEntries) || this._recentEntries.length !== latest.length) {
+      this._recentEntries = this._buildRecentEntries();
       this.requestUpdate();
     }
   }
 
-  _clearHoverDetail() {
-    if (this._hoverName) {
-      this._hoverName = '';
-      this.requestUpdate();
+  _rememberRecent(code) {
+    if (!code) {
+      return;
+    }
+
+    const normalized = String(code).toUpperCase();
+    const existing = Array.isArray(this._recentCodes) ? this._recentCodes : [];
+    const next = [normalized, ...existing.filter(stored => stored !== normalized)];
+    const limited = next.slice(0, InsertDiacritics.RECENT_LIMIT);
+
+    const changed = limited.length !== existing.length || limited.some((value, index) => existing[index] !== value);
+    if (!changed) {
+      return;
+    }
+
+    this._recentCodes = limited;
+    this._recentEntries = this._buildRecentEntries();
+    this._saveRecentCodes();
+    this.requestUpdate();
+  }
+
+  _buildRecentEntries() {
+    if (!Array.isArray(this._recentCodes)) {
+      return [];
+    }
+    const results = [];
+    const seen = new Set();
+    for (const code of this._recentCodes) {
+      const normalized = typeof code === 'string' ? code.toUpperCase() : '';
+      if (!normalized || seen.has(normalized)) {
+        continue;
+      }
+      const entry = this._characterMap.get(normalized);
+      if (entry) {
+        results.push(entry);
+        seen.add(normalized);
+      }
+    }
+    return results;
+  }
+
+  _loadRecentCodes() {
+    const storage = this._getLocalStorage();
+    if (!storage) {
+      return [];
+    }
+    try {
+      const raw = storage.getItem(InsertDiacritics.RECENT_STORAGE_KEY);
+      if (!raw) {
+        return [];
+      }
+      const parsed = JSON.parse(raw);
+      if (!Array.isArray(parsed)) {
+        return [];
+      }
+      return parsed
+        .filter(code => typeof code === 'string')
+        .map(code => code.toUpperCase())
+        .slice(0, InsertDiacritics.RECENT_LIMIT);
+    } catch (err) {
+      console.warn('[insert-diacritics] Unable to read recent characters from localStorage.', err);
+      return [];
+    }
+  }
+
+  _saveRecentCodes() {
+    const storage = this._getLocalStorage();
+    if (!storage) {
+      return;
+    }
+    try {
+      storage.setItem(InsertDiacritics.RECENT_STORAGE_KEY, JSON.stringify(this._recentCodes));
+    } catch (err) {
+      console.warn('[insert-diacritics] Unable to store recent characters in localStorage.', err);
+    }
+  }
+
+  _getLocalStorage() {
+    if (typeof window === 'undefined' || !window.localStorage) {
+      return null;
+    }
+    try {
+      return window.localStorage;
+    } catch (err) {
+      console.warn('[insert-diacritics] localStorage is not accessible.', err);
+      return null;
     }
   }
 
@@ -354,6 +455,7 @@ export class InsertDiacritics extends LitElement {
     }
     this._selectionStart = caret;
     this._selectionEnd = caret;
+    this._rememberRecent(code);
     this.closeMenu();
   }
 
@@ -362,8 +464,10 @@ export class InsertDiacritics extends LitElement {
       return null;
     }
 
-  const entries = Array.isArray(this._characters) ? this._characters : [];
-  const hasEntries = entries.length > 0;
+    const entries = Array.isArray(this._characters) ? this._characters : [];
+    const hasEntries = entries.length > 0;
+    const recentEntries = Array.isArray(this._recentEntries) ? this._recentEntries : [];
+    const hasRecents = recentEntries.length > 0;
 
     return html`
       <style>
@@ -418,11 +522,50 @@ export class InsertDiacritics extends LitElement {
           padding: 4px 8px;
         }
 
-        .diacritics-hover {
+        .diacritics-recents {
+          background: #f3f4f6;
+          border-radius: 6px;
+          padding: 12px;
           margin-bottom: 16px;
+        }
+
+        .diacritics-recents-header {
+          display: flex;
+          align-items: center;
+          gap: 8px;
           font-size: 0.95rem;
-          color: #333;
-          min-height: 1.2em;
+          font-weight: 600;
+          margin: 0;
+        }
+
+        .diacritics-recents-list {
+          margin-top: 8px;
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+        }
+
+        .diacritics-recents-empty-copy {
+          margin-top: 8px;
+          font-size: 0.9rem;
+          color: #4d4d4d;
+        }
+
+        .diacritics-recents button {
+          min-width: 44px;
+          padding: 6px 10px;
+          border: 1px solid #bfc6ce;
+          border-radius: 4px;
+          background: #fff;
+          cursor: pointer;
+          font-size: 1.05rem;
+        }
+
+        .diacritics-recents button:hover,
+        .diacritics-recents button:focus {
+          outline: none;
+          border-color: #005a9c;
+          box-shadow: 0 0 0 2px rgba(0, 90, 156, 0.2);
         }
 
         .diacritics-grid {
@@ -468,9 +611,25 @@ export class InsertDiacritics extends LitElement {
             <h2>Insert Special Characters</h2>
             <button type="button" class="diacritics-close" @click=${() => this.closeMenu()} aria-label="Close special characters picker">✕</button>
           </div>
-          <div class="diacritics-hover" aria-live="polite">
-            ${this._hoverName || 'Hover or focus a character to see its name.'}
-          </div>
+          <section class="diacritics-recents" aria-label="Recently used characters">
+            <div class="diacritics-recents-header">Recently used</div>
+            ${hasRecents ? html`
+              <div class="diacritics-recents-list">
+                ${recentEntries.map(entry => html`
+                  <button
+                    type="button"
+                    class="${['diacritics', 'diacritics-button', 'diacritics-recent-button', entry.classes || ''].filter(Boolean).join(' ')}"
+                    value="${entry.char}"
+                    title="${entry.name} (U+${entry.code})"
+                    aria-label="${entry.name}"
+                    @click=${event => this.handleInsert(event, entry.code)}
+                  >${entry.char}</button>
+                `)}
+              </div>
+            ` : html`
+              <div class="diacritics-recents-empty-copy">Recently used characters will appear here.</div>
+            `}
+          </section>
           ${hasEntries ? html`
             <div class="diacritics-grid">
               ${entries.map(entry => html`
@@ -481,10 +640,6 @@ export class InsertDiacritics extends LitElement {
                   title="${entry.name} (U+${entry.code})"
                   aria-label="${entry.name}"
                   @click=${event => this.handleInsert(event, entry.code)}
-                  @mouseenter=${() => this._setHoverDetail(entry)}
-                  @mouseleave=${() => this._clearHoverDetail()}
-                  @focus=${() => this._setHoverDetail(entry)}
-                  @blur=${() => this._clearHoverDetail()}
                 >${entry.char}</button>
               `)}
             </div>
