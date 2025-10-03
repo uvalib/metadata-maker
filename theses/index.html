@@ -115,14 +115,14 @@
 	<div id="content">
 		<form id="marc-maker">
 			<div id="title-block" class="standard-block">
-				<label for="title" class="heading">Title</label><label for="title" class="insert insert_normal" onClick='insertMenu("title");'>Insert Special Characters</label><br>
+				<label for="title" class="heading">Title<span class="required_marker">*</span></label><label for="title" class="insert insert_normal" onClick='insertMenu("title");'>Insert Special Characters</label><br>
 				<div id="insert-title"></div>
 				<input type="text" required id="title">
 				<label title="Record the title as it appears on the title page. If the title includes a subtitle, record only the main title here, and the subtitle in the next field."><span class="question-mark">?</span></label>
 			</div>
 
 			<div id="author-block">
-				<label for="author" class="heading">Names</label><label for="family_name" class="insert insert_family_name" onClick='insertMenu("family_name");'>Insert Special Characters</label><label for="given_name" class="insert insert_given_name" onClick='insertMenu("given_name");'>Insert Special Characters</label><br>
+				<label for="author" class="heading">Names<span class="required_marker">*</span></label><label for="family_name" class="insert insert_family_name" onClick='insertMenu("family_name");'>Insert Special Characters</label><label for="given_name" class="insert insert_given_name" onClick='insertMenu("given_name");'>Insert Special Characters</label><br>
 				<div id="insert-family_name"></div><div id="insert-given_name"></div>
 				<input type="text" class="author conditional" required id="family_name" placeholder="Family Name">, 
 				<input type="text" class="author conditional" required id="given_name" placeholder="Given Name">
@@ -622,13 +622,13 @@
 			</div>
 
 			<div id="publication-block">
-				<label for="date" class="heading">Date of publication</label><br>
+				<label for="date" class="heading">Date of publication<span class="required_marker">*</span></label><br>
 				<input type="number" class="date" required id="year" min="0">
 				<label title="Record the year of publication if it appears on the piece. Do not record a copyright date here. Copyright dates should be recorded in the next field."><span class="question-mark">?</span></label><br>
 			</div>
 
 			<div id="dissertation_type-block" class="standard-block">
-				<label for="dissertation_type" class="heading">Dissertation Type</label><br>
+				<label for="dissertation_type" class="heading">Dissertation Type<span class="required_marker">*</span></label><br>
 				<select required id="dissertation_type">
 					<option selected disabled hidden value=''></option>
 					<option value="BA">BA</option>
@@ -641,12 +641,12 @@
 			</div>
 
 			<div id="major-block" class="standard-block">
-				<label for="major" class="heading">Major</label><br>
+				<label for="major" class="heading">Major<span class="required_marker">*</span></label><br>
 				<input type="text" required id="major">
 			</div>
 
 			<div id="pages-block" class="standard-block">
-				<label for="number" class="heading">Number of</label>
+				<label for="number" class="heading">Number of<span class="required_marker">*</span></label>
 				<select name="lorp" id="lorp">
 					<option selected value="pages">pages</option>
 					<option value="leaves">leaves</option>
@@ -655,8 +655,8 @@
 			</div>
 
 			<div id="bibliographies-block" class="standard-block">
-				<label for="bib" class="heading">Bibliographies</label><br>
-				<input type="text" required id="bib">
+				<label for="bib" class="heading">Bibliographic references page(s)</label><br>
+				<input type="text" id="bib">
 			</div>
 
 			<div id="illustrations-block" class="standard-block">
