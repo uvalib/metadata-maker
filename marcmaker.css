@@ -277,3 +277,129 @@ input[type="number"] {
 #code {
 	display: block;
 }
+
+/* -------------------------------------------------- */
+/* Shared template variations                         */
+/* -------------------------------------------------- */
+
+.template-corporate #names_title {
+	padding: 3px;
+}
+
+.template-corporate #author-block {
+	padding: 6px;
+	padding-left: 36px;
+	width: 700px;
+}
+
+.template-corporate #corporate-block {
+	padding: 6px;
+	padding-left: 36px;
+	width: 400px;
+}
+
+.template-corporate .translit-block,
+.template-corporate .translit-corporate_name-block {
+	position: relative;
+	left: 25px;
+}
+
+.template-corporate .insert_corporate,
+.template-corporate .insert_corporate_name {
+	left: -146px;
+}
+
+.template-corporate .insert_translit_corporate_name {
+	left: -140px;
+}
+
+.template-corporate .additional_corporate_menu {
+	position: relative;
+	bottom: 3px;
+}
+
+.template-corporate .added_corporate {
+	padding-top: 6px;
+	padding-bottom: 6px;
+	margin-top: -7px;
+}
+
+.template-no-translit-offset .translit-author {
+	left: 0;
+}
+
+.template-scores #accompanying-matter-block,
+.template-scores #formatted-contents-note-block {
+	padding: 3px;
+	width: 700px;
+}
+
+.template-scores #formatted-contents-note {
+	min-width: 300px;
+	min-height: 100px;
+}
+
+.template-scores .accompanying-matter,
+.template-scores .literary-text {
+	margin-left: 15px;
+}
+
+.template-ebooks .subject-block {
+	margin-left: 15px;
+	padding-left: 10px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+.template-ebooks .unverified {
+	color: #747475;
+}
+
+.template-theses .standard-block {
+	padding: 5px;
+}
+
+.template-theses #author-block {
+	padding: 5px;
+	width: 700px;
+}
+
+.template-theses #save-as-block {
+	padding: 5px;
+}
+
+#corporate-block,
+#ending-block,
+#description-block,
+#accompanying-matter-block,
+#formatted-contents-note-block,
+#formatted-contents-note,
+#description {
+	/* Ensure elements used in specialty templates retain expected sizing */
+	box-sizing: border-box;
+}
+
+#ending-block {
+	padding: 3px;
+	width: 150px;
+	position: relative;
+	top: -68px;
+	left: 200px;
+	margin-bottom: -68px;
+}
+
+#description-block,
+#formatted-contents-note-block {
+	padding: 3px;
+}
+
+#description,
+#formatted-contents-note {
+	min-width: 300px;
+	min-height: 100px;
+}
+
+#year,
+#edate {
+	width: 55px;
+}
