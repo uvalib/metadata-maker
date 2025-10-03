@@ -2,6 +2,7 @@ import { LitElement, html } from 'https://cdn.jsdelivr.net/npm/lit@3.1.0/+esm';
 import { SPECIAL_CHARACTERS } from '../data/special-characters.js';
 
 const INSERT_LABEL_SELECTOR = 'label.insert';
+const INSERT_LABEL_TEXT = 'Insert other chars';
 
 function getInsertTarget(label) {
   if (!label) {
@@ -30,6 +31,8 @@ function createInsertComponent(target, className, menuClasses, doc) {
   if (menuClasses && menuClasses.length > 0) {
     element.setAttribute('menu-classes', menuClasses);
   }
+  element.setAttribute('label', INSERT_LABEL_TEXT);
+  element.label = INSERT_LABEL_TEXT;
   return element;
 }
 
@@ -42,6 +45,8 @@ function upgradeInsertLabel(label, doc) {
   if (!target) {
     return;
   }
+
+  label.textContent = INSERT_LABEL_TEXT;
 
   const documentRef = doc || label.ownerDocument || document;
   const menuContainer = documentRef.getElementById('insert-' + target);
@@ -157,7 +162,7 @@ export class InsertDiacritics extends LitElement {
 
   constructor() {
     super();
-    this.label = 'Insert Special Characters';
+  this.label = INSERT_LABEL_TEXT;
     this.open = false;
     this.menuClasses = '';
     this._selectionStart = 0;

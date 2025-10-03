@@ -181,18 +181,20 @@ input[type="number"] {
 	font-size: 11px;
 	bottom: -2px;
 	cursor: pointer;
+	margin-left: 16px;
+	text-align: right;
+	white-space: nowrap;
 }
 
-.insert_normal {
-	left: -96px;
+label.heading {
+	display: inline-block;
+	max-width: calc(100% - 160px);
 }
 
-.insert_family_name {
-	left: -446px;
-}
-
+.insert_normal,
+.insert_family_name,
 .insert_given_name {
-	left: -97px;
+	left: auto;
 }
 
 .insert:hover {
@@ -305,12 +307,9 @@ input[type="number"] {
 }
 
 .template-corporate .insert_corporate,
-.template-corporate .insert_corporate_name {
-	left: -146px;
-}
-
+.template-corporate .insert_corporate_name,
 .template-corporate .insert_translit_corporate_name {
-	left: -140px;
+	left: auto;
 }
 
 .template-corporate .additional_corporate_menu {

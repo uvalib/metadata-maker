@@ -33,7 +33,7 @@
     corporate: {
       enabled: true,
       buildMarkup(index) {
-        return '<label for="corporate_name' + index + '" class="insert insert_corporate" onClick=\'insertMenu("corporate_name' + index + '");\'>Insert Special Characters</label><br>' +
+  return '<label for="corporate_name' + index + '" class="insert insert_corporate" onClick=\'insertMenu("corporate_name' + index + '");\'>Insert other chars</label><br>' +
           '<div id="insert-corporate_name' + index + '" class="additional_corporate_menu"></div>' +
           '<span class="added-corporate"><input type="text" class="corporate translit-listen" id="corporate_name' + index + '"> ' +
           '<select name="role' + index + '" id="corporate_role' + index + '"><option selected value="cre">creator</option><option value="ctb">contributor</option></select></span>';
