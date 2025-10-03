@@ -91,9 +91,9 @@ export class ScoresMarcBuilder extends MarcBuilder {
 
     field[20] = 'l';
 
-    if (checkExists(record.music_parts)) {
-      field[21] = record.music_parts;
-    }
+    const validScoreFormats = new Set(['a', 'b', 'c', 'd', 'e', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'p', 'u', 'z', '|']);
+    const scoreFormatCode = typeof record.score_format === 'string' ? record.score_format : '';
+    field[21] = validScoreFormats.has(scoreFormatCode) ? scoreFormatCode : '|';
 
     if (Array.isArray(record.accompanying_matters) && record.accompanying_matters.length > 0) {
       for (let i = 0; i < record.accompanying_matters.length; i++) {

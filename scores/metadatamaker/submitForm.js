@@ -238,6 +238,7 @@ $("#marc-maker").submit(function(event) {
 		dimensions: $("#dimensions").val(),
 		edition: $("#edition").val(),
 		composition_form: $("#composition-form-dropdown").val(),
+		score_format: $("#score-format-dropdown").val(),
 		music_parts: $("#music-parts-dropdown").val(),
 		transposition_arrangement: $("#transposition-arrangement-dropdown").val(),
 		accompanying_matters: accompanying_matter_selections,
