@@ -120,14 +120,6 @@ export class DatasetMarcBuilder extends MarcBuilder {
     return head !== null ? ['', ''] : '';
   }
 
-  fillGeographicGranularity(record, head, fieldFunc, subfieldFunc) {
-    if (checkExists(record.ggranularity)) {
-      const granularity = fieldFunc('522', ' ', ' ', [subfieldFunc('a', record.ggranularity)]);
-      return this.returnSingleEntry('522', granularity, head);
-    }
-    return head !== null ? ['', ''] : '';
-  }
-
   fillFormat(record, head, fieldFunc, subfieldFunc) {
     if (checkExists(record.format)) {
       const format = fieldFunc('538', ' ', ' ', [subfieldFunc('a', `Data in ${record.format} format.`)]);
@@ -337,9 +329,6 @@ export class DatasetMarcBuilder extends MarcBuilder {
     const geographicCoverage = this.fillGeographicCoverage(record, head, contentFill, subfield);
     head += this.getByteLength(geographicCoverage[1]);
 
-    const geographicGranularity = this.fillGeographicGranularity(record, head, contentFill, subfield);
-    head += this.getByteLength(geographicGranularity[1]);
-
     const fileFormat = this.fillFormat(record, head, contentFill, subfield);
     head += this.getByteLength(fileFormat[1]);
 
@@ -410,7 +399,6 @@ export class DatasetMarcBuilder extends MarcBuilder {
       dateCollected[0],
       accessTerms[0],
       geographicCoverage[0],
-      geographicGranularity[0],
       fileFormat[0],
       useTerms[0],
       dateRange[0],
@@ -447,7 +435,6 @@ export class DatasetMarcBuilder extends MarcBuilder {
       dateCollected[1],
       accessTerms[1],
       geographicCoverage[1],
-      geographicGranularity[1],
       fileFormat[1],
       useTerms[1],
       dateRange[1],
@@ -522,7 +509,6 @@ export class DatasetMarcBuilder extends MarcBuilder {
     text += this.fillDateCollected(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillAccessTerms(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillGeographicCoverage(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
-    text += this.fillGeographicGranularity(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillFormat(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillUseTerms(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillDateRange(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));

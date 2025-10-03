@@ -181,7 +181,6 @@ $("#marc-maker").submit(function(event) {
 		daterange: $("#daterange").val(),
 		datecollected: $("#datecollected").val(),
 		gcoverage: $("#gcoverage").val(),
-		ggranularity: $("#ggranularity").val(),
 		access_terms: $("#access_terms").val(),
 		use_terms: $("#use_terms").val()
 	};

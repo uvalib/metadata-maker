@@ -1028,11 +1028,6 @@ function downloadHTML(record,institution_info) {
 //		displayTags += '\t\t\t<div itemprop="offers" itemscope itemtype="http://schema.org/Offer">\n\t\t\t\t<dt>Located At:</dt>\n\t\t\t\t<dd><b><span itemprop="seller" href="' + institution_info['html']['url'] + '">' + institution_info['html']['name'] + '</span></b></dd>\n\t\t\t</div>\n'; 
 	}
 
-	if (checkExists(record.ggranularity)) {
-		displayTags += '\t\t\t<div itemprop"contentLocation" itemscope itemtype="http://schema.org/Place">\n\t\t\t\t<dt>Geographic Granularity:</dt>\n\t\t\t\t<dd><b><span itemprop="name">' + record.ggranularity + '</span></b></dd>\n\t\t\t</div>\n';
-//		displayTags += '\t\t\t<creativeWork>\n\t\t\t\t<contentLocation>\n\t\t\t\t\t<place>\n\t\t\t\t\t\t<name>' + record.ggranularity + '</name>\n\t\t\t\t\t</place>\n\t\t\t\t</contentLocation>\n\t\t\t</creativeWork>\n';
-	}
-
 	if (checkExists(record.format)) {
 		displayTags += buildTag('fileFormat',record.format,false,'File Format');
 	}

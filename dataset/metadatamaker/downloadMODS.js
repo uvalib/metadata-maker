@@ -174,11 +174,6 @@ function downloadMODS(record,institution_info) {
 		geographicCoverageText = '    <subject>\n        <geographic>' + escapeXML(record.gcoverage) + '</geographic>\n    </subject>\n';
 	}
 
-	var geographicGranularityText = '';
-	if (checkExists(record.ggranularity)) {
-		geographicGranularityText = '    <subject>\n        <geographic>' + escapeXML(record.ggranularity) + '</geographic>\n    </subject>\n';
-	}
-
 	var formatText = '';
 	if (checkExists(record.format)) {
 		formatText = '    <note>' + escapeXML(record.format) + '</note>\n';
@@ -218,6 +213,6 @@ function downloadMODS(record,institution_info) {
 	var defaultText3 = '    <recordInfo>\n        <descriptionStandard>rda</descriptionStandard>\n        <recordContentSource authority="marcorg">' + escapeXML(institution_info['mods']['recordContentSource']) + '</recordContentSource>\n        <recordCreationDate encoding="marc">' + formatted_date + '</recordCreationDate>\n    </recordInfo>\n'
 
 	var endText = '</mods:mods>\n';
-	var text = startText + titleText + authorText + corporateText + defaultText1 + genreText + isbnText + urlText + originText + languageText + pagesText + dimensionsText + defaultText2 + dateCollectedText + accessText + geographicCoverageText + geographicGranularityText + formatText + useText + dateRangeText + keywordsText + fastText + literatureText + defaultText3 + endText;
+	var text = startText + titleText + authorText + corporateText + defaultText1 + genreText + isbnText + urlText + originText + languageText + pagesText + dimensionsText + defaultText2 + dateCollectedText + accessText + geographicCoverageText + formatText + useText + dateRangeText + keywordsText + fastText + literatureText + defaultText3 + endText;
 	downloadFile(text,'mods');
 }
