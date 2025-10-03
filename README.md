@@ -67,6 +67,11 @@ The command uses [`live-server`](https://www.npmjs.com/package/live-server) to s
 - Execute the unit test suite with `npm test`.
 - Keep the watcher running during development with `npm run test:watch`.
 
+### Deploying
+
+- Run `npm run deploy` to sync static assets to the `metadata-maker` S3 bucket and trigger an AWS Amplify deployment for the `metadata-maker` app on the `staging` branch. The helper script packages the static files into an archive, uploads it with `aws amplify create-deployment`, and finalizes the publish with `aws amplify start-deployment`.
+- Requirements: authenticated AWS CLI along with the `zip`, `curl`, `python3`, and `rsync` utilities available in your shell.
+
 ## Editing institution information
 
 By default the records produced by MetadataMaker list the University of Virginia as the institution that created the records and "University of Virginia. Library" as the location of the physical holding. To change the default institution in code, edit the strings created in **`generateInstitutionInfo()`** in **`metadatamaker/submitForm.js`**. The institution information can also be customized by setting certain values in the URL. These values correspond to the variables in **`generateInstitutionInfo()`**:

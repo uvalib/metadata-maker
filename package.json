@@ -7,7 +7,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "dev": "live-server --port=3000 --entry-file=index.html --watch=.",
-    "deploy": "aws s3 sync . s3://metadata-maker/ --exclude \"*\" --include \"*.html\" --include \"*.js\" --include \"*.css\" --include \"*.svg\""
+    "deploy": "scripts/deploy.sh"
   },
   "repository": {
     "type": "git",
