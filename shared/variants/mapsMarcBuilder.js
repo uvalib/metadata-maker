@@ -12,6 +12,13 @@ export class MapsMarcBuilder extends MarcBuilder {
   create008Field(record) {
     const base = super.create008Field(record).split('');
     base[26] = 'j';
+    const validGovernmentCodes = new Set([' ', 'a', 'c', 'f', 'i', 'l', 'm', 'o', 's', 'u', 'z', '|']);
+    const governmentCode = checkExists(record.government_publication) ? record.government_publication : '';
+    if (typeof governmentCode === 'string' && validGovernmentCodes.has(governmentCode)) {
+      base[29] = governmentCode;
+    } else {
+      base[29] = ' ';
+    }
     return base.join('');
   }
 

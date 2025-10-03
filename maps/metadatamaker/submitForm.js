@@ -167,6 +167,7 @@ $("#marc-maker").submit(function(event) {
 		publication_place: $("#place").val(),
 		publication_country: $("#country").val(),
 		copyright_year: $("#cyear").val(),
+		government_publication: $("#government_publication").val(),
 		language: $("#language").val(),
 		translit_publisher: $("#translit_publisher").val(),
 		translit_place: $("#translit_place").val(),
