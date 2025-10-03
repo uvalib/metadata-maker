@@ -21,6 +21,19 @@ function fillAuthorMODS(family,given,role) {
 	}
 }
 
+function fillCorporateAuthorMODS(corporateEntry) {
+	var role_index = { 'cre': 'creator', 'ctb': 'contributor' };
+	if (!checkExists(corporateEntry) || !Array.isArray(corporateEntry) || !checkExists(corporateEntry[0]) || !checkExists(corporateEntry[0]['corporate'])) {
+		return '';
+	}
+	var primary = corporateEntry[0];
+	var role = primary['role'] || 'cre';
+	var authorText = '    <name type="corporate">\n';
+	authorText += '        <namePart>' + escapeXML(primary['corporate']) + '</namePart>\n';
+	authorText += '        <role>\n            <roleTerm authority="marcrelator" type="text">' + (role_index[role] || 'creator') + '</roleTerm>\n            <roleTerm authority="marcrelator" type="code">' + role + '</roleTerm>\n        </role>\n    </name>\n';
+	return authorText;
+}
+
 /*
  * Build a MODS record. Each DOM object is saved as a string, then all the strings are combined into one master text
  *
@@ -71,6 +84,14 @@ function downloadMODS(record,institution_info) {
 	if (checkExists(record.additional_authors)) {
 		for (var i = 0; i < record.additional_authors.length; i++) {
 			authorText += fillAuthorMODS(record.additional_authors[i][0]['family'],record.additional_authors[i][0]['given'],record.additional_authors[i][0]['role']);
+		}
+	}
+
+	var corporateText = '';
+	corporateText += fillCorporateAuthorMODS(record.corporate_author);
+	if (checkExists(record.additional_corporate_authors)) {
+		for (var i = 0; i < record.additional_corporate_authors.length; i++) {
+			corporateText += fillCorporateAuthorMODS(record.additional_corporate_authors[i]);
 		}
 	}
 
@@ -146,6 +167,6 @@ function downloadMODS(record,institution_info) {
 	var defaultText3 = '    <recordInfo>\n        <descriptionStandard>rda</descriptionStandard>\n        <recordContentSource authority="marcorg">' + escapeXML(institution_info['mods']['recordContentSource']) + '</recordContentSource>\n        <recordCreationDate encoding="marc">' + formatted_date + '</recordCreationDate>\n    </recordInfo>\n'
 
 	var endText = '</mods:mods>\n';
-	var text = startText + titleText + authorText + defaultText1 + isbnText + originText + languageText + pagesText + dimensionsText + defaultText2 + keywordsText + fastText + literatureText + defaultText3 + endText;
+	var text = startText + titleText + authorText + corporateText + defaultText1 + isbnText + originText + languageText + pagesText + dimensionsText + defaultText2 + keywordsText + fastText + literatureText + defaultText3 + endText;
 	downloadFile(text,'mods');
 }

@@ -223,22 +223,44 @@ export class MarcBuilder {
 
   fillTitle(record, head, fieldFunc, subfieldFunc) {
     const tag = '245';
-    const titleInd1 = (checkExists(record.author[0]['family']) || checkExists(record.author[0]['given'])) ? '1' : '0';
-    const latinIndex = (checkExists(record.title[1]['title']) || checkExists(record.title[1]['subtitle'])) ? 1 : 0;
+    const hasPersonalAuthor =
+      checkExists(record.author) &&
+      Array.isArray(record.author) &&
+      checkExists(record.author[0]) &&
+      (checkExists(record.author[0]['family']) || checkExists(record.author[0]['given']));
+    const hasCorporateAuthor =
+      checkExists(record.corporate_author) &&
+      Array.isArray(record.corporate_author) &&
+      checkExists(record.corporate_author[0]) &&
+      checkExists(record.corporate_author[0]['corporate']);
+    const titleInd1 = (hasPersonalAuthor || hasCorporateAuthor) ? '1' : '0';
+    const latinIndex =
+      checkExists(record.title) &&
+      Array.isArray(record.title) &&
+      checkExists(record.title[1]) &&
+      (checkExists(record.title[1]['title']) || checkExists(record.title[1]['subtitle']))
+        ? 1
+        : 0;
 
     let titleInd2 = '0';
-    if (record.language === 'eng' || record.language === 'fre') {
+    if ((record.language === 'eng' || record.language === 'fre') &&
+      checkExists(record.title) &&
+      Array.isArray(record.title) &&
+      checkExists(record.title[latinIndex]) &&
+      checkExists(record.title[latinIndex]['title'])) {
       titleInd2 = this.getNonfilingCount(record.title[latinIndex]['title'], record.language);
     }
 
     const titleSubfields = [];
-    if (checkExists(record.title[0]['subtitle'])) {
+    if (checkExists(record.title) && Array.isArray(record.title) && checkExists(record.title[0]) && checkExists(record.title[0]['subtitle'])) {
       titleSubfields.push(
         subfieldFunc('a', `${record.title[latinIndex]['title']} :`),
         subfieldFunc('b', `${record.title[latinIndex]['subtitle']}.`)
       );
-    } else {
+    } else if (checkExists(record.title) && Array.isArray(record.title) && checkExists(record.title[0])) {
       titleSubfields.push(subfieldFunc('a', `${record.title[latinIndex]['title']}.`));
+    } else {
+      return head !== null ? ['', ''] : '';
     }
 
     if (latinIndex === 1) {
@@ -429,11 +451,45 @@ export class MarcBuilder {
     return head !== null ? ['', '', head] : '';
   }
 
+  hasCorporateAuthor(record) {
+    return checkExists(record.corporate_author) &&
+      Array.isArray(record.corporate_author) &&
+      checkExists(record.corporate_author[0]) &&
+      checkExists(record.corporate_author[0]['corporate']);
+  }
+
+  hasCorporateTransliteration(record) {
+    return this.hasCorporateAuthor(record) &&
+      checkExists(record.corporate_author[1]) &&
+      checkExists(record.corporate_author[1]['corporate']);
+  }
+
+  getAdditionalAuthorTranslitBase(record) {
+    return this.hasCorporateTransliteration(record) ? 6 : 5;
+  }
+
+  countAdditionalAuthorTransliterations(record) {
+    if (!checkExists(record.additional_authors)) {
+      return 0;
+    }
+    let count = 0;
+    for (let i = 0; i < record.additional_authors.length; i++) {
+      const entry = record.additional_authors[i];
+      if (!Array.isArray(entry) || !checkExists(entry[1])) {
+        continue;
+      }
+      if (checkExists(entry[1]['family']) || checkExists(entry[1]['given'])) {
+        count += 1;
+      }
+    }
+    return count;
+  }
+
   fillAdditionalAuthors(record, head, fieldFunc, subfieldFunc) {
     if (checkExists(record.additional_authors)) {
       let authors = '';
       let authorsDirectory = '';
-      let translitCounter = 5;
+      let translitCounter = this.getAdditionalAuthorTranslitBase(record);
       const roleIndex = { art: 'artist', aut: 'author', ctb: 'contributor', edt: 'editor', ill: 'illustrator', trl: 'translator' };
 
       for (let i = 0; i < record.additional_authors.length; i++) {
@@ -476,9 +532,155 @@ export class MarcBuilder {
     return head !== null ? ['', '', head] : '';
   }
 
+  fillCorporateAuthor(record, head, fieldFunc, subfieldFunc) {
+    const tag = '110';
+    if (!this.hasCorporateAuthor(record)) {
+      return head !== null ? ['', ''] : '';
+    }
+
+    const latinIndex =
+      checkExists(record.corporate_author[1]) &&
+      checkExists(record.corporate_author[1]['corporate'])
+        ? 1
+        : 0;
+
+    if (!checkExists(record.corporate_author[latinIndex]) || !checkExists(record.corporate_author[latinIndex]['corporate'])) {
+      return head !== null ? ['', ''] : '';
+    }
+
+    const roleIndex = { cre: 'creator', ctb: 'contributor' };
+    const role = (record.corporate_author[0] && record.corporate_author[0]['role']) || 'cre';
+    const authorSubfields = [
+      subfieldFunc('a', record.corporate_author[latinIndex]['corporate']),
+      subfieldFunc('e', `${roleIndex[role] || 'creator'}.`),
+      subfieldFunc('4', role)
+    ];
+
+    if (latinIndex === 1) {
+      authorSubfields.push(subfieldFunc('6', '880-05'));
+    }
+
+    const author = fieldFunc(tag, '1', ' ', authorSubfields);
+    return this.returnSingleEntry(tag, author, head);
+  }
+
+  fillAdditionalCorporateNames(record, head, fieldFunc, subfieldFunc) {
+    if (!checkExists(record.additional_corporate_authors)) {
+      return head !== null ? ['', '', head] : '';
+    }
+
+    let authors = '';
+    let authorsDirectory = '';
+    let currentHead = head;
+    let translitCounter = this.getAdditionalAuthorTranslitBase(record);
+
+    translitCounter += this.countAdditionalAuthorTransliterations(record);
+
+    const roleIndex = { cre: 'creator', ctb: 'contributor' };
+
+    for (let i = 0; i < record.additional_corporate_authors.length; i++) {
+      const corporateSet = record.additional_corporate_authors[i];
+      if (!Array.isArray(corporateSet) || !checkExists(corporateSet[0]) || !checkExists(corporateSet[0]['corporate'])) {
+        continue;
+      }
+
+      const latinIndex =
+        checkExists(corporateSet[1]) &&
+        checkExists(corporateSet[1]['corporate'])
+          ? 1
+          : 0;
+
+      const corporateName = corporateSet[latinIndex] && corporateSet[latinIndex]['corporate'];
+      if (!checkExists(corporateName)) {
+        continue;
+      }
+
+      const subfields = [
+        subfieldFunc('a', corporateName),
+        subfieldFunc('e', `${roleIndex[corporateSet[0]['role']] || 'creator'}.`),
+        subfieldFunc('4', corporateSet[0]['role'] || 'cre')
+      ];
+
+      if (latinIndex === 1) {
+        const translitIndex = translitCounter < 10 ? `0${translitCounter}` : `${translitCounter}`;
+        subfields.push(subfieldFunc('6', `880-${translitIndex}`));
+        translitCounter++;
+      }
+
+      const newContent = fieldFunc('710', '1', ' ', subfields);
+      authors += newContent;
+
+      if (currentHead !== null) {
+        const newDirectory = this.createDirectory('710', newContent, currentHead);
+        currentHead += this.getByteLength(newContent);
+        authorsDirectory += newDirectory;
+      }
+    }
+
+    return this.returnMultipleEntries(authorsDirectory, authors, currentHead);
+  }
+
+  fillTranslitCorporateAuthor(record, head, fieldFunc, subfieldFunc) {
+    if (!this.hasCorporateTransliteration(record)) {
+      return head !== null ? ['', ''] : '';
+    }
+
+    const subfields = [
+      subfieldFunc('6', '110-05'),
+      subfieldFunc('a', record.corporate_author[1]['corporate'])
+    ];
+    const corporate880 = fieldFunc('880', ' ', ' ', subfields);
+    return this.returnSingleEntry('880', corporate880, head);
+  }
+
+  fillTranslitAdditionalCorporateNames(record, head, fieldFunc, subfieldFunc) {
+    if (!checkExists(record.additional_corporate_authors)) {
+      return head !== null ? ['', '', head] : '';
+    }
+
+    let authors = '';
+    let authorsDirectory = '';
+    let currentHead = head;
+    let translitCounter = this.getAdditionalAuthorTranslitBase(record);
+
+    translitCounter += this.countAdditionalAuthorTransliterations(record);
+
+    for (let i = 0; i < record.additional_corporate_authors.length; i++) {
+      const corporateSet = record.additional_corporate_authors[i];
+      if (!Array.isArray(corporateSet) || !checkExists(corporateSet[1]) || !checkExists(corporateSet[1]['corporate'])) {
+        continue;
+      }
+
+      const translitIndex = translitCounter < 10 ? `0${translitCounter}` : `${translitCounter}`;
+      const subfields = [
+        subfieldFunc('6', `710-${translitIndex}`),
+        subfieldFunc('a', corporateSet[1]['corporate'])
+      ];
+
+      const corporate880 = fieldFunc('880', ' ', ' ', subfields);
+      authors += corporate880;
+
+      if (currentHead !== null) {
+        const newDirectory = this.createDirectory('880', corporate880, currentHead);
+        currentHead += this.getByteLength(corporate880);
+        authorsDirectory += newDirectory;
+      }
+
+      translitCounter++;
+    }
+
+    return this.returnMultipleEntries(authorsDirectory, authors, currentHead);
+  }
+
   fillTranslitTitle(record, head, fieldFunc, subfieldFunc) {
     const tag = '880';
-    const titleInd1 = (checkExists(record.author[0]['family']) || checkExists(record.author[0]['given'])) ? '1' : '0';
+    const hasPersonalAuthor =
+      checkExists(record.author) &&
+      Array.isArray(record.author) &&
+      checkExists(record.author[0]) &&
+      (checkExists(record.author[0]['family']) || checkExists(record.author[0]['given']));
+    const hasCorporateAuthor = this.hasCorporateAuthor(record);
+    const titleInd1 = (hasPersonalAuthor || hasCorporateAuthor) ? '1' : '0';
 
     if (checkExists(record.title[1]['title'])) {
       const translitSubfields = [subfieldFunc('6', '245-01')];
@@ -553,7 +755,7 @@ export class MarcBuilder {
     if (checkExists(record.additional_authors)) {
       let authors880 = '';
       let authors880Directory = '';
-      let translitCounter = 5;
+      let translitCounter = this.getAdditionalAuthorTranslitBase(record);
 
       for (let i = 0; i < record.additional_authors.length; i++) {
         if ((checkExists(record.additional_authors[i][1]['family']) || checkExists(record.additional_authors[i][1]['given'])) &&
@@ -643,6 +845,9 @@ export class MarcBuilder {
     const author = this.fillAuthor(record, head, this.createContentFill.bind(this), this.createSubfield.bind(this));
     head += this.getByteLength(author[1]);
 
+    const corporateAuthor = this.fillCorporateAuthor(record, head, this.createContentFill.bind(this), this.createSubfield.bind(this));
+    head += this.getByteLength(corporateAuthor[1]);
+
     const title = this.fillTitle(record, head, this.createContentFill.bind(this), this.createSubfield.bind(this));
     head += this.getByteLength(title[1]);
 
@@ -694,6 +899,9 @@ export class MarcBuilder {
     const additionalAuthors = this.fillAdditionalAuthors(record, head, this.createContentFill.bind(this), this.createSubfield.bind(this));
     head = additionalAuthors[2];
 
+    const additionalCorporateNames = this.fillAdditionalCorporateNames(record, head, this.createContentFill.bind(this), this.createSubfield.bind(this));
+    head = additionalCorporateNames[2];
+
     const title880 = this.fillTranslitTitle(record, head, this.createContentFill.bind(this), this.createSubfield.bind(this));
     head += this.getByteLength(title880[1]);
 
@@ -709,6 +917,12 @@ export class MarcBuilder {
     const authors880 = this.fillTranslitAdditionalAuthors(record, head, this.createContentFill.bind(this), this.createSubfield.bind(this));
     head = authors880[2];
 
+    const corporate880 = this.fillTranslitCorporateAuthor(record, head, this.createContentFill.bind(this), this.createSubfield.bind(this));
+    head += this.getByteLength(corporate880[1]);
+
+    const additionalCorporate880 = this.fillTranslitAdditionalCorporateNames(record, head, this.createContentFill.bind(this), this.createSubfield.bind(this));
+    head = additionalCorporate880[2];
+
     const end = String.fromCharCode(30) + String.fromCharCode(29);
 
     const textParts = [
@@ -717,6 +931,7 @@ export class MarcBuilder {
       isbn[0],
       default1Directory,
       author[0],
+      corporateAuthor[0],
       title[0],
       edition[0],
       pub[0],
@@ -729,16 +944,20 @@ export class MarcBuilder {
       keywords[0],
       fast[0],
       additionalAuthors[0],
+      additionalCorporateNames[0],
       title880[0],
       edition880[0],
       publisher880[0],
       author880[0],
+      corporate880[0],
       authors880[0],
+      additionalCorporate880[0],
       timestampContent,
       controlfield008Content,
       isbn[1],
       default1Content,
       author[1],
+      corporateAuthor[1],
       title[1],
       edition[1],
       pub[1],
@@ -751,11 +970,14 @@ export class MarcBuilder {
       keywords[1],
       fast[1],
       additionalAuthors[1],
+      additionalCorporateNames[1],
       title880[1],
       edition880[1],
       publisher880[1],
       author880[1],
+      corporate880[1],
       authors880[1],
+      additionalCorporate880[1],
       end
     ];
 
@@ -765,10 +987,10 @@ export class MarcBuilder {
     const leaderLen = this.getByteLength(text) + 24;
     const directoryLen = 25 +
       timestampDirectory.length + controlfield008Directory.length + isbn[0].length + default1Directory.length +
-      author[0].length + title[0].length + edition[0].length + pub[0].length + copyright[0].length + physical[0].length +
+      author[0].length + corporateAuthor[0].length + title[0].length + edition[0].length + pub[0].length + copyright[0].length + physical[0].length +
       default2Directory.length + default3Directory.length + default4Directory.length + notes[0].length + keywords[0].length +
-      fast[0].length + additionalAuthors[0].length + title880[0].length + edition880[0].length + publisher880[0].length +
-      author880[0].length + authors880[0].length;
+      fast[0].length + additionalAuthors[0].length + additionalCorporateNames[0].length + title880[0].length + edition880[0].length + publisher880[0].length +
+      author880[0].length + corporate880[0].length + authors880[0].length + additionalCorporate880[0].length;
 
     const leader = this.buildMarcLeader(leaderLen, directoryLen);
     this.afterBuildMarc(record, institutionInfo, { leader, text });
@@ -798,6 +1020,7 @@ export class MarcBuilder {
     ]);
     text += this.fillISBN(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillAuthor(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
+    text += this.fillCorporateAuthor(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillTitle(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillEdition(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillPublication(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
@@ -822,11 +1045,14 @@ export class MarcBuilder {
     text += this.fillKeywords(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillFAST(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillAdditionalAuthors(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
+    text += this.fillAdditionalCorporateNames(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillTranslitTitle(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillTranslitEdition(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillTranslitPublisher(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillTranslitAuthor(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
+    text += this.fillTranslitCorporateAuthor(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillTranslitAdditionalAuthors(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
+    text += this.fillTranslitAdditionalCorporateNames(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += '</record>\n';
 
     downloadFile(text, 'xml');

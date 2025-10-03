@@ -36,6 +36,21 @@
  	}
  }
 
+function fillCorporateBIBFRAME(corporateEntry, contributionCount) {
+	var role_index = { 'cre': 'creator', 'ctb': 'contributor' };
+	if (!checkExists(corporateEntry) || !Array.isArray(corporateEntry) || !checkExists(corporateEntry[0]) || !checkExists(corporateEntry[0]['corporate'])) {
+		return '';
+	}
+	var contributionText = '        <bf:contribution>\n            <bf:Contribution>\n';
+	if (contributionCount == 0){
+		contributionText += '                <rdf:type rdf:resource="http://id.loc.gov/ontologies/bflc/PrimaryContribution"/>\n';
+	}
+	var role = corporateEntry[0]['role'] || 'cre';
+	contributionText += '                <bf:role>\n                    <bf:Role rdf:about="http://id.loc.gov/vocabulary/relators/' + role + '"/>\n                </bf:role>\n';
+	contributionText += '                <bf:agent>\n                    <bf:Agent>\n                        <rdf:type rdf:resource="http://id.loc.gov/ontologies/bibframe/Organization"/>\n                        <rdfs:label>' + escapeXML(corporateEntry[0]['corporate']) + '</rdfs:label>\n                    </bf:Agent>\n                </bf:agent>\n            </bf:Contribution>\n        </bf:contribution>\n';
+	return contributionText;
+}
+
  function sliceFastURI(fastURI){
  	var charCheck = fastURI.charAt(0);
  	if (charCheck == '1' || charCheck == '2' || charCheck == '3' || charCheck == '4' || charCheck == '5' || charCheck == '6' || charCheck == '7' || charCheck == '8' || charCheck == '9'){
@@ -101,15 +116,37 @@
  		genreText += '        <bf:genreForm>\n            <rdfs:label>' + literatureTypes[record.literature_dropdown] + '<rdfs:label/>\n        </bf:genreForm>\n';
  	}
  	
+	var contributionIndex = 0;
 	var authorText = '';
- 	authorText += fillAuthorBIBFRAME(record.author[0]['family'],record.author[0]['given'],record.author[0]['role']);
-
- 	if (checkExists(record.additional_authors)) {
- 		for (var i = 0; i < record.additional_authors.length; i++) {
- 			authorText += fillAuthorBIBFRAME(record.additional_authors[i][0]['family'],record.additional_authors[i][0]['given'],record.additional_authors[i][0]['role'],i);
- 		}
- 	}
-
+	var primaryAuthor = fillAuthorBIBFRAME(record.author[0]['family'],record.author[0]['given'],record.author[0]['role'], contributionIndex);
+	authorText += primaryAuthor;
+	if (primaryAuthor !== '') {
+		contributionIndex++;
+	}
+	if (checkExists(record.additional_authors)) {
+		for (var i = 0; i < record.additional_authors.length; i++) {
+			var additionalContribution = fillAuthorBIBFRAME(record.additional_authors[i][0]['family'],record.additional_authors[i][0]['given'],record.additional_authors[i][0]['role'], contributionIndex);
+			authorText += additionalContribution;
+			if (additionalContribution !== '') {
+				contributionIndex++;
+			}
+		}
+	}
+	var corporateText = '';
+	var corporateContribution = fillCorporateBIBFRAME(record.corporate_author, contributionIndex);
+	corporateText += corporateContribution;
+	if (corporateContribution !== '') {
+		contributionIndex++;
+	}
+	if (checkExists(record.additional_corporate_authors)) {
+		for (var j = 0; j < record.additional_corporate_authors.length; j++) {
+			var additionalCorporateContribution = fillCorporateBIBFRAME(record.additional_corporate_authors[j], contributionIndex);
+			corporateText += additionalCorporateContribution;
+			if (additionalCorporateContribution !== '') {
+				contributionIndex++;
+			}
+		}
+	}
  	var titleText = '        <bf:title>\n            <bf:Title>\n                <bf:mainTitle>' + escapeXML(record.title[0]['title']) + '</bf:mainTitle>\n';
  	if (checkExists(record.title[0]['subtitle'])) {
  		titleText += '                <bf:subtitle>' + escapeXML(record.title[0]['subtitle']) + '</bf:subtitle>\n';
@@ -193,6 +230,6 @@
 
 	var endText = '</rdf:RDF>';
 
-	var text = startText + workText + adminText + genreText + authorText + titleText + subjectText + workEndText + instanceText + endText;
+	var text = startText + workText + adminText + genreText + authorText + corporateText + titleText + subjectText + workEndText + instanceText + endText;
 	downloadFile(text,'bibframe');
 }

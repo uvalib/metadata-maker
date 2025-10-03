@@ -55,34 +55,33 @@ function getPrefix(title,lang) {
 	}
 }
 
-function addContributor(author,counter) {
-	var role_index = { 'art': 'A07', 'aut': 'A01', 'ctb': 'A32', 'edt': 'B01', 'ill': 'A12', 'trl': 'B06'}
-
+function addContributor(contributor,counter) {
+	var role_index = { 'art': 'A07', 'aut': 'A01', 'cre': 'A01', 'ctb': 'A32', 'edt': 'B01', 'ill': 'A12', 'trl': 'B06'};
+	var primary = contributor[0] || {};
+	var roleCode = role_index[primary['role']] || 'A32';
 	var new_contributor = '\t\t\t<Contributor>\n';
 	new_contributor += '\t\t\t\t<SequenceNumber>' + counter + '</SequenceNumber>\n';
-
-	new_contributor += '\t\t\t\t<ContributorRole>' + role_index[author[0]['role']] + '</ContributorRole>\n';
-
-	if (checkExists(author[0]['family']) && checkExists(author[0]['given'])) {
-		new_contributor += '\t\t\t\t<PersonName>' + escapeXML(author[0]['given'] + ' ' + author[0]['family']) + '</PersonName>\n';
+	new_contributor += '\t\t\t\t<ContributorRole>' + roleCode + '</ContributorRole>\n';
+	if (checkExists(primary['corporate'])) {
+		new_contributor += '\t\t\t\t<NameType>02</NameType>\n';
+		new_contributor += '\t\t\t\t<CorporateName>' + escapeXML(primary['corporate']) + '</CorporateName>\n';
+	} else {
+		new_contributor += '\t\t\t\t<NameType>01</NameType>\n';
+		if (checkExists(primary['family']) && checkExists(primary['given'])) {
+			new_contributor += '\t\t\t\t<PersonName>' + escapeXML(primary['given'] + ' ' + primary['family']) + '</PersonName>\n';
+		} else if (checkExists(primary['family'])) {
+			new_contributor += '\t\t\t\t<PersonName>' + escapeXML(primary['family']) + '</PersonName>\n';
+		} else if (checkExists(primary['given'])) {
+			new_contributor += '\t\t\t\t<PersonName>' + escapeXML(primary['given']) + '</PersonName>\n';
+		}
+		if (checkExists(primary['given'])) {
+			new_contributor += '\t\t\t\t<NamesBeforeKey>' + escapeXML(primary['given']) + '</NamesBeforeKey>\n';
+		}
+		if (checkExists(primary['family'])) {
+			new_contributor += '\t\t\t\t<KeyNames>' + escapeXML(primary['family']) + '</KeyNames>\n';
+		}
 	}
-	else if (checkExists(author[0]['family'])) {
-		new_contributor += '\t\t\t\t<PersonName>' + escapeXML(author[0]['family']) + '</PersonName>\n';
-	}
-	else if (checkExists(author[0]['given'])) {
-		new_contributor += '\t\t\t\t<PersonName>' + escapeXML(author[0]['given']) + '</PersonName>\n';
-	}
-
-	if (checkExists(author[0]['given'])) {
-		new_contributor += '\t\t\t\t<NamesBeforeKey>' + escapeXML(author[0]['given']) + '</NamesBeforeKey>\n';
-	}
-
-	if (checkExists(author[0]['family'])) {
-		new_contributor += '\t\t\t\t<KeyNames>' + escapeXML(author[0]['family']) + '</KeyNames>\n';
-	}
-
 	new_contributor += '\t\t\t</Contributor>\n';
-
 	return new_contributor;
 }
 
@@ -150,26 +149,39 @@ function addDescriptiveDetails(record) {
 
 	descriptive_detail += addTitles(record);
 
-	if (checkExists(record.author)) {
-		var sequence_counter = 1
-
+	var sequence_counter = 1;
+	var hasContributors = false;
+	if (checkExists(record.author) && checkExists(record.author[0]) && (checkExists(record.author[0]['family']) || checkExists(record.author[0]['given']))) {
 		descriptive_detail += addContributor(record.author,sequence_counter);
-
 		sequence_counter += 1;
-
-		if (record.additional_authors.length > 0) {
-			for (var index = 0; index < record.additional_authors.length; index++) {
-				if (checkExists(record.additional_authors[index][0]['family']) || checkExists(record.additional_authors[index][0]['given'])) {
-					descriptive_detail += addContributor(record.additional_authors[index],sequence_counter)
-					sequence_counter += 1;
-				}
+		hasContributors = true;
+	}
+	if (checkExists(record.additional_authors) && record.additional_authors.length > 0) {
+		for (var index = 0; index < record.additional_authors.length; index++) {
+			if (checkExists(record.additional_authors[index][0]['family']) || checkExists(record.additional_authors[index][0]['given'])) {
+				descriptive_detail += addContributor(record.additional_authors[index],sequence_counter);
+				sequence_counter += 1;
+				hasContributors = true;
 			}
 		}
 	}
-	else {
+	if (checkExists(record.corporate_author) && checkExists(record.corporate_author[0]) && checkExists(record.corporate_author[0]['corporate'])) {
+		descriptive_detail += addContributor(record.corporate_author,sequence_counter);
+		sequence_counter += 1;
+		hasContributors = true;
+	}
+	if (checkExists(record.additional_corporate_authors) && record.additional_corporate_authors.length > 0) {
+		for (var corpIndex = 0; corpIndex < record.additional_corporate_authors.length; corpIndex++) {
+			if (checkExists(record.additional_corporate_authors[corpIndex][0]) && checkExists(record.additional_corporate_authors[corpIndex][0]['corporate'])) {
+				descriptive_detail += addContributor(record.additional_corporate_authors[corpIndex],sequence_counter);
+				sequence_counter += 1;
+				hasContributors = true;
+			}
+		}
+	}
+	if (!hasContributors) {
 		descriptive_detail += '\t\t\t<NoContributor/>\n';
 	}
-
 	if (checkExists(record.edition)) {
 		descriptive_detail += '\t\t\t<EditionStatement>' + escapeXML(record.edition) + '</EditionStatement>\n';
 	}

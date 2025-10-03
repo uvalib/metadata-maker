@@ -547,6 +547,20 @@ function listPerson(family,given,role) {
 	return output_string;
 }
 
+function listOrganization(entry) {
+	if (!checkExists(entry) || !Array.isArray(entry) || !checkExists(entry[0]) || !checkExists(entry[0]['corporate'])) {
+		return '';
+	}
+	var primary = entry[0];
+	var role_index = { 'cre': { prop: 'creator', label: 'Corporate Creator' }, 'ctb': { prop: 'contributor', label: 'Corporate Contributor' } };
+	var roleConfig = role_index[primary['role']] || { prop: 'contributor', label: 'Corporate Contributor' };
+	var output_string = '\t\t\t<div itemprop="' + roleConfig.prop + '" itemscope itemtype="http://schema.org/Organization">\n';
+	output_string += '\t\t\t\t<dt>' + roleConfig.label + ':</dt>\n';
+	output_string += '\t\t\t\t<dd><b>' + buildSpan('name', primary['corporate']) + '</b></dd>\n';
+	output_string += '\t\t\t</div>\n';
+	return output_string;
+}
+
 /*
  * Build an HTML page with Schema.org labels for the content. Two strings are maintained: metaTags holds metadata that
  * the page will be associated with on search, but displayes no content. displayTags holds the content that is viewable
@@ -564,6 +578,16 @@ function downloadHTML(record,institution_info) {
 	displayTags += buildTag('name',record.title,false,'Title');
 
 	displayTags += listPerson(record.author['family'],record.author['given']);
+
+	if (checkExists(record.corporate_author)) {
+		displayTags += listOrganization(record.corporate_author);
+	}
+
+	if (checkExists(record.additional_corporate_authors)) {
+		for (var i = 0; i < record.additional_corporate_authors.length; i++) {
+			displayTags += listOrganization(record.additional_corporate_authors[i]);
+		}
+	}
 
 	displayTags += buildTag('publisher','University of Illinois at Urbana-Champaign',false,'Publisher');
 

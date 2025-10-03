@@ -155,6 +155,9 @@ export class EbookMarcBuilder extends MarcBuilder {
     const author = this.fillAuthor(record, head, this.createContentFill.bind(this), this.createSubfield.bind(this));
     head += this.getByteLength(author[1]);
 
+    const corporateAuthor = this.fillCorporateAuthor(record, head, this.createContentFill.bind(this), this.createSubfield.bind(this));
+    head += this.getByteLength(corporateAuthor[1]);
+
     const title = this.fillTitle(record, head, this.createContentFill.bind(this), this.createSubfield.bind(this));
     head += this.getByteLength(title[1]);
 
@@ -209,6 +212,9 @@ export class EbookMarcBuilder extends MarcBuilder {
     const additionalAuthors = this.fillAdditionalAuthors(record, head, this.createContentFill.bind(this), this.createSubfield.bind(this));
     head = additionalAuthors[2];
 
+    const additionalCorporateNames = this.fillAdditionalCorporateNames(record, head, this.createContentFill.bind(this), this.createSubfield.bind(this));
+    head = additionalCorporateNames[2];
+
     const webUrl = this.fillWebURL(record, head, this.createContentFill.bind(this), this.createSubfield.bind(this));
     head = this.getByteLength(webUrl[1]);
 
@@ -227,16 +233,22 @@ export class EbookMarcBuilder extends MarcBuilder {
     const authors880 = this.fillTranslitAdditionalAuthors(record, head, this.createContentFill.bind(this), this.createSubfield.bind(this));
     head = authors880[2];
 
+    const corporate880 = this.fillTranslitCorporateAuthor(record, head, this.createContentFill.bind(this), this.createSubfield.bind(this));
+    head += this.getByteLength(corporate880[1]);
+
+    const additionalCorporate880 = this.fillTranslitAdditionalCorporateNames(record, head, this.createContentFill.bind(this), this.createSubfield.bind(this));
+    head = additionalCorporate880[2];
+
     const end = String.fromCharCode(30) + String.fromCharCode(29);
 
     const text =
       timestampDirectory + controlfield006Directory + controlfield007Directory + controlfield008Directory +
-      isbn[0] + default1Directory + subjectCategories[0] + author[0] + title[0] + edition[0] + pub[0] +
+      isbn[0] + default1Directory + subjectCategories[0] + author[0] + corporateAuthor[0] + title[0] + edition[0] + pub[0] +
       copyright[0] + physical[0] + default2Directory + default3Directory + default4Directory + notes[0] +
-      subjects[0] + keywords[0] + fast[0] + additionalAuthors[0] + webUrl[0] + title880[0] + edition880[0] +
-      publisher880[0] + author880[0] + authors880[0] + timestampContent + controlfield006Content +
+      subjects[0] + keywords[0] + fast[0] + additionalAuthors[0] + additionalCorporateNames[0] + webUrl[0] + title880[0] + edition880[0] +
+      publisher880[0] + author880[0] + corporate880[0] + authors880[0] + additionalCorporate880[0] + timestampContent + controlfield006Content +
       controlfield007Content + controlfield008Content + isbn[1] + default1Content + subjectCategories[1] +
-      author[1] + title[1] + edition[1] + pub[1] + copyright[1] + physical[1] + default2Content + default3Content +
+      author[1] + corporateAuthor[1] + title[1] + edition[1] + pub[1] + copyright[1] + physical[1] + default2Content + default3Content +
       default4Content + notes[1] + subjects[1] + keywords[1] + fast[1] + additionalAuthors[1] + webUrl[1] +
       title880[1] + edition880[1] + publisher880[1] + author880[1] + authors880[1] + end;
 
@@ -244,10 +256,10 @@ export class EbookMarcBuilder extends MarcBuilder {
     const directoryLen = 25 +
       timestampDirectory.length + controlfield006Directory.length + controlfield007Directory.length +
       controlfield008Directory.length + isbn[0].length + default1Directory.length + subjectCategories[0].length +
-      author[0].length + title[0].length + edition[0].length + pub[0].length + copyright[0].length + physical[0].length +
+      author[0].length + corporateAuthor[0].length + title[0].length + edition[0].length + pub[0].length + copyright[0].length + physical[0].length +
       default2Directory.length + default3Directory.length + default4Directory.length + notes[0].length +
-      subjects[0].length + keywords[0].length + fast[0].length + additionalAuthors[0].length + webUrl[0].length +
-      title880[0].length + edition880[0].length + publisher880[0].length + author880[0].length + authors880[0].length;
+      subjects[0].length + keywords[0].length + fast[0].length + additionalAuthors[0].length + additionalCorporateNames[0].length + webUrl[0].length +
+      title880[0].length + edition880[0].length + publisher880[0].length + author880[0].length + corporate880[0].length + authors880[0].length + additionalCorporate880[0].length;
 
     const leader = this.buildMarcLeader(leaderLen, directoryLen);
     downloadFile(leader + text, 'mrc');
@@ -273,6 +285,7 @@ export class EbookMarcBuilder extends MarcBuilder {
     text += this.fillSubjectCategory(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillISBN(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillAuthor(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
+    text += this.fillCorporateAuthor(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillTitle(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillEdition(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillPublication(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
@@ -298,12 +311,15 @@ export class EbookMarcBuilder extends MarcBuilder {
     text += this.fillKeywords(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillFAST(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillAdditionalAuthors(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
+    text += this.fillAdditionalCorporateNames(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillWebURL(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillTranslitTitle(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillTranslitEdition(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillTranslitPublisher(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillTranslitAuthor(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
+    text += this.fillTranslitCorporateAuthor(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillTranslitAdditionalAuthors(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
+    text += this.fillTranslitAdditionalCorporateNames(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += '</record>\n';
 
     downloadFile(text, 'xml');

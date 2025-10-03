@@ -159,7 +159,7 @@ export class ScoresMarcBuilder extends MarcBuilder {
     let authors = '';
     let directory = '';
     let currentHead = head;
-    let translitCounter = 5;
+    let translitCounter = this.getAdditionalAuthorTranslitBase(record);
 
     for (let i = 0; i < record.additional_authors.length; i++) {
       const authorSet = record.additional_authors[i];
@@ -260,6 +260,9 @@ export class ScoresMarcBuilder extends MarcBuilder {
     const author = this.fillAuthor(record, head, this.createContentFill.bind(this), this.createSubfield.bind(this));
     head += this.getByteLength(author[1]);
 
+    const corporateAuthor = this.fillCorporateAuthor(record, head, this.createContentFill.bind(this), this.createSubfield.bind(this));
+    head += this.getByteLength(corporateAuthor[1]);
+
     const uniformTitle = this.fillUniformTitle(record, head, this.createContentFill.bind(this), this.createSubfield.bind(this));
     head += this.getByteLength(uniformTitle[1]);
 
@@ -317,6 +320,9 @@ export class ScoresMarcBuilder extends MarcBuilder {
     const additionalAuthors = this.fillAdditionalAuthors(record, head, this.createContentFill.bind(this), this.createSubfield.bind(this));
     head = additionalAuthors[2];
 
+    const additionalCorporateNames = this.fillAdditionalCorporateNames(record, head, this.createContentFill.bind(this), this.createSubfield.bind(this));
+    head = additionalCorporateNames[2];
+
     const title880 = this.fillTranslitTitle(record, head, this.createContentFill.bind(this), this.createSubfield.bind(this));
     head += this.getByteLength(title880[1]);
 
@@ -332,6 +338,12 @@ export class ScoresMarcBuilder extends MarcBuilder {
     const authors880 = this.fillTranslitAdditionalAuthors(record, head, this.createContentFill.bind(this), this.createSubfield.bind(this));
     head = authors880[2];
 
+    const corporate880 = this.fillTranslitCorporateAuthor(record, head, this.createContentFill.bind(this), this.createSubfield.bind(this));
+    head += this.getByteLength(corporate880[1]);
+
+    const additionalCorporate880 = this.fillTranslitAdditionalCorporateNames(record, head, this.createContentFill.bind(this), this.createSubfield.bind(this));
+    head = additionalCorporate880[2];
+
     const end = String.fromCharCode(30) + String.fromCharCode(29);
 
     const textParts = [
@@ -341,6 +353,7 @@ export class ScoresMarcBuilder extends MarcBuilder {
       ismn[0],
       default1Directory,
       author[0],
+      corporateAuthor[0],
       uniformTitle[0],
       title[0],
       edition[0],
@@ -355,17 +368,21 @@ export class ScoresMarcBuilder extends MarcBuilder {
       keywords[0],
       fast[0],
       additionalAuthors[0],
+      additionalCorporateNames[0],
       title880[0],
       edition880[0],
       publisher880[0],
       author880[0],
+      corporate880[0],
       authors880[0],
+      additionalCorporate880[0],
       timestampContent,
       controlfield008Content,
       isbn[1],
       ismn[1],
       default1Content,
       author[1],
+      corporateAuthor[1],
       uniformTitle[1],
       title[1],
       edition[1],
@@ -380,11 +397,14 @@ export class ScoresMarcBuilder extends MarcBuilder {
       keywords[1],
       fast[1],
       additionalAuthors[1],
+      additionalCorporateNames[1],
       title880[1],
       edition880[1],
       publisher880[1],
       author880[1],
+      corporate880[1],
       authors880[1],
+      additionalCorporate880[1],
       end
     ];
 
@@ -399,6 +419,7 @@ export class ScoresMarcBuilder extends MarcBuilder {
       ismn[0].length +
       default1Directory.length +
       author[0].length +
+      corporateAuthor[0].length +
       uniformTitle[0].length +
       title[0].length +
       edition[0].length +
@@ -413,11 +434,14 @@ export class ScoresMarcBuilder extends MarcBuilder {
       keywords[0].length +
       fast[0].length +
       additionalAuthors[0].length +
+      additionalCorporateNames[0].length +
       title880[0].length +
       edition880[0].length +
       publisher880[0].length +
       author880[0].length +
-      authors880[0].length;
+      corporate880[0].length +
+      authors880[0].length +
+      additionalCorporate880[0].length;
 
     const leader = this.buildMarcLeader(leaderLen, directoryLen);
     this.afterBuildMarc(record, institutionInfo, { leader, text });
@@ -444,6 +468,7 @@ export class ScoresMarcBuilder extends MarcBuilder {
     text += this.fillISBN(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillISMN(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillAuthor(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
+    text += this.fillCorporateAuthor(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillUniformTitle(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillTitle(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillEdition(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
@@ -470,11 +495,14 @@ export class ScoresMarcBuilder extends MarcBuilder {
     text += this.fillKeywords(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillFAST(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillAdditionalAuthors(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
+    text += this.fillAdditionalCorporateNames(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillTranslitTitle(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillTranslitEdition(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillTranslitPublisher(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillTranslitAuthor(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
+    text += this.fillTranslitCorporateAuthor(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillTranslitAdditionalAuthors(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
+    text += this.fillTranslitAdditionalCorporateNames(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += '</record>\n';
 
     downloadFile(text, 'xml');

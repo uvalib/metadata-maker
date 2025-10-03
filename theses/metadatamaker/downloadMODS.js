@@ -20,6 +20,19 @@ function fillAuthorMODS(family,given) {
 	}
 }
 
+function fillCorporateMODS(entry) {
+	if (!checkExists(entry) || !Array.isArray(entry) || !checkExists(entry[0]) || !checkExists(entry[0]['corporate'])) {
+		return '';
+	}
+	var role_index = { 'cre': 'creator', 'ctb': 'contributor' };
+	var primary = entry[0];
+	var role = primary['role'] || 'cre';
+	var authorText = '    <name type="corporate">\n';
+	authorText += '        <namePart>' + escapeXML(primary['corporate']) + '</namePart>\n';
+	authorText += '        <role>\n            <roleTerm authority="marcrelator" type="text">' + (role_index[role] || 'creator') + '</roleTerm>\n            <roleTerm authority="marcrelator" type="code">' + role + '</roleTerm>\n        </role>\n    </name>\n';
+	return authorText;
+}
+
 /*
  * Build a MODS record. Each DOM object is saved as a string, then all the strings are combined into one master text
  *
@@ -32,6 +45,12 @@ function downloadMODS(record,institution_info) {
 	var defaultText1 = '    <typeOfResource>text</typeOfResource>\n';
 
 	var authorText = fillAuthorMODS(record.author['family'],record.author['given']);
+	var corporateText = fillCorporateMODS(record.corporate_author);
+	if (checkExists(record.additional_corporate_authors)) {
+		for (var i = 0; i < record.additional_corporate_authors.length; i++) {
+			corporateText += fillCorporateMODS(record.additional_corporate_authors[i]);
+		}
+	}
 
 	var titleText = '    <titleInfo>\n        <title>' + record.title + '</title>\n    </titleInfo>\n';
 
@@ -57,6 +76,6 @@ function downloadMODS(record,institution_info) {
 	var defaultText3 = '    <recordInfo>\n        <descriptionStandard>rda</descriptionStandard>\n        <recordContentSource authority="marcorg">' + escapeXML(institution_info['mods']['recordContentSource']) + '</recordContentSource>\n        <recordCreationDate encoding="marc">' + formatted_date + '</recordCreationDate>\n    </recordInfo>\n'
 
 	var endText = '</mods:mods>\n';
-	var text = startText + titleText + authorText + defaultText1 + originText + languageText + pagesText + majorText + defaultText2 + defaultText3 + endText;
+	var text = startText + titleText + authorText + corporateText + defaultText1 + originText + languageText + pagesText + majorText + defaultText2 + defaultText3 + endText;
 	downloadFile(text,'mods');
 }

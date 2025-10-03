@@ -30,6 +30,9 @@
         callSetUpPage(index);
       }
     },
+    corporate: {
+      enabled: true
+    },
     reset: {
       additional() {
         $('#level3-subject0').remove();
@@ -80,6 +83,13 @@ global.requestInsertLabelUpgrade = general.requestInsertLabelUpgrade;
     syncCounters();
     return result;
   };
+  const addCorporateOriginal = general.addCorporate.bind(general);
+  global.addCorporate = function() {
+    const result = addCorporateOriginal();
+    syncCounters();
+    return result;
+  };
+
   global.checkExists = general.checkExists;
   global.downloadFile = general.downloadFile;
   global.getTimestamp = general.getTimestamp;

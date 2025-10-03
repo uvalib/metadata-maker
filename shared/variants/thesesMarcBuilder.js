@@ -86,7 +86,8 @@ export class ThesesMarcBuilder extends MarcBuilder {
     const hasAuthor =
       checkExists(record.author) &&
       (checkExists(record.author.family) || checkExists(record.author.given));
-    const ind1 = hasAuthor ? '1' : '0';
+    const hasCorporate = this.hasCorporateAuthor(record);
+    const ind1 = (hasAuthor || hasCorporate) ? '1' : '0';
 
     let ind2 = '0';
     if ((record.language === 'eng' || record.language === 'fre') && checkExists(record.title)) {
@@ -226,6 +227,9 @@ export class ThesesMarcBuilder extends MarcBuilder {
     const author = this.fillAuthor(record, head, this.createContentFill.bind(this), this.createSubfield.bind(this));
     head += this.getByteLength(author[1]);
 
+    const corporateAuthor = this.fillCorporateAuthor(record, head, this.createContentFill.bind(this), this.createSubfield.bind(this));
+    head += this.getByteLength(corporateAuthor[1]);
+
     const publication = this.fillPublication(record, head, this.createContentFill.bind(this), this.createSubfield.bind(this));
     head += this.getByteLength(publication[1]);
 
@@ -262,6 +266,15 @@ export class ThesesMarcBuilder extends MarcBuilder {
     const bibliography = this.fillBibliography(record, head, this.createContentFill.bind(this), this.createSubfield.bind(this));
     head += this.getByteLength(bibliography[1]);
 
+    const additionalCorporateNames = this.fillAdditionalCorporateNames(record, head, this.createContentFill.bind(this), this.createSubfield.bind(this));
+    head = additionalCorporateNames[2];
+
+    const corporate880 = this.fillTranslitCorporateAuthor(record, head, this.createContentFill.bind(this), this.createSubfield.bind(this));
+    head += this.getByteLength(corporate880[1]);
+
+    const additionalCorporate880 = this.fillTranslitAdditionalCorporateNames(record, head, this.createContentFill.bind(this), this.createSubfield.bind(this));
+    head = additionalCorporate880[2];
+
     const end = String.fromCharCode(30) + String.fromCharCode(29);
 
     const textParts = [
@@ -270,6 +283,7 @@ export class ThesesMarcBuilder extends MarcBuilder {
       catalogingSourceDirectory,
       title[0],
       author[0],
+      corporateAuthor[0],
       publication[0],
       physical[0],
       default1Directory,
@@ -277,11 +291,15 @@ export class ThesesMarcBuilder extends MarcBuilder {
       default3Directory,
       dissertation[0],
       bibliography[0],
+      additionalCorporateNames[0],
+      corporate880[0],
+      additionalCorporate880[0],
       timestampContent,
       controlfield008Content,
       catalogingSourceContent,
       title[1],
       author[1],
+      corporateAuthor[1],
       publication[1],
       physical[1],
       default1Content,
@@ -289,6 +307,9 @@ export class ThesesMarcBuilder extends MarcBuilder {
       default3Content,
       dissertation[1],
       bibliography[1],
+      additionalCorporateNames[1],
+      corporate880[1],
+      additionalCorporate880[1],
       end
     ];
 
@@ -302,13 +323,17 @@ export class ThesesMarcBuilder extends MarcBuilder {
       catalogingSourceDirectory.length +
       title[0].length +
       author[0].length +
+      corporateAuthor[0].length +
       publication[0].length +
       physical[0].length +
       default1Directory.length +
       default2Directory.length +
       default3Directory.length +
       dissertation[0].length +
-      bibliography[0].length;
+      bibliography[0].length +
+      additionalCorporateNames[0].length +
+      corporate880[0].length +
+      additionalCorporate880[0].length;
 
     const leader = this.buildMarcLeader(leaderLen, directoryLen);
     this.afterBuildMarc(record, institutionInfo, { leader, text });
@@ -332,6 +357,7 @@ export class ThesesMarcBuilder extends MarcBuilder {
     ]);
     text += this.fillTitle(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillAuthor(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
+    text += this.fillCorporateAuthor(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillPublication(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillPhysical(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.createMARCXMLField('336', ' ', ' ', [
@@ -351,6 +377,9 @@ export class ThesesMarcBuilder extends MarcBuilder {
     ]);
     text += this.fillDissertationType(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillBibliography(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
+    text += this.fillAdditionalCorporateNames(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
+    text += this.fillTranslitCorporateAuthor(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
+    text += this.fillTranslitAdditionalCorporateNames(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += '</record>\n';
 
     downloadFile(text, 'xml');

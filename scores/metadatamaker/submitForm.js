@@ -92,6 +92,22 @@ function find100(list) {
 	return [[{'family':'','given':'','role':''},{'family':'','given':''}]];
 }
 
+function find110(list) {
+	for (var iterator = 0; iterator < list.length; iterator++) {
+		if (checkExists(list[iterator]) && checkExists(list[iterator][0]) && list[iterator][0]['role'] == 'cre' && checkExists(list[iterator][0]['corporate'])) {
+			return list.splice(iterator, 1);
+		}
+	}
+
+	for (var iterator = 0; iterator < list.length; iterator++) {
+		if (checkExists(list[iterator]) && checkExists(list[iterator][0]) && checkExists(list[iterator][0]['corporate'])) {
+			return list.splice(iterator, 1);
+		}
+	}
+
+	return [{'corporate':'', 'role':''},{'corporate':''}];
+}
+
 /*
  * When the form is submitted, create an object with all user-submitted data. Pass that object to functions that
  * build a record around the data.
@@ -140,6 +156,51 @@ $("#marc-maker").submit(function(event) {
 	//Find the first listed author or artist
 	var entry100 = find100(complete_names_list);
 
+	var corporate_entries = [
+		[
+			{
+				corporate: $("#corporate_name").val(),
+				role:  $("#corporate_role").val()
+			},
+			{
+				corporate: $("#translit_corporate_name").val()
+			}
+		]
+	];
+	for (var i = 0; i < cCounter; i++) {
+		corporate_entries.push([
+			{ corporate: $("#corporate_name" + i).val(), role: $("#corporate_role" + i).val() },
+			{ corporate: $("#translit_corporate_name" + i).val() }
+		]);
+	}
+
+	var filtered_corporate_entries = [];
+	for (var i = 0; i < corporate_entries.length; i++) {
+		if (checkExists(corporate_entries[i][0]['corporate']) || checkExists(corporate_entries[i][1]['corporate'])) {
+			filtered_corporate_entries.push(corporate_entries[i]);
+		}
+	}
+
+	var hasPersonalAuthor = checkExists(entry100[0]) && checkExists(entry100[0][0]) && (checkExists(entry100[0][0]['family']) || checkExists(entry100[0][0]['given']));
+	var corporate_author = [{'corporate':'', 'role':''},{'corporate':''}];
+	if (!hasPersonalAuthor && filtered_corporate_entries.length > 0) {
+		var selectedCorporate = find110(filtered_corporate_entries);
+		if (Array.isArray(selectedCorporate) && selectedCorporate.length === 1 && Array.isArray(selectedCorporate[0])) {
+			selectedCorporate = selectedCorporate[0];
+		}
+		if (Array.isArray(selectedCorporate) && selectedCorporate.length >= 2) {
+			corporate_author = [
+				{ corporate: selectedCorporate[0]['corporate'] || '', role: selectedCorporate[0]['role'] || '' },
+				{ corporate: (selectedCorporate[1] && selectedCorporate[1]['corporate']) || '' }
+			];
+		}
+	}
+
+	var additional_corporate_authors = [];
+	for (var i = 0; i < filtered_corporate_entries.length; i++) {
+		additional_corporate_authors.push(filtered_corporate_entries[i]);
+	}
+
 	var accompanying_matter_selections = [];
 	for (var i = 0; i <= 13; i++) {
 		if($("#accompanying-matter" + i.toString()).is(":checked")) {
@@ -187,7 +248,9 @@ $("#marc-maker").submit(function(event) {
 		formatted_contents_note: $("#formatted-contents-note").val(),
 		keywords: words,
 		fast: fast_array,
-		additional_authors: complete_names_list
+		additional_authors: complete_names_list,
+		corporate_author: corporate_author,
+		additional_corporate_authors: additional_corporate_authors
 	};
 
 	var institution_info = generateInstitutionInfo();
