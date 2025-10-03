@@ -527,9 +527,27 @@ function buildSpan(prop,content) {
  * Create a new div for each person listed as a contributer, switching the itemscope to person. Separately label
  * the family name and given name.
  */
+const PERSON_ROLE_LABELS = {
+	dis: { label: 'Dissertant', prop: 'author' },
+	csp: { label: 'Consultant to a project', prop: 'contributor' },
+	ctb: { label: 'Contributor', prop: 'contributor' },
+	dtc: { label: 'Data contributor', prop: 'contributor' },
+	dte: { label: 'Dedicatee', prop: 'contributor' },
+	dgc: { label: 'Degree committee member', prop: 'contributor' },
+	dgs: { label: 'Degree supervisor', prop: 'contributor' },
+	fnd: { label: 'Funder', prop: 'funder' },
+	rtm: { label: 'Research team member', prop: 'contributor' },
+	spn: { label: 'Sponsor', prop: 'sponsor' },
+	tad: { label: 'Technical advisor', prop: 'contributor' }
+};
+
 function listPerson(family,given,role) {
-	var output_string = '\t\t\t<div itemprop="author" itemscope itemtype="http://schema.org/Person">\n';
-	output_string += '\t\t\t\t<dt>Author:</dt>\n';
+	if (!checkExists(family) && !checkExists(given)) {
+		return '';
+	}
+	var roleConfig = PERSON_ROLE_LABELS[role] || { label: 'Contributor', prop: 'contributor' };
+	var output_string = '\t\t\t<div itemprop="' + roleConfig.prop + '" itemscope itemtype="http://schema.org/Person">\n';
+	output_string += '\t\t\t\t<dt>' + roleConfig.label + ':</dt>\n';
 	output_string += '\t\t\t\t<dd><b>';
 	if (checkExists(family) && checkExists(given)) {
 		output_string += buildSpan('familyName',family) + ', ' + buildSpan('givenName',given);
@@ -577,7 +595,14 @@ function downloadHTML(record,institution_info) {
 
 	displayTags += buildTag('name',record.title,false,'Title');
 
-	displayTags += listPerson(record.author['family'],record.author['given']);
+	if (Array.isArray(record.authors) && record.authors.length > 0) {
+		for (var i = 0; i < record.authors.length; i++) {
+			var person = record.authors[i];
+			displayTags += listPerson(person.family, person.given, person.role);
+		}
+	} else if (record.author) {
+		displayTags += listPerson(record.author.family, record.author.given, record.author.role);
+	}
 
 	if (checkExists(record.corporate_author)) {
 		displayTags += listOrganization(record.corporate_author);

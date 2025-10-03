@@ -62,7 +62,38 @@ function find110(list) {
 }
 
 $("#marc-maker").submit(function(event) {
-	var hasPersonalAuthor = checkExists($("#family_name").val()) || checkExists($("#given_name").val());
+	var additionalAuthorCount = typeof aCounter === 'number' ? aCounter : 0;
+	var authorEntries = [
+		{
+			family: $("#family_name").val(),
+			given: $("#given_name").val(),
+			role: $("#role").val() || 'dis'
+		}
+	];
+	for (var i = 0; i < additionalAuthorCount; i++) {
+		authorEntries.push({
+			family: $("#family_name" + i).val(),
+			given: $("#given_name" + i).val(),
+			role: $("#role" + i).val()
+		});
+	}
+
+	var filteredAuthors = [];
+	for (var i = 0; i < authorEntries.length; i++) {
+		var entry = authorEntries[i];
+		if (checkExists(entry.family) || checkExists(entry.given)) {
+			var roleCode = checkExists(entry.role) ? entry.role : (i === 0 ? 'dis' : 'ctb');
+			filteredAuthors.push({
+				family: entry.family,
+				given: entry.given,
+				role: roleCode
+			});
+		}
+	}
+
+	var primaryAuthor = filteredAuthors.length > 0 ? filteredAuthors[0] : { family: '', given: '', role: 'dis' };
+	var additionalPersonalAuthors = filteredAuthors.slice(1);
+	var hasPersonalAuthor = checkExists(primaryAuthor.family) || checkExists(primaryAuthor.given);
 
 	var corporate_entries = [
 		[
@@ -110,10 +141,8 @@ $("#marc-maker").submit(function(event) {
 
 	var recordObject = {
 		title: $("#title").val(),
-		author: {
-			family: $("#family_name").val(),
-			given: $("#given_name").val()
-		},
+		author: primaryAuthor,
+		authors: filteredAuthors,
 		publication_year: $("#year").val(),
 		language: $("#language").val(),
 		dissertation_type: $("#dissertation_type").val(),
@@ -123,7 +152,8 @@ $("#marc-maker").submit(function(event) {
 		bibliographies: $("#bib").val(),
 		major: $("#major").val(),
 		corporate_author: corporate_author,
-		additional_corporate_authors: additional_corporate_authors
+		additional_corporate_authors: additional_corporate_authors,
+		additional_authors: additionalPersonalAuthors
 	};
 
 	var institution_info = generateInstitutionInfo();

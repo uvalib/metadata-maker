@@ -1,8 +1,27 @@
+const MODS_ROLE_LABELS = {
+	dis: 'dissertant',
+	csp: 'consultant to a project',
+	ctb: 'contributor',
+	dtc: 'data contributor',
+	dte: 'dedicatee',
+	dgc: 'degree committee member',
+	dgs: 'degree supervisor',
+	fnd: 'funder',
+	rtm: 'research team member',
+	spn: 'sponsor',
+	tad: 'technical advisor'
+};
+
 /*
  * Author output depends on how the name was entered
  */
-function fillAuthorMODS(family,given) {
+function fillAuthorMODS(family,given,role) {
 	if (checkExists(given) || checkExists(family)) {
+		var roleCode = checkExists(role) ? role : 'ctb';
+		if (!checkExists(role)) {
+			roleCode = 'ctb';
+		}
+		var roleText = MODS_ROLE_LABELS[roleCode] || 'contributor';
 		var authorText = '    <name type="personal">\n';
 		if (checkExists(family)) {
 			authorText += '        <namePart type="family">' + escapeXML(family) + '</namePart>\n';
@@ -12,7 +31,7 @@ function fillAuthorMODS(family,given) {
 			authorText += '        <namePart type="given">' + escapeXML(given) + '</namePart>\n';
 		}
 
-		authorText += '        <role>\n            <roleTerm authority="marcrelator" type="text">author</roleTerm>\n            <roleTerm authority="marcrelator" type="code">aut</roleTerm>\n        </role>\n    </name>\n';
+		authorText += '        <role>\n            <roleTerm authority="marcrelator" type="text">' + roleText + '</roleTerm>\n            <roleTerm authority="marcrelator" type="code">' + roleCode + '</roleTerm>\n        </role>\n    </name>\n';
 		return authorText;
 	}
 	else {
@@ -44,7 +63,16 @@ function downloadMODS(record,institution_info) {
 
 	var defaultText1 = '    <typeOfResource>text</typeOfResource>\n';
 
-	var authorText = fillAuthorMODS(record.author['family'],record.author['given']);
+	var authorText = '';
+	if (record.author) {
+		authorText += fillAuthorMODS(record.author.family, record.author.given, record.author.role);
+	}
+	if (Array.isArray(record.additional_authors)) {
+		for (var i = 0; i < record.additional_authors.length; i++) {
+			var person = record.additional_authors[i];
+			authorText += fillAuthorMODS(person.family, person.given, person.role);
+		}
+	}
 	var corporateText = fillCorporateMODS(record.corporate_author);
 	if (checkExists(record.additional_corporate_authors)) {
 		for (var i = 0; i < record.additional_corporate_authors.length; i++) {

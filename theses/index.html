@@ -121,12 +121,20 @@
 				<label title="Record the title as it appears on the title page. If the title includes a subtitle, record only the main title here, and the subtitle in the next field."><span class="question-mark">?</span></label>
 			</div>
 
-			<div id="author-block">
+			<div id="author-block" class="standard-block">
 				<label for="author" class="heading">Names<span class="required_marker">*</span></label><label for="family_name" class="insert insert_family_name" onClick='insertMenu("family_name");'>Insert Special Characters</label><label for="given_name" class="insert insert_given_name" onClick='insertMenu("given_name");'>Insert Special Characters</label><br>
 				<div id="insert-family_name"></div><div id="insert-given_name"></div>
-				<input type="text" class="author conditional" required id="family_name" placeholder="Family Name">, 
-				<input type="text" class="author conditional" required id="given_name" placeholder="Given Name">
-				<label title="Enter the name of authors, editors, illustrators, etc. listed on the piece and select the appropriate role from the drop down menu. Authors should be listed first."><span class="question-mark">?</span></label>
+				<span class="author-entry">
+					<input type="text" class="author conditional" required id="family_name" placeholder="Family Name">,
+					<input type="text" class="author conditional" required id="given_name" placeholder="Given Name">
+					<select id="role">
+						<option value="dis" selected>dissertant</option>
+					</select>
+				</span>
+				<label title="Enter the dissertant first. Use the add button to list committee members, advisors, and other contributors."><span class="question-mark">?</span></label>
+				<div class="author-actions">
+					<input type="button" value="+" id="add-author" onClick="addAuthor();">
+				</div>
 			</div>
 
 			<corporate-organization-input></corporate-organization-input>

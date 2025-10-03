@@ -1,6 +1,18 @@
 import { MarcBuilder } from '../marcBuilder.js';
 
-const AUTHOR_ROLE_LABEL = 'author';
+const ROLE_LABELS = {
+  dis: 'dissertant',
+  csp: 'consultant to a project',
+  ctb: 'contributor',
+  dtc: 'data contributor',
+  dte: 'dedicatee',
+  dgc: 'degree committee member',
+  dgs: 'degree supervisor',
+  fnd: 'funder',
+  rtm: 'research team member',
+  spn: 'sponsor',
+  tad: 'technical advisor'
+};
 
 export class ThesesMarcBuilder extends MarcBuilder {
   constructor(options = {}) {
@@ -103,21 +115,26 @@ export class ThesesMarcBuilder extends MarcBuilder {
       return head !== null ? ['', ''] : '';
     }
 
+    const family = record.author.family;
+    const given = record.author.given;
+    const roleCode = checkExists(record.author.role) ? record.author.role : 'dis';
+    const roleLabel = this.getPersonalRoleLabel(roleCode);
+
     let authorContent = '';
-    if (checkExists(record.author.family) && checkExists(record.author.given)) {
-      authorContent = `${record.author.family}, ${record.author.given},`;
-    } else if (checkExists(record.author.family)) {
-      authorContent = `${record.author.family},`;
-    } else if (checkExists(record.author.given)) {
-      authorContent = `${record.author.given},`;
+    if (checkExists(family) && checkExists(given)) {
+      authorContent = `${family}, ${given},`;
+    } else if (checkExists(family)) {
+      authorContent = `${family},`;
+    } else if (checkExists(given)) {
+      authorContent = `${given},`;
     } else {
       return head !== null ? ['', ''] : '';
     }
 
     const author = fieldFunc('100', '1', ' ', [
       subfieldFunc('a', authorContent),
-      subfieldFunc('e', `${AUTHOR_ROLE_LABEL}.`),
-      subfieldFunc('4', 'aut')
+      subfieldFunc('e', `${roleLabel}.`),
+      subfieldFunc('4', roleCode)
     ]);
 
     return this.returnSingleEntry('100', author, head);
@@ -135,6 +152,52 @@ export class ThesesMarcBuilder extends MarcBuilder {
     ]);
 
     return this.returnSingleEntry('264', publication, head);
+  }
+
+  fillAdditionalAuthors(record, head, fieldFunc, subfieldFunc) {
+    if (!Array.isArray(record.additional_authors)) {
+      return head !== null ? ['', '', head] : '';
+    }
+
+    let authors = '';
+    let directory = '';
+    let currentHead = head;
+
+    for (let i = 0; i < record.additional_authors.length; i++) {
+      const entry = record.additional_authors[i];
+      if (!entry || (!checkExists(entry.family) && !checkExists(entry.given))) {
+        continue;
+      }
+
+      const roleCode = checkExists(entry.role) ? entry.role : 'ctb';
+      const roleLabel = this.getPersonalRoleLabel(roleCode);
+
+      let authorContent;
+      if (checkExists(entry.family) && checkExists(entry.given)) {
+        authorContent = `${entry.family}, ${entry.given},`;
+      } else if (checkExists(entry.family)) {
+        authorContent = `${entry.family},`;
+      } else {
+        authorContent = `${entry.given},`;
+      }
+
+      const subfields = [
+        subfieldFunc('a', authorContent),
+        subfieldFunc('e', `${roleLabel}.`),
+        subfieldFunc('4', roleCode)
+      ];
+
+      const newContent = fieldFunc('700', '1', ' ', subfields);
+      authors += newContent;
+
+      if (currentHead !== null) {
+        const newDirectory = this.createDirectory('700', newContent, currentHead);
+        currentHead += this.getByteLength(newContent);
+        directory += newDirectory;
+      }
+    }
+
+    return this.returnMultipleEntries(directory, authors, currentHead);
   }
 
   fillPhysical(record, head, fieldFunc, subfieldFunc) {
@@ -199,6 +262,10 @@ export class ThesesMarcBuilder extends MarcBuilder {
     ]);
 
     return this.returnSingleEntry('504', bibliography, head);
+  }
+
+  getPersonalRoleLabel(code) {
+    return ROLE_LABELS[code] || 'contributor';
   }
 
   downloadMARC(record, institutionInfo) {
@@ -266,6 +333,9 @@ export class ThesesMarcBuilder extends MarcBuilder {
     const bibliography = this.fillBibliography(record, head, this.createContentFill.bind(this), this.createSubfield.bind(this));
     head += this.getByteLength(bibliography[1]);
 
+    const additionalAuthors = this.fillAdditionalAuthors(record, head, this.createContentFill.bind(this), this.createSubfield.bind(this));
+    head = additionalAuthors[2];
+
     const additionalCorporateNames = this.fillAdditionalCorporateNames(record, head, this.createContentFill.bind(this), this.createSubfield.bind(this));
     head = additionalCorporateNames[2];
 
@@ -291,6 +361,7 @@ export class ThesesMarcBuilder extends MarcBuilder {
       default3Directory,
       dissertation[0],
       bibliography[0],
+      additionalAuthors[0],
       additionalCorporateNames[0],
       corporate880[0],
       additionalCorporate880[0],
@@ -307,6 +378,7 @@ export class ThesesMarcBuilder extends MarcBuilder {
       default3Content,
       dissertation[1],
       bibliography[1],
+      additionalAuthors[1],
       additionalCorporateNames[1],
       corporate880[1],
       additionalCorporate880[1],
@@ -331,6 +403,7 @@ export class ThesesMarcBuilder extends MarcBuilder {
       default3Directory.length +
       dissertation[0].length +
       bibliography[0].length +
+      additionalAuthors[0].length +
       additionalCorporateNames[0].length +
       corporate880[0].length +
       additionalCorporate880[0].length;
@@ -377,6 +450,7 @@ export class ThesesMarcBuilder extends MarcBuilder {
     ]);
     text += this.fillDissertationType(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillBibliography(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
+    text += this.fillAdditionalAuthors(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillAdditionalCorporateNames(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillTranslitCorporateAuthor(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillTranslitAdditionalCorporateNames(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
