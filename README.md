@@ -85,27 +85,3 @@ By default the records produced by MetadataMaker list the University of Virginia
 A custom URL should look something like:
 
 `https://staging.d8imevtfmovd7.amplifyapp.com/?marc=ViU&physicalLocation=University%20of%20Virginia%20Library&recordContentSource=ViU&lcn=n79127895&n=University%20of%20Virginia%20Library`
-
-## Updates
-
-**02-06-2015:** Changed the Author field to be called Names, and created dropdown to define each name's role
-
-**03-20-2015:** Keyword field now suggest FAST headings based on what the user has typed in the field. Uses OCLC's assignFAST web service. The Keyword field differentiates between FAST terms and non-FAST terms, and records each appropriately.
-
-The file structure has been altered, placing the javascript files in subdirectories, and splitting marcmaker.js into more manageable chunks within the metadatamaker folder.
-
-**04-17-2015:** FAST keywords now map to a number of different 6XX fields in MARC and MARCXML depending on how the keyword is categorized (e.g. personal name, corporate name, event, etc.), and may store portions of the keyword in different subfields. Keyword type classification is also implemented for MODS.
-
-**04-21-2015:** Diacritics are now inserted at the cursor position
-
-**08-21-2015:** The 008 field is now constructed as an array of individual strings, making it easy to change when you know the index that needs changing.
-
-The information for the organization creating the record can be altered via the url. See the "Editing institution information" section above for more details.
-
-**03-14-2023:** Folded the many branches into the default branch to make updating and deploying easier. The files from the other branches lack the development history, but the README for each page includes a link to the corresponding branch, which stores that history up until today.
-
-**07-30-2024:** Added an npm-based development workflow with `live-server` for local development.
-
-## Contact info
-
-Comments and questions can be directed to Deren Kudeki and Myung-Ja Han at [mhan3@illinois.edu](mailto:mhan3@illinois.edu).
