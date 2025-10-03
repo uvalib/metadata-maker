@@ -81,4 +81,20 @@ describe('ThesesMarcBuilder', () => {
 
     expect(bibliographyField).toContain('Includes bibliographical references (pages 10-12).');
   });
+
+  test('fillAbstract emits a MARC 520 field with the provided summary', () => {
+    const record = {
+      abstract: 'Concise summary of research findings.'
+    };
+
+    const abstractField = builder.fillAbstract(
+      record,
+      null,
+      builder.createMARCXMLField.bind(builder),
+      builder.createMARCXMLSubfield.bind(builder)
+    );
+
+    expect(abstractField).toContain('datafield tag="520" ind1=" " ind2=" "');
+    expect(abstractField).toContain('<subfield code="a">Concise summary of research findings.</subfield>');
+  });
 });

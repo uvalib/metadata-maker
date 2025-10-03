@@ -58,6 +58,10 @@ input[type="text"], input[type="number"], textarea {
 	border-radius: 4px;
 }
 
+textarea {
+	height: auto;
+}
+
 input[type="text"]:focus, input[type="number"]:focus, textarea:focus {
 /*	border: 1px;*/
 	border-color: #1D84F6;
@@ -156,6 +160,11 @@ input[type="number"] {
 #notes {
 	min-width: 300px;
 	min-height: 100px;
+}
+
+#abstract {
+	min-width: 300px;
+	min-height: calc(1.5em * 3);
 }
 
 #save-as-block {

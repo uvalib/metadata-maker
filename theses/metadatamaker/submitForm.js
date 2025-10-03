@@ -149,6 +149,7 @@ $("#marc-maker").submit(function(event) {
 		leaf_or_page: $("#lorp").val(),
 		number_of_pages: $("#pages").val(),
 		illustrations_yes: $("#illustrations-yes").is(':checked'),
+		abstract: $("#abstract").val(),
 		bibliographies: $("#bib").val(),
 		major: $("#major").val(),
 		corporate_author: corporate_author,

@@ -247,6 +247,18 @@ export class ThesesMarcBuilder extends MarcBuilder {
     return this.returnSingleEntry('502', dissertation, head);
   }
 
+  fillAbstract(record, head, fieldFunc, subfieldFunc) {
+    if (!checkExists(record.abstract)) {
+      return head !== null ? ['', ''] : '';
+    }
+
+    const abstractField = fieldFunc('520', ' ', ' ', [
+      subfieldFunc('a', record.abstract)
+    ]);
+
+    return this.returnSingleEntry('520', abstractField, head);
+  }
+
   fillBibliography(record, head, fieldFunc, subfieldFunc) {
     if (!checkExists(record.bibliographies) || record.bibliographies === '') {
       return head !== null ? ['', ''] : '';
@@ -330,6 +342,9 @@ export class ThesesMarcBuilder extends MarcBuilder {
     const dissertation = this.fillDissertationType(record, head, this.createContentFill.bind(this), this.createSubfield.bind(this));
     head += this.getByteLength(dissertation[1]);
 
+    const abstractField = this.fillAbstract(record, head, this.createContentFill.bind(this), this.createSubfield.bind(this));
+    head += this.getByteLength(abstractField[1]);
+
     const bibliography = this.fillBibliography(record, head, this.createContentFill.bind(this), this.createSubfield.bind(this));
     head += this.getByteLength(bibliography[1]);
 
@@ -360,6 +375,7 @@ export class ThesesMarcBuilder extends MarcBuilder {
       default2Directory,
       default3Directory,
       dissertation[0],
+      abstractField[0],
       bibliography[0],
       additionalAuthors[0],
       additionalCorporateNames[0],
@@ -377,6 +393,7 @@ export class ThesesMarcBuilder extends MarcBuilder {
       default2Content,
       default3Content,
       dissertation[1],
+      abstractField[1],
       bibliography[1],
       additionalAuthors[1],
       additionalCorporateNames[1],
@@ -402,6 +419,7 @@ export class ThesesMarcBuilder extends MarcBuilder {
       default2Directory.length +
       default3Directory.length +
       dissertation[0].length +
+      abstractField[0].length +
       bibliography[0].length +
       additionalAuthors[0].length +
       additionalCorporateNames[0].length +
@@ -449,6 +467,7 @@ export class ThesesMarcBuilder extends MarcBuilder {
       this.createMARCXMLSubfield('2', 'rdacarrier')
     ]);
     text += this.fillDissertationType(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
+    text += this.fillAbstract(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillBibliography(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillAdditionalAuthors(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillAdditionalCorporateNames(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
