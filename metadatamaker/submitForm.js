@@ -198,6 +198,8 @@ $("#marc-maker").submit(function(event) {
 		return $(this).text();
 	}).get() : [];
 	const hasIllustrations = illustrationCodes.length > 0;
+	const physicalFormRaw = $("#physical-form").val();
+	const physicalFormCode = (physicalFormRaw === null || physicalFormRaw === '') ? '|' : physicalFormRaw;
 
 	var recordObject = {
 		title: [
@@ -226,6 +228,7 @@ $("#marc-maker").submit(function(event) {
 		illustrations_yes: hasIllustrations,
 		illustrations_codes: illustrationCodes,
 		illustrations_terms: illustrationLabels,
+		physical_form_code: physicalFormCode,
 		dimensions: $("#dimensions").val(),
 		edition: $("#edition").val(),
 		translit_edition: $("#translit_edition").val(),

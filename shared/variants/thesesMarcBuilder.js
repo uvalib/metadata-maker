@@ -61,8 +61,11 @@ export class ThesesMarcBuilder extends MarcBuilder {
     }
 
     field[15] = 'v';
-    field[16] = 'a';
-    field[17] = 'u';
+   field[16] = 'a';
+   field[17] = 'u';
+
+    const physicalFormCode = typeof record.physical_form_code === 'string' ? record.physical_form_code : '|';
+    field[23] = physicalFormCode;
 
     if (checkExists(record.illustrations_yes) && record.illustrations_yes === true) {
       field[18] = 'a';

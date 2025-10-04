@@ -208,6 +208,9 @@ $("#marc-maker").submit(function(event) {
 		}
 	}
 
+	const physicalFormRaw = $("#physical-form").val();
+	const physicalFormCode = (physicalFormRaw === null || physicalFormRaw === '') ? '|' : physicalFormRaw;
+
 	var recordObject = {
 		title: [
 			{
@@ -235,6 +238,7 @@ $("#marc-maker").submit(function(event) {
 		literature_yes: $("#literature-yes").is(':checked'),
 		literature_dropdown: $("#literature-dropdown").val(),
 		illustrations_yes: $("#illustrations-yes").is(':checked'),
+		physical_form_code: physicalFormCode,
 		dimensions: $("#dimensions").val(),
 		edition: $("#edition").val(),
 		composition_form: $("#composition-form-dropdown").val(),

@@ -45,4 +45,30 @@ describe('MarcBuilder create008Field illustration codes', () => {
 
     expect(field.slice(18, 22)).toBe('a   ');
   });
+
+  test('populates position 23 with the selected physical form code', () => {
+    const record = {
+      publication_year: '2025',
+      publication_country: 'vau',
+      language: 'eng',
+      physical_form_code: 'o'
+    };
+
+    const field = builder.create008Field(record);
+
+    expect(field[23]).toBe('o');
+  });
+
+  test('writes a pipe when no physical form is selected', () => {
+    const record = {
+      publication_year: '2025',
+      publication_country: 'vau',
+      language: 'eng',
+      physical_form_code: '|'
+    };
+
+    const field = builder.create008Field(record);
+
+    expect(field[23]).toBe('|');
+  });
 });

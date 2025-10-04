@@ -19,6 +19,11 @@ export class MapsMarcBuilder extends MarcBuilder {
     } else {
       base[29] = ' ';
     }
+
+    if (typeof record.physical_form_map_code === 'string') {
+      base[30] = record.physical_form_map_code;
+    }
+
     return base.join('');
   }
 

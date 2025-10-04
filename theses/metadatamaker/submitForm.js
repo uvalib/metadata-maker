@@ -139,6 +139,9 @@ $("#marc-maker").submit(function(event) {
 		additional_corporate_authors.push(filtered_corporate_entries[i]);
 	}
 
+	const physicalFormRaw = $("#physical-form").val();
+	const physicalFormCode = (physicalFormRaw === null || physicalFormRaw === '') ? '|' : physicalFormRaw;
+
 	var recordObject = {
 		title: $("#title").val(),
 		author: primaryAuthor,
@@ -151,6 +154,7 @@ $("#marc-maker").submit(function(event) {
 		illustrations_yes: $("#illustrations-yes").is(':checked'),
 		abstract: $("#abstract").val(),
 		contents: $("#contents").val(),
+		physical_form_code: physicalFormCode,
 		bibliographies: $("#bib").val(),
 		major: $("#major").val(),
 		corporate_author: corporate_author,

@@ -16,6 +16,18 @@
 	<link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
 	<link href="/marcmaker.css" rel="stylesheet" media="screen">
 	<link href="/top_bar.css" rel="stylesheet" media="screen">
+	<style>
+		body.template-microfilms #marc-maker {
+			display: none;
+		}
+		body.template-microfilms #microfilms-disabled-notice {
+			margin: 20px 0;
+			padding: 15px;
+			border: 1px solid #d1d1d1;
+			background-color: #f9f9f9;
+			font-weight: 600;
+		}
+	</style>
 
 </head>
 
@@ -123,6 +135,9 @@
 		<script src="metadatamaker/checkServer.js"></script>
 	</div>
 	<div id="content">
+		<div id="microfilms-disabled-notice">
+			The Microfilms template has been disabled. Please use the Physical form field in other templates to indicate microform items.
+		</div>
 		<form id="marc-maker">
 			<div id="title-block">
 				<label for="title" class="heading">Title<span class="required_marker">*</span></label><label for="title" class="insert insert_normal" onClick='insertMenu("title");'>Insert Special Characters</label><br>

@@ -83,6 +83,10 @@ export class MarcBuilder {
       arrayOf008[16] = 'x';
     }
 
+    if (typeof record.physical_form_code === 'string') {
+      arrayOf008[23] = record.physical_form_code;
+    }
+
     let illustrationCodes = Array.isArray(record.illustrations_codes)
       ? record.illustrations_codes.slice(0, 4)
       : [];

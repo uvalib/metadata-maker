@@ -149,6 +149,9 @@ $("#marc-maker").submit(function(event) {
 		entry110 = find110(complete_corporate_names_list);
 	}
 	
+	const physicalFormRaw = $("#physical-form").val();
+	const physicalFormMapCode = (physicalFormRaw === null || physicalFormRaw === '') ? '|' : physicalFormRaw;
+
 	var recordObject = {
 		title: [
 			{
@@ -182,6 +185,7 @@ $("#marc-maker").submit(function(event) {
 		color: $("#color").val(),
 		dimensions: $("#dimensions").val(),
 		description: $("#description").val(),
+		physical_form_map_code: physicalFormMapCode,
 	};
 
 	var institution_info = generateInstitutionInfo();
