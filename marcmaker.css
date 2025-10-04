@@ -185,6 +185,10 @@ input[type="number"] {
 	width: 400px;
 }
 
+html.has-js label.insert {
+	display: none !important;
+}
+
 .added-author {
 	position: relative;
 	top: -10px;
