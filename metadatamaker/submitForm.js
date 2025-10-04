@@ -189,6 +189,16 @@ $("#marc-maker").submit(function(event) {
 		additional_corporate_authors.push(filtered_corporate_entries[i]);
 	}
 
+	const illustrationsSelected = $("#illustrations-yes").is(':checked');
+	const rawIllustrationCodes = illustrationsSelected ? ($("#illustrations-types").val() || []) : [];
+	const illustrationCodes = rawIllustrationCodes.slice(0, 4);
+	const illustrationLabels = illustrationsSelected ? $("#illustrations-types option:selected").filter(function() {
+		return illustrationCodes.indexOf($(this).val()) !== -1;
+	}).map(function() {
+		return $(this).text();
+	}).get() : [];
+	const hasIllustrations = illustrationCodes.length > 0;
+
 	var recordObject = {
 		title: [
 			{
@@ -213,7 +223,9 @@ $("#marc-maker").submit(function(event) {
 		unpaged: $("#pages_listed").is(':checked'),
 		literature_yes: $("#literature-yes").is(':checked'),
 		literature_dropdown: $("#literature-dropdown").val(),
-		illustrations_yes: $("#illustrations-yes").is(':checked'),
+		illustrations_yes: hasIllustrations,
+		illustrations_codes: illustrationCodes,
+		illustrations_terms: illustrationLabels,
 		dimensions: $("#dimensions").val(),
 		edition: $("#edition").val(),
 		translit_edition: $("#translit_edition").val(),

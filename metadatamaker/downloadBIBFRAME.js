@@ -178,7 +178,8 @@ function fillCorporateBIBFRAME(corporateEntry, contributionCount) {
 		instanceText += '        <bf:copyrightDate rdf:datatype="http://id.loc.gov/datatypes/edtf">' + record.copyright_year + '</bf:copyrightDate>\n';
 	}
 
-	if (checkExists(record.illustrations_yes)) {
+	var hasIllustrations = (Array.isArray(record.illustrations_codes) && record.illustrations_codes.length > 0) || (checkExists(record.illustrations_yes) && record.illustrations_yes === true);
+	if (hasIllustrations) {
 		instanceText += '        <bf:illustrativeContent>\n            <bf:Illustration rdf:about="http://id.loc.gov/vocabulary/millus/ill"/>\n        </bf:illustrativeContent>\n';
 	}
 
