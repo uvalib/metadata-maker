@@ -374,6 +374,25 @@ export class MarcBuilder {
     return this.returnSingleEntry(tag, physical, head);
   }
 
+  fillContents(record, head, fieldFunc, subfieldFunc) {
+    if (!checkExists(record.contents)) {
+      return head !== null ? ['', ''] : '';
+    }
+
+    const segments = record.contents
+      .split(/\r?\n/)
+      .map((segment) => segment.trim())
+      .filter((segment) => segment !== '');
+
+    if (segments.length === 0) {
+      return head !== null ? ['', ''] : '';
+    }
+
+    const normalized = segments.join(' -- ');
+    const contentsField = fieldFunc('505', '0', ' ', [subfieldFunc('a', normalized)]);
+    return this.returnSingleEntry('505', contentsField, head);
+  }
+
   fillNotes(record, head, fieldFunc, subfieldFunc) {
     if (checkExists(record.notes)) {
       const notes = fieldFunc('500', ' ', ' ', [subfieldFunc('a', record.notes)]);
@@ -887,6 +906,9 @@ export class MarcBuilder {
     const default4Directory = this.createDirectory('338', default4Content, head);
     head += default4Content.length;
 
+    const contents = this.fillContents(record, head, this.createContentFill.bind(this), this.createSubfield.bind(this));
+    head += this.getByteLength(contents[1]);
+
     const notes = this.fillNotes(record, head, this.createContentFill.bind(this), this.createSubfield.bind(this));
     head += this.getByteLength(notes[1]);
 
@@ -940,6 +962,7 @@ export class MarcBuilder {
       default2Directory,
       default3Directory,
       default4Directory,
+      contents[0],
       notes[0],
       keywords[0],
       fast[0],
@@ -966,6 +989,7 @@ export class MarcBuilder {
       default2Content,
       default3Content,
       default4Content,
+      contents[1],
       notes[1],
       keywords[1],
       fast[1],
@@ -988,7 +1012,7 @@ export class MarcBuilder {
     const directoryLen = 25 +
       timestampDirectory.length + controlfield008Directory.length + isbn[0].length + default1Directory.length +
       author[0].length + corporateAuthor[0].length + title[0].length + edition[0].length + pub[0].length + copyright[0].length + physical[0].length +
-      default2Directory.length + default3Directory.length + default4Directory.length + notes[0].length + keywords[0].length +
+      default2Directory.length + default3Directory.length + default4Directory.length + contents[0].length + notes[0].length + keywords[0].length +
       fast[0].length + additionalAuthors[0].length + additionalCorporateNames[0].length + title880[0].length + edition880[0].length + publisher880[0].length +
       author880[0].length + corporate880[0].length + authors880[0].length + additionalCorporate880[0].length;
 
@@ -1041,6 +1065,7 @@ export class MarcBuilder {
       this.createMARCXMLSubfield('b', 'nc'),
       this.createMARCXMLSubfield('2', 'rdacarrier')
     ]);
+    text += this.fillContents(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillNotes(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillKeywords(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillFAST(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));

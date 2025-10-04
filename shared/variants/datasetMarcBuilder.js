@@ -317,6 +317,9 @@ export class DatasetMarcBuilder extends MarcBuilder {
     const default5Directory = this.createDirectory('338', default5Content, head);
     head += default5Content.length;
 
+    const contents = this.fillContents(record, head, contentFill, subfield);
+    head += this.getByteLength(contents[1]);
+
     const notes = this.fillNotes(record, head, contentFill, subfield);
     head += this.getByteLength(notes[1]);
 
@@ -395,6 +398,7 @@ export class DatasetMarcBuilder extends MarcBuilder {
       default3Directory,
       default4Directory,
       default5Directory,
+      contents[0],
       notes[0],
       dateCollected[0],
       accessTerms[0],
@@ -431,6 +435,7 @@ export class DatasetMarcBuilder extends MarcBuilder {
       default3Content,
       default4Content,
       default5Content,
+      contents[1],
       notes[1],
       dateCollected[1],
       accessTerms[1],
@@ -505,6 +510,7 @@ export class DatasetMarcBuilder extends MarcBuilder {
       this.createMARCXMLSubfield('b', 'cr'),
       this.createMARCXMLSubfield('2', 'rdacarrier')
     ]);
+    text += this.fillContents(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillNotes(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillDateCollected(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillAccessTerms(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));

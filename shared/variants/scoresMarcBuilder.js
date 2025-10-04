@@ -305,6 +305,9 @@ export class ScoresMarcBuilder extends MarcBuilder {
     const default4Directory = this.createDirectory('338', default4Content, head);
     head += default4Content.length;
 
+    const contents = this.fillContents(record, head, this.createContentFill.bind(this), this.createSubfield.bind(this));
+    head += this.getByteLength(contents[1]);
+
     const notes = this.fillNotes(record, head, this.createContentFill.bind(this), this.createSubfield.bind(this));
     head += this.getByteLength(notes[1]);
 
@@ -363,6 +366,7 @@ export class ScoresMarcBuilder extends MarcBuilder {
       default2Directory,
       default3Directory,
       default4Directory,
+      contents[0],
       notes[0],
       formattedContentNote[0],
       keywords[0],
@@ -392,6 +396,7 @@ export class ScoresMarcBuilder extends MarcBuilder {
       default2Content,
       default3Content,
       default4Content,
+      contents[1],
       notes[1],
       formattedContentNote[1],
       keywords[1],
@@ -429,6 +434,7 @@ export class ScoresMarcBuilder extends MarcBuilder {
       default2Directory.length +
       default3Directory.length +
       default4Directory.length +
+      contents[0].length +
       notes[0].length +
       formattedContentNote[0].length +
       keywords[0].length +
@@ -490,6 +496,7 @@ export class ScoresMarcBuilder extends MarcBuilder {
       this.createMARCXMLSubfield('b', 'nc'),
       this.createMARCXMLSubfield('2', 'rdacarrier')
     ]);
+    text += this.fillContents(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillNotes(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillFormattedContentNote(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillKeywords(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));

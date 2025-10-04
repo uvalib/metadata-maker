@@ -245,6 +245,7 @@ $("#marc-maker").submit(function(event) {
 		translit_edition: $("#translit_edition").val(),
 		translit_publisher: $("#translit_publisher").val(),
 		translit_place: $("#translit_place").val(),
+		contents: $("#contents").val(),
 		notes: $("#notes").val(),
 		formatted_contents_note: $("#formatted-contents-note").val(),
 		keywords: words,

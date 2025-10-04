@@ -167,6 +167,11 @@ input[type="number"] {
 	min-height: calc(1.5em * 3);
 }
 
+#contents {
+	min-width: 300px;
+	min-height: 100px;
+}
+
 #save-as-block {
 	padding: 3px;
 	width: 400px;

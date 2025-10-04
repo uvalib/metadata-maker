@@ -171,6 +171,9 @@ export class GovdocsMarcBuilder extends MarcBuilder {
     const default4Directory = this.createDirectory('338', default4Content, head);
     head += default4Content.length;
 
+    const contents = this.fillContents(record, head, contentFill, subfield);
+    head += this.getByteLength(contents[1]);
+
     const notes = this.fillNotes(record, head, contentFill, subfield);
     head += this.getByteLength(notes[1]);
 
@@ -221,6 +224,7 @@ export class GovdocsMarcBuilder extends MarcBuilder {
       default2Directory,
       default3Directory,
       default4Directory,
+      contents[0],
       notes[0],
       keywords[0],
       fast[0],
@@ -251,6 +255,7 @@ export class GovdocsMarcBuilder extends MarcBuilder {
       default2Content,
       default3Content,
       default4Content,
+      contents[1],
       notes[1],
       keywords[1],
       fast[1],
@@ -317,6 +322,7 @@ export class GovdocsMarcBuilder extends MarcBuilder {
       this.createMARCXMLSubfield('b', 'nc'),
       this.createMARCXMLSubfield('2', 'rdacarrier')
     ]);
+    text += this.fillContents(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillNotes(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillKeywords(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillFAST(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));

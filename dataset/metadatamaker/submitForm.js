@@ -171,6 +171,7 @@ $("#marc-maker").submit(function(event) {
 		language: $("#language").val(),
 		translit_publisher: $("#translit_publisher").val(),
 		translit_place: $("#translit_place").val(),
+		contents: $("#contents").val(),
 		notes: $("#notes").val(),
 		keywords: words,
 		fast: fast_array,

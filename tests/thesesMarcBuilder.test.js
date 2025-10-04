@@ -97,4 +97,20 @@ describe('ThesesMarcBuilder', () => {
     expect(abstractField).toContain('datafield tag="520" ind1=" " ind2=" "');
     expect(abstractField).toContain('<subfield code="a">Concise summary of research findings.</subfield>');
   });
+
+  test('fillContents maps multiline input to a 505 field with separators', () => {
+    const record = {
+      contents: 'Chapter 1\nChapter 2\r\nChapter 3 '
+    };
+
+    const contentsField = builder.fillContents(
+      record,
+      null,
+      builder.createMARCXMLField.bind(builder),
+      builder.createMARCXMLSubfield.bind(builder)
+    );
+
+    expect(contentsField).toContain('datafield tag="505" ind1="0" ind2=" "');
+    expect(contentsField).toContain('Chapter 1 -- Chapter 2 -- Chapter 3');
+  });
 });

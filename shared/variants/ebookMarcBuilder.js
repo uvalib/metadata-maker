@@ -197,6 +197,9 @@ export class EbookMarcBuilder extends MarcBuilder {
     const default4Directory = this.createDirectory('338', default4Content, head);
     head += default4Content.length;
 
+    const contents = this.fillContents(record, head, this.createContentFill.bind(this), this.createSubfield.bind(this));
+    head += this.getByteLength(contents[1]);
+
     const notes = this.fillNotes(record, head, this.createContentFill.bind(this), this.createSubfield.bind(this));
     head += this.getByteLength(notes[1]);
 
@@ -244,12 +247,12 @@ export class EbookMarcBuilder extends MarcBuilder {
     const text =
       timestampDirectory + controlfield006Directory + controlfield007Directory + controlfield008Directory +
       isbn[0] + default1Directory + subjectCategories[0] + author[0] + corporateAuthor[0] + title[0] + edition[0] + pub[0] +
-      copyright[0] + physical[0] + default2Directory + default3Directory + default4Directory + notes[0] +
+      copyright[0] + physical[0] + default2Directory + default3Directory + default4Directory + contents[0] + notes[0] +
       subjects[0] + keywords[0] + fast[0] + additionalAuthors[0] + additionalCorporateNames[0] + webUrl[0] + title880[0] + edition880[0] +
       publisher880[0] + author880[0] + corporate880[0] + authors880[0] + additionalCorporate880[0] + timestampContent + controlfield006Content +
       controlfield007Content + controlfield008Content + isbn[1] + default1Content + subjectCategories[1] +
       author[1] + corporateAuthor[1] + title[1] + edition[1] + pub[1] + copyright[1] + physical[1] + default2Content + default3Content +
-      default4Content + notes[1] + subjects[1] + keywords[1] + fast[1] + additionalAuthors[1] + webUrl[1] +
+      default4Content + contents[1] + notes[1] + subjects[1] + keywords[1] + fast[1] + additionalAuthors[1] + additionalCorporateNames[1] + webUrl[1] +
       title880[1] + edition880[1] + publisher880[1] + author880[1] + authors880[1] + end;
 
     const leaderLen = this.getByteLength(text) + 24;
@@ -257,7 +260,7 @@ export class EbookMarcBuilder extends MarcBuilder {
       timestampDirectory.length + controlfield006Directory.length + controlfield007Directory.length +
       controlfield008Directory.length + isbn[0].length + default1Directory.length + subjectCategories[0].length +
       author[0].length + corporateAuthor[0].length + title[0].length + edition[0].length + pub[0].length + copyright[0].length + physical[0].length +
-      default2Directory.length + default3Directory.length + default4Directory.length + notes[0].length +
+      default2Directory.length + default3Directory.length + default4Directory.length + contents[0].length + notes[0].length +
       subjects[0].length + keywords[0].length + fast[0].length + additionalAuthors[0].length + additionalCorporateNames[0].length + webUrl[0].length +
       title880[0].length + edition880[0].length + publisher880[0].length + author880[0].length + corporate880[0].length + authors880[0].length + additionalCorporate880[0].length;
 
@@ -306,6 +309,7 @@ export class EbookMarcBuilder extends MarcBuilder {
       this.createMARCXMLSubfield('b', 'cr'),
       this.createMARCXMLSubfield('2', 'rdacarrier')
     ]);
+    text += this.fillContents(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillNotes(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillSubjects(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillKeywords(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));

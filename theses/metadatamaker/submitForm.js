@@ -150,6 +150,7 @@ $("#marc-maker").submit(function(event) {
 		number_of_pages: $("#pages").val(),
 		illustrations_yes: $("#illustrations-yes").is(':checked'),
 		abstract: $("#abstract").val(),
+		contents: $("#contents").val(),
 		bibliographies: $("#bib").val(),
 		major: $("#major").val(),
 		corporate_author: corporate_author,
