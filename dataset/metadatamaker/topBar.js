@@ -11,14 +11,6 @@ function pushParametersToLinks() {
 window.onload = pushParametersToLinks;
 
 /*
- * Remember the last field that was selected, so the insert menu can send characters there.
- */
-$("#marc-maker").on('blur','input[type=text]', function() {
-	lastfocus = $(this)[0].id;
-	console.log(lastfocus);
-});
-
-/*
  * If the institution info has already been set by the url, use that information to replace the default values.
  */
 function setUpInstitution() {
@@ -122,36 +114,6 @@ function toggleVersionMenu() {
 	else {
 		$('#version_menu').removeClass('hidden');
 		$('#arrow').attr('src','/arrow1.svg');
-	}
-}
-
-/*
- * The function the global insert menu uses to insert a selected character
- */
-function globalCharInsertion(insert_value) {
-	var current_contents = $("#" + lastfocus).val();
-	var insert_at = $("#" + lastfocus)[0].selectionStart;
-	$("#" + lastfocus).val(current_contents.substring(0,insert_at) + insert_value + current_contents.substring(insert_at));
-	$("#" + lastfocus).focus();
-}
-
-/*
- * What happens when Insert is clicked
- */
-function toggleInsertMenu() {
-	if (typeof lastfocus != 'undefined') {
-		$("#" + lastfocus).focus();
-	}
-
-	if (!$('#global-insert-menu').hasClass('hidden')) {
-		$('#global-insert-menu').addClass('hidden');
-		$('#content').css('margin-top','75px');
-		$('#insert_arrow').attr('src','/arrow2.svg');
-	}
-	else {
-		$('#global-insert-menu').removeClass('hidden');
-		$('#content').css('margin-top','183px');
-		$('#insert_arrow').attr('src','/arrow1.svg');
 	}
 }
 

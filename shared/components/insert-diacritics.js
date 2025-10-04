@@ -2,7 +2,7 @@ import { LitElement, html } from 'https://cdn.jsdelivr.net/npm/lit@3.1.0/+esm';
 import { SPECIAL_CHARACTERS } from '../data/special-characters.js';
 
 const INSERT_LABEL_SELECTOR = 'label.insert';
-const INSERT_LABEL_TEXT = 'Insert other chars';
+const INSERT_LABEL_TEXT = 'Insert other Characters';
 
 function getInsertTarget(label) {
   if (!label) {
@@ -162,7 +162,7 @@ export class InsertDiacritics extends LitElement {
 
   constructor() {
     super();
-  this.label = INSERT_LABEL_TEXT;
+    this.label = INSERT_LABEL_TEXT;
     this.open = false;
     this.menuClasses = '';
     this._selectionStart = 0;
@@ -191,14 +191,33 @@ export class InsertDiacritics extends LitElement {
 
   connectedCallback() {
     super.connectedCallback();
-    if (!this.style.display) {
-      this.style.display = 'inline-block';
-    }
+    this.style.display = 'inline-flex';
+    this.style.alignItems = 'center';
+    this._relocateNextToTarget();
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
     this.closeMenu();
+  }
+
+  updated(changedProperties) {
+    super.updated(changedProperties);
+    if (changedProperties.has('target')) {
+      this._targetEl = null;
+      this._relocateNextToTarget();
+    }
+  }
+
+  _relocateNextToTarget() {
+    const target = this.targetElement;
+    if (!target || !target.parentNode) {
+      return;
+    }
+    const nextSibling = target.nextSibling;
+    if (nextSibling !== this) {
+      target.insertAdjacentElement('afterend', this);
+    }
   }
 
   get targetElement() {
@@ -660,12 +679,16 @@ export class InsertDiacritics extends LitElement {
     return html`
       <button
         type="button"
-        class="diacritics-trigger"
+        class="diacritics-trigger insert-trigger"
         aria-haspopup="true"
         aria-expanded="${this.open ? 'true' : 'false'}"
-        style="background:none;border:none;padding:0;font:inherit;color:inherit;cursor:pointer;"
+        title="${INSERT_LABEL_TEXT}"
+        aria-label="${this.label || INSERT_LABEL_TEXT}"
         @click=${this.onTriggerClick}
-      >${this.label}</button>
+      >
+  <span class="insert-trigger-icon" aria-hidden="true">Ω</span>
+        <span class="sr-only">${this.label || INSERT_LABEL_TEXT}</span>
+      </button>
       ${this.renderMenu()}
     `;
   }

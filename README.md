@@ -35,7 +35,7 @@ Metadata Maker walks catalogers through 17 descriptive elements. Five elements m
 - Optional elements include an **Unlisted** checkbox to signal unavailable data and bypass validation.
 - Names support role selection (artist, author, contributor, editor, illustrator, translator). Use the **+** button to repeat Name and Keyword fields as needed.
 - Language, Place of publication, Country/State/Province, publication dates, Keywords, and Literature type are driven by dropdowns. Keyword lookups use OCLC’s FAST vocabulary; selecting a FAST term saves both the heading and its FAST ID. Non-FAST keywords can still be entered manually.
-- Title, Subtitle, Edition statement, Names, Name of publisher, and Place of publication fields support special character insertion. Use **Insert other chars** to pick characters from the palette.
+- Title, Subtitle, Edition statement, Names, Name of publisher, and Place of publication fields support special character insertion. Use the **Ω Insert other Characters** button to pick characters from the palette.
 - These same fields expose transliteration inputs automatically when non-Roman characters are supplied so that both the original script and transliterated values are captured.
 
 ### Generating metadata files

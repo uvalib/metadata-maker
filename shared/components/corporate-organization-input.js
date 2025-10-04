@@ -30,7 +30,7 @@ export class CorporateOrganizationInput extends LitElement {
     super();
     this.heading = 'Corporate/Organization';
     this.insertClass = 'insert insert_corporate_name';
-    this.insertLabel = 'Insert Special Characters';
+  this.insertLabel = 'Insert other Characters';
     this.helpText = 'Enter the name of creators or contributors listed on the piece and select the appropriate role from the drop down menu.';
     this.transliteration = null;
     this.required = null;
@@ -64,7 +64,7 @@ export class CorporateOrganizationInput extends LitElement {
         <span class="unlisted">Unlisted</span><input type="checkbox" id="corporate_name_listed" class="listed">
         ${this.showTransliteration ? html`
           <div id="translit-corporate_name-block" class="translit-corporate_name-block translit-block translit-corporate_name hidden">
-            <label for="translit_corporate_name" class="hidden translit heading translit-corporate_name">Transliterated name</label><label for="translit_corporate_name" class="insert insert_translit_corporate_name hidden translit translit-corporate_name" onClick='insertMenu("translit_corporate_name");'>Insert Special Characters</label><br>
+            <label for="translit_corporate_name" class="hidden translit heading translit-corporate_name">Transliterated name</label><label for="translit_corporate_name" class="insert insert_translit_corporate_name hidden translit translit-corporate_name" onClick='insertMenu("translit_corporate_name");'>Insert other Characters</label><br>
             <div id="insert-translit_corporate_name"></div>
             <input type="text" id="translit_corporate_name" class="hidden translit translit-corporate_name">
           </div>

@@ -23,7 +23,7 @@
 
   function buildMonoviafAuthorMarkup(index) {
     let markup = '';
-  markup += '<label for="family_name' + index + '" class="insert insert_family_name additional_insert" onClick=\'insertMenu("family_name' + index + '");\'>Insert other chars</label><br>';
+  markup += '<label for="family_name' + index + '" class="insert insert_family_name additional_insert" onClick=\'insertMenu("family_name' + index + '");\'>Insert other Characters</label><br>';
     markup += '<div id="insert-family_name' + index + '" class="additional_menu"></div>';
     markup += '<span class="added-author"><input type="text" class="author translit-listen" id="family_name' + index + '" placeholder="Family Name, Given Name"> ';
     markup += '<select name="role' + index + '" id="role' + index + '"><option value="art">artist</option><option selected value="aut">author</option><option value="ctb">contributor</option><option value="edt">editor</option><option value="ill">illustrator</option><option value="trl">translator</option></select></span>';
@@ -31,7 +31,7 @@
     markup += '<div class="Hlcdiv" id="hiddenlcdiv' + index + '" style="display: none;"><a class="Hlc" id="hiddenlc' + index + '" target="_blank" rel="noopener noreferrer" href="">LC Link</a></div>';
     markup += '<div class="translit-family_name' + index + '-block translit-block translit-author hidden" id="translit-family_name' + index + '-block">';
     markup += '<label>Please fill out the name in its original language on the resource again:</label><br>';
-  markup += '<label for="translit_family_name' + index + '" class="insert insert_family_name hidden translit translit-family_name' + index + '" onClick=\'insertMenu("translit_family_name' + index + '");\'>Insert other chars</label><br>';
+  markup += '<label for="translit_family_name' + index + '" class="insert insert_family_name hidden translit translit-family_name' + index + '" onClick=\'insertMenu("translit_family_name' + index + '");\'>Insert other Characters</label><br>';
     markup += '<div id="insert-translit_family_name' + index + '"></div>';
     markup += '<input type="text" id="translit_family_name' + index + '" class="hidden translit translit-family_name' + index + '" placeholder="Family Name, Given Name"><span class="hidden translit-family_name' + index + '">, </span>';
     markup += '</div>';
