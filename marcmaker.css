@@ -172,6 +172,14 @@ input[type="number"] {
 	min-height: 100px;
 }
 
+#illustrations-types-container {
+	margin-top: 6px;
+}
+
+#physical-form {
+	width: 250px;
+}
+
 #save-as-block {
 	padding: 3px;
 	width: 400px;

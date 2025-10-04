@@ -83,8 +83,18 @@ export class MarcBuilder {
       arrayOf008[16] = 'x';
     }
 
-    if (checkExists(record.illustrations_yes) && record.illustrations_yes === true) {
-      arrayOf008[18] = 'a';
+    if (typeof record.physical_form_code === 'string') {
+      arrayOf008[23] = record.physical_form_code;
+    }
+
+    let illustrationCodes = Array.isArray(record.illustrations_codes)
+      ? record.illustrations_codes.slice(0, 4)
+      : [];
+    if (illustrationCodes.length === 0 && checkExists(record.illustrations_yes) && record.illustrations_yes === true) {
+      illustrationCodes = ['a'];
+    }
+    for (let i = 0; i < 4; i++) {
+      arrayOf008[18 + i] = illustrationCodes[i] || ' ';
     }
 
     arrayOf008[29] = '0';

@@ -912,6 +912,23 @@ function listOrganization(entry) {
 function downloadHTML(record,institution_info) {
 	var metaTags = '';
 	var displayTags = '';
+	var illustrationCodeLabels = {
+		'a': 'Illustrations',
+		'b': 'Maps',
+		'c': 'Portraits',
+		'd': 'Charts',
+		'e': 'Plans',
+		'f': 'Plates',
+		'g': 'Music',
+		'h': 'Facsimiles',
+		'i': 'Coats of arms',
+		'j': 'Genealogical tables',
+		'k': 'Forms',
+		'l': 'Samples',
+		'm': 'Phonodiscs, etc.',
+		'o': 'Photographs',
+		'p': 'Illuminations'
+	};
 
 	metaTags += buildTag('inLanguage',record.language,true,'');
 
@@ -987,8 +1004,21 @@ function downloadHTML(record,institution_info) {
 	}
 
 	var ill = '';
-	if (checkExists(record.illustrations_yes) && record.illustrations_yes == true) {
-		ill = 'illustrations';
+	var illustrationLabels = [];
+	if (Array.isArray(record.illustrations_terms) && record.illustrations_terms.length > 0) {
+		illustrationLabels = record.illustrations_terms;
+	} else if (Array.isArray(record.illustrations_codes) && record.illustrations_codes.length > 0) {
+		for (var illustrationIndex = 0; illustrationIndex < record.illustrations_codes.length; illustrationIndex++) {
+			var illustrationCode = record.illustrations_codes[illustrationIndex];
+			if (illustrationCodeLabels[illustrationCode]) {
+				illustrationLabels.push(illustrationCodeLabels[illustrationCode]);
+			}
+		}
+	} else if (checkExists(record.illustrations_yes) && record.illustrations_yes === true) {
+		illustrationLabels.push('illustrations');
+	}
+	if (illustrationLabels.length > 0) {
+		ill = illustrationLabels.join('; ');
 	}
 
 	if (ill != '' || checkExists(record.pages)) {

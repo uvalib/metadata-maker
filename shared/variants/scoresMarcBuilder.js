@@ -84,6 +84,9 @@ export class ScoresMarcBuilder extends MarcBuilder {
       field[16] = 'x';
     }
 
+    const physicalFormCode = typeof record.physical_form_code === 'string' ? record.physical_form_code : '|';
+    field[23] = physicalFormCode;
+
     if (checkExists(record.composition_form)) {
       field[18] = record.composition_form[0] || ' ';
       field[19] = record.composition_form[1] || ' ';

@@ -103,6 +103,9 @@ export class SerialsMarcBuilder extends MarcBuilder {
       field[16] = 'x';
     }
 
+    const physicalFormCode = typeof record.physical_form_code === 'string' ? record.physical_form_code : '|';
+    field[23] = physicalFormCode;
+
     if (checkExists(record.current_publication_frequency)) {
       field[18] = record.current_publication_frequency;
     }

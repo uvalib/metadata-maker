@@ -116,6 +116,9 @@ $("#marc-maker").submit(function(event) {
 	}
 	var entry110 = find110(complete_corporate_names_list);
 
+	const physicalFormRaw = $("#physical-form").val();
+	const physicalFormCode = (physicalFormRaw === null || physicalFormRaw === '') ? '|' : physicalFormRaw;
+
 	var recordObject = {
 		title: [
 			{
@@ -145,6 +148,7 @@ $("#marc-maker").submit(function(event) {
 		literature_dropdown: $("#literature-dropdown").val(),
 		resource_type: $("#resource_type").val(),
 		government_publication_yes: $("#government_publication-yes").is(':checked'),
+		physical_form_code: physicalFormCode,
 		current_publication_frequency: $("#current_publication_frequency").val(),
 		regularity: $("#regularity_dropdown").val(),
 		description: $("#description").val(),
