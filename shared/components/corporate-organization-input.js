@@ -55,8 +55,8 @@ export class CorporateOrganizationInput extends LitElement {
         <div id="insert-corporate_name"></div>
         <input type="text" class="corporate conditional translit-listen" id="corporate_name" ?required=${this.isRequired}>
         <select name="role" id="corporate_role">
-          <option value="cre" selected>creator</option>
-          <option value="ctb">contributor</option>
+          <option value="ctb" selected>contributor</option>
+          <option value="cre">creator</option>
         </select>
         <label title="${this.helpText}"><span class="question-mark">?</span></label>
         <input type="button" value="+" id="add-corporate" onClick="addCorporate();">

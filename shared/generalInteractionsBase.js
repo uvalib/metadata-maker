@@ -60,8 +60,8 @@
   function buildDefaultCorporateMarkup(index, options) {
     const blockId = options.blockIdPrefix + index;
     const roleOptions = (options.roles || [
-      { value: 'cre', label: 'creator', selected: true },
-      { value: 'ctb', label: 'contributor' }
+      { value: 'ctb', label: 'contributor', selected: true },
+      { value: 'cre', label: 'creator' }
     ]).map((role) => {
       const selected = role.selected ? ' selected' : '';
       return '<option value="' + role.value + '"' + selected + '>' + role.label + '</option>';
