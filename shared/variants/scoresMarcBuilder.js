@@ -285,8 +285,8 @@ export class ScoresMarcBuilder extends MarcBuilder {
     head += this.getByteLength(physical[1]);
 
     const default2Content = this.createContent('  ', [
-      this.createSubfield('a', 'text'),
-      this.createSubfield('b', 'txt'),
+      this.createSubfield('a', 'notated music'),
+      this.createSubfield('b', 'ntm'),
       this.createSubfield('2', 'rdacontent')
     ]);
     const default2Directory = this.createDirectory('336', default2Content, head);
@@ -485,8 +485,8 @@ export class ScoresMarcBuilder extends MarcBuilder {
     text += this.fillCopyright(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.fillPhysical(record, null, this.createMARCXMLField.bind(this), this.createMARCXMLSubfield.bind(this));
     text += this.createMARCXMLField('336', ' ', ' ', [
-      this.createMARCXMLSubfield('a', 'text'),
-      this.createMARCXMLSubfield('b', 'txt'),
+      this.createMARCXMLSubfield('a', 'notated music'),
+      this.createMARCXMLSubfield('b', 'ntm'),
       this.createMARCXMLSubfield('2', 'rdacontent')
     ]);
     text += this.createMARCXMLField('337', ' ', ' ', [
