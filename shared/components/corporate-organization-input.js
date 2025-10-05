@@ -43,7 +43,7 @@ export class CorporateOrganizationInput extends RepeatableFieldBase {
   }
 
   getNextEntryKey() {
-    return `${this.entries.length - 1}`;
+    return this.entries.length - 1;
   }
 
   render() {
@@ -94,7 +94,7 @@ export class CorporateOrganizationInput extends RepeatableFieldBase {
     const insertId = `insert-corporate_name${key}`;
     const translitId = `translit_corporate_name${key}`;
     const translitBlockId = `translit-corporate_name${key}-block`;
-    const translitClass = `translit-corporate_name${key}`;
+    const translitClass = `translit_corporate_name${key}`;
     return html`
       <div class="added-corporate">
         <label for="${nameId}" class="${this.insertClass}" @click=${() => this.handleInsertClick(nameId)}>${this.insertLabel}</label><br>

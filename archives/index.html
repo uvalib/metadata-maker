@@ -12,6 +12,8 @@
 	<script type="module" src="/shared/components/top-navigation.js"></script>
 	<script type="module" src="/shared/components/standard-text-input.js"></script>
 	<script type="module" src="/shared/components/repeatable-text-input.js"></script>
+	<script type="module" src="/shared/components/originator-personal-input.js"></script>
+	<script type="module" src="/shared/components/originator-corporate-input.js"></script>
 
 	<link href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css" rel="stylesheet">
 	<link href="https://jqueryui.com/jquery-wp-content/themes/jqueryui.com/style.css" rel="stylesheet">
@@ -100,18 +102,10 @@
 				input-class="required"
 			></standard-text-input>
 
-			<div id="edition-block" class="standard-block">
-				<label for="edition" class="heading">Edition statement</label><label for="edition" class="insert insert_normal" onClick='insertMenu("edition");'>Insert Special Characters</label><br>
-				<div id="insert-edition"></div>
-				<input type="text" class="conditional translit-listen" required id="edition">
-				<label title="Record an edition statement if it appears on the piece. E.g., First edition, 1st ed., etc."><span class="question-mark">?</span></label><br>
-				<span class="unlisted">Unlisted</span><input type="checkbox" id="edition_listed" class="listed">
-			</div>
-
-			<div id="translit-edition-block" class="translit-edition-block translit-block hidden standard-translit-block">
-				<label for="translit_edition" class="hidden translit heading translit-edition">Transliterated edition</label><label for="translit_edition" class="insert insert_normal hidden translit translit-edition" onClick='insertMenu("translit_edition");'>Insert Special Characters</label><br>
-				<div id="insert-translit_edition" class="hidden translit translit-edition"></div>
-				<input type="text" id="translit_edition" class="hidden translit translit-edition">
+			<div id="originator-block" class="standard-block">
+				<label class="heading">Originator</label>
+				<originator-personal-input></originator-personal-input>
+				<originator-corporate-input></originator-corporate-input>
 			</div>
 
 			<div id="item-number-block" class="standard-block">

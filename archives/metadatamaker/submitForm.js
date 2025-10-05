@@ -141,8 +141,56 @@ $("#marc-maker").submit(function(event) {
 
 	var entry110 = find110(complete_corporate_names_list);
 
+	var repositoryAddresses = Array.prototype.slice.call(document.querySelectorAll('.repository-address-input'))
+		.map(function(input) {
+			return (input.value || '').trim();
+		})
+		.filter(function(value) {
+			return value !== '';
+		});
+
+	var personalOriginators = [];
+	Array.prototype.slice.call(document.querySelectorAll('.originator-personal-entry')).forEach(function(entry) {
+		var family = entry.querySelector('.originator-personal-family');
+		var given = entry.querySelector('.originator-personal-given');
+		var birth = entry.querySelector('.originator-personal-birth');
+		var death = entry.querySelector('.originator-personal-death');
+		var familyValue = family ? family.value.trim() : '';
+		var givenValue = given ? given.value.trim() : '';
+		var birthValue = birth ? birth.value : '';
+		var deathValue = death ? death.value : '';
+		if (familyValue !== '' || givenValue !== '' || birthValue !== '' || deathValue !== '') {
+			personalOriginators.push({
+				family: familyValue,
+				given: givenValue,
+				birth_date: birthValue,
+				death_date: deathValue
+			});
+		}
+	});
+
+	var corporateOriginators = [];
+	Array.prototype.slice.call(document.querySelectorAll('.originator-corporate-entry')).forEach(function(entry) {
+		var name = entry.querySelector('.originator-corporate-name');
+		var start = entry.querySelector('.originator-corporate-start');
+		var end = entry.querySelector('.originator-corporate-end');
+		var nameValue = name ? name.value.trim() : '';
+		var startValue = start ? start.value : '';
+		var endValue = end ? end.value : '';
+		if (nameValue !== '' || startValue !== '' || endValue !== '') {
+			corporateOriginators.push({
+				name: nameValue,
+				start_date: startValue,
+				end_date: endValue
+			});
+		}
+	});
+
 	var recordObject = {
 		repository_name: $("#repository_name").val(),
+		repository_location: $("#repository_location").val(),
+		repository_address: repositoryAddresses,
+		identifier: $("#identifier").val(),
 		title: [
 			{
 				title: $("#title").val(),
@@ -160,7 +208,6 @@ $("#marc-maker").submit(function(event) {
 		publication_place: $("#place").val(),
 		publication_country: $("#country").val(),
 		copyright_year: $("#cyear").val(),
-		isbn: $("#isbn").val(),
 		item_number: $("#item-number").val(),
 		sudoc: $("#sudoc").val(),
 		report_number: $("#report-number").val(),
@@ -169,8 +216,6 @@ $("#marc-maker").submit(function(event) {
 		unpaged: $("#pages_listed").is(':checked'),
 		illustrations_yes: $("#illustrations-yes").is(':checked'),
 		dimensions: $("#dimensions").val(),
-		edition: $("#edition").val(),
-		translit_edition: $("#translit_edition").val(),
 		translit_publisher: $("#translit_publisher").val(),
 		translit_place: $("#translit_place").val(),
 		contents: $("#contents").val(),
@@ -178,7 +223,9 @@ $("#marc-maker").submit(function(event) {
 		keywords: words,
 		fast: fast_array,
 		additional_authors: complete_names_list,
-		additional_corporate_names: complete_corporate_names_list
+		additional_corporate_names: complete_corporate_names_list,
+		originators_personal: personalOriginators,
+		originators_corporate: corporateOriginators
 	};
 
 	var institution_info = generateInstitutionInfo();
