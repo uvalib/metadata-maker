@@ -8,6 +8,8 @@
 	<script src="/assignFAST/assignFASTExample.js"></script>
 	<script src="/assignFAST/assignFASTGadget.js"></script>
 	<script src="/assignFAST/assignFASTComplete.js"></script>
+	<script type="module" src="/shared/components/top-navigation.js"></script>
+
 
 	<link href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css" rel="stylesheet">
 	<link href="https://jqueryui.com/jquery-wp-content/themes/jqueryui.com/style.css" rel="stylesheet">
@@ -33,94 +35,12 @@
 
 	<script>document.documentElement.classList.add('has-js');</script>
 <body class="template template-microfilms">
-	<div id="top_navigation">
-		<div id="version_title" class="noselect">
-			<div id="version_static">
-				Metadata Maker for
-			</div>
-			<div id="version_selector" onClick="toggleVersionMenu()">
-				<div id="version_name" value="microfilms">
-					Microfilms
-				</div>
-				<img src="/arrow2.svg" id="arrow">
-				<div id="version_menu" class="hidden">
-					<ul id="version_menu_content">
-						<a class="dropdown" href="/dataset/">
-							<li id="dataset">
-								Data Sets
-							</li>
-						</a>
-						<a class="dropdown" href="/ebooks/">
-							<li id="ebooks">
-								E-Books
-							</li>
-						</a>
-						<a class="dropdown" href="/govdocs/">
-							<li id="govdocs">
-								Government Documents
-							</li>
-						</a>
-						<a class="dropdown" href="/archives/">
-							<li id="archives">
-								Archival Collections
-							</li>
-						</a>
-						<a class="dropdown" href="/maps/">
-							<li id="maps">
-								Maps
-							</li>
-						</a>
-						<a class="dropdown" onClick="return false;" href="/microfilms/">
-							<li id="microfilms" class="current_version">
-								Microfilms
-								<span id="checkmark">&#10003;</span>
-							</li>
-						</a>
-						<a class="dropdown" href="/">
-							<li id="monographs">
-								Monographs
-							</li>
-						</a>
-						<a class="dropdown" href="/scores/">
-							<li id="scores">
-								Notated Music
-							</li>
-						</a>
-						<a class="dropdown" href="/serials/">
-							<li id="serials">
-								Serials
-							</li>
-						</a>
-						<a class="dropdown" href="/theses/">
-							<li id="theses">
-								Theses & Dissertations
-							</li>
-						</a>
-					</ul>
-				</div>
-			</div>
-		</div>
-		<div id="institution" class="noselect" onClick="toggleInstitutionMenu()">
-			<div id="institution_content">
-				<div id="institution_text">Creating record at:</div>
-				<div id="institution_name"></div>
-			</div>
-			<img src="/arrow2.svg" id="institution_arrow">
-		</div>
-	</div>
-	<form id="institution_menu" class="hidden">
-		<label for="marc_code">MARC code or the name of the organization</label><br>
-		<input type="text" id="marc_code" placeholder="ViU"></input><br>
-		<label for="physicalLocation">Physical Location</label><br>
-		<input type="text" id="physicalLocation" placeholder="University of Virginia. Library"></input><br>
-		<label for="recordContentSource">Record Content Source</label><br>
-		<input type="text" id="recordContentSource" placeholder="ViU"></input><br>
-		<label for="lcno">Organization's LC Authority Number</label><br>
-		<input type="text" id="lcno" placeholder="n79127895"></input><br>
-		<label for="org_name">Organization's Name</label><br>
-		<input type="text" id="org_name" placeholder="University of Virginia"></input><br>
-		<input type="submit" id="submit_institution_info" value="Change Institution"></input>
-	</form>
+		<uv-top-navigation
+		current-version="microfilms"
+		version-label="Microfilms"
+		versions="dataset,ebooks,govdocs,archives,maps,microfilms,monographs,scores,serials,theses">
+	</uv-top-navigation>
+
 	<div id="warning_system">
 		<noscript>WARNING: JavaScript is not enabled on this browser. This page requires JavaScript to function correctly.</noscript>
 		<script src="metadatamaker/checkServer.js"></script>
@@ -1123,7 +1043,6 @@
 		<script type="module" src="../shared/components/insert-diacritics.js"></script>
 		<script src="../shared/generalInteractionsBase.js"></script>
 		<script src="metadatamaker/generalInteractions.js"></script>
-		<script src="metadatamaker/topBar.js"></script>
 		<script type="module" src="metadatamaker/downloadMARC.js"></script>
 		<script src="metadatamaker/downloadMODS.js"></script>
 		<script src="metadatamaker/downloadHTML.js"></script>
