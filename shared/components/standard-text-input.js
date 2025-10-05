@@ -22,7 +22,11 @@ export class StandardTextInput extends LitElement {
     inputClass: { type: String, attribute: 'input-class' },
     required: { attribute: 'required' },
     requiredMarker: { type: String, attribute: 'required-marker' },
-    containerClass: { type: String, attribute: 'container-class' }
+    containerClass: { type: String, attribute: 'container-class' },
+    containerId: { type: String, attribute: 'container-id' },
+    unlisted: { attribute: 'unlisted' },
+    unlistedLabel: { type: String, attribute: 'unlisted-label' },
+    unlistedId: { type: String, attribute: 'unlisted-id' }
   };
 
   constructor() {
@@ -36,6 +40,10 @@ export class StandardTextInput extends LitElement {
     this.required = null;
     this.requiredMarker = '*';
     this.containerClass = 'standard-block';
+    this.containerId = '';
+    this.unlisted = null;
+    this.unlistedLabel = 'Unlisted';
+    this.unlistedId = '';
   }
 
   createRenderRoot() {
@@ -48,15 +56,21 @@ export class StandardTextInput extends LitElement {
 
   render() {
     const id = this.fieldId || 'standard_input';
+    const containerClass = this.containerClass && this.containerClass.trim().length > 0 ? this.containerClass : nothing;
+    const containerId = this.containerId && this.containerId.trim().length > 0 ? this.containerId : nothing;
     const marker = this.isRequired && this.requiredMarker ? html`<span class="required_marker">${this.requiredMarker}</span>` : nothing;
     const help = this.helpText ? html`<label title="${this.helpText}"><span class="question-mark">?</span></label>` : nothing;
     const insertLabel = html`<label for="${id}" class="${this.insertClass}" @click=${() => this.handleInsertClick(id)}>${this.insertLabel}</label>`;
+    const inputClasses = this.inputClass || '';
+    const unlistedId = this.unlistedId && this.unlistedId.trim().length > 0 ? this.unlistedId : `${id}_listed`;
+    const unlistedMarkup = this.hasUnlisted ? html`<br><span class="unlisted">${this.unlistedLabel}</span><input type="checkbox" id="${unlistedId}" class="listed">` : nothing;
 
-    return html`<div class="${this.containerClass}">
+    return html`<div id=${containerId} class=${containerClass}>
       <label for="${id}" class="heading">${this.heading}${marker}</label>${insertLabel}<br>
       <div id="insert-${id}"></div>
-      <input type="text" id="${id}" class="${this.inputClass}" ?required=${this.isRequired}>
+      <input type="text" id="${id}" class="${inputClasses}" ?required=${this.isRequired}>
       ${help}
+      ${unlistedMarkup}
     </div>`;
   }
 
@@ -64,6 +78,10 @@ export class StandardTextInput extends LitElement {
     if (typeof window.insertMenu === 'function') {
       window.insertMenu(id);
     }
+  }
+
+  get hasUnlisted() {
+    return normalizeBoolean(this.unlisted, false);
   }
 }
 

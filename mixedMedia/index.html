@@ -10,7 +10,7 @@
 	<script src="/assignFAST/assignFASTGadget.js"></script>
 	<script src="/assignFAST/assignFASTComplete.js"></script>
 	<script type="module" src="/shared/components/top-navigation.js"></script>
-
+	<script type="module" src="/shared/components/standard-text-input.js"></script>
 
 	<link href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css" rel="stylesheet">
 	<link href="https://jqueryui.com/jquery-wp-content/themes/jqueryui.com/style.css" rel="stylesheet">
@@ -36,20 +36,29 @@
 	</div>
 	<div id="content">
 		<form id="marc-maker">
-			<div id="title-block">
-				<label for="title" class="heading">Title<span class="required_marker">*</span></label><label for="title" class="insert insert_normal" onClick='insertMenu("title");'>Insert Special Characters</label><br>
-				<div id="insert-title"></div>
-				<input type="text" required id="title" class="required translit-listen">
-				<label title="Record the title as it appears on the title page. If the title includes a subtitle, record only the main title here, and the subtitle in the next field."><span class="question-mark">?</span></label>
-			</div>
+			<standard-text-input
+				container-id="title-block"
+				heading="Title"
+				field-id="title"
+				required
+				required-marker="*"
+				input-class="required translit-listen"
+				help-text="Record the title as it appears on the title page. If the title includes a subtitle, record only the main title here, and the subtitle in the next field."
+			></standard-text-input>
+
 			<!--
-			<div id="subtitle-block">
-				<label for="subtitle" class="heading">Subtitle</label><label for="subtitle" class="insert insert_normal" onClick='insertMenu("subtitle");'>Insert Special Characters</label><br>
-				<div id="insert-subtitle"></div>
-				<input type="text" required id="subtitle" class="conditional">
-				<label title="Record the subtitle if one exists"><span class="question-mark">?</span></label><br>
-				<span class="unlisted">Unlisted</span><input type="checkbox" id="subtitle_listed" class="listed">
-			</div>--!>
+			<standard-text-input
+				container-id="subtitle-block"
+				heading="Subtitle"
+				field-id="subtitle"
+				required
+				required-marker=""
+				input-class="conditional"
+				help-text="Record the subtitle if one exists"
+				unlisted
+			></standard-text-input>
+
+--!>
 
 			<div id="translit-title-block" class="translit-title-block translit-block standard-translit-block translit-title hidden">
 				<label for="translit_title" class="hidden translit heading translit-title">Transliterated title</label><label for="translit_title" class="insert insert_normal hidden translit translit-title" style="left: -13px;" onClick='insertMenu("translit_title");'>Insert Special Characters</label><br>
