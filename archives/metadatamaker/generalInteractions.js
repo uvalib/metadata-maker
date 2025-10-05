@@ -41,6 +41,8 @@
     }
   });
 
+  let repositoryAddressCounter = 0;
+
   const syncCounters = () => {
     global.keywordCounter = general.keywordCounter;
     global.counter = general.keywordCounter;
@@ -48,6 +50,8 @@
     global.aCounter = general.authorCounter;
     global.corporateCounter = general.corporateCounter;
     global.cCounter = general.corporateCounter;
+    const existingAddresses = document.querySelectorAll('.repository-address-input').length;
+    repositoryAddressCounter = existingAddresses > 0 ? existingAddresses - 1 : 0;
   };
   syncCounters();
   $(document).on('click', ':reset', syncCounters);
@@ -85,6 +89,22 @@ global.requestInsertLabelUpgrade = general.requestInsertLabelUpgrade;
   global.escapeXML = general.escapeXML;
   global.insertChar = diacritics.insertChar;
   global.insertMenu = diacritics.insertMenu;
+
+  global.addRepositoryAddress = function addRepositoryAddress() {
+    repositoryAddressCounter += 1;
+    const id = 'repository_address_' + repositoryAddressCounter;
+    const wrapper = document.createElement('div');
+    wrapper.className = 'added repository-address-line';
+    wrapper.innerHTML = '' +
+      '<label for="' + id + '" class="insert insert_normal" onClick=\'insertMenu("' + id + '");\'>Insert Special Characters</label><br>' +
+      '<div id="insert-' + id + '"></div>' +
+      '<input type="text" id="' + id + '" class="repository-address-input translit-listen"><br>';
+    const container = document.getElementById('repository-address-container');
+    if (container) {
+      container.appendChild(wrapper);
+      general.requestInsertLabelUpgrade(wrapper);
+    }
+  };
 
   $("input:radio[name=literature]").click(function() {
     const value = $(this).val();

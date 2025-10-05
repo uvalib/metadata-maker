@@ -147,7 +147,12 @@ function downloadMODS(record,institution_info) {
 
 	var dimensionsText = '    <physicalDescription>\n        <form authority="marcform">print</form>\n        <extent>' + pagesText + record.dimensions + ' cm</extent>\n    </physicalDescription>\n';
 
-	var defaultText2 = '    <location>\n        <physicalLocation>' + escapeXML(institution_info['mods']['physicalLocation']) + '</physicalLocation>\n    </location>\n';
+	var locationText = '    <location>\n';
+	if (checkExists(record.repository_name)) {
+		locationText += '        <physicalLocation>' + escapeXML(record.repository_name) + '</physicalLocation>\n';
+	}
+	locationText += '        <physicalLocation>' + escapeXML(institution_info['mods']['physicalLocation']) + '</physicalLocation>\n';
+	locationText += '    </location>\n';
 
 	var keywordsText = '';
 	for (var c = 0; c < record.keywords.length; c++) {
@@ -173,6 +178,6 @@ function downloadMODS(record,institution_info) {
 	var defaultText3 = '    <recordInfo>\n        <descriptionStandard>rda</descriptionStandard>\n        <recordContentSource authority="marcorg">' + escapeXML(institution_info['mods']['recordContentSource']) + '</recordContentSource>\n        <recordCreationDate encoding="marc">' + formatted_date + '</recordCreationDate>\n    </recordInfo>\n'
 
 	var endText = '</mods:mods>\n';
-	var text = startText + titleText + authorText + corporateText + defaultText1 + isbnText + sudocText + originText + languageText + dimensionsText + defaultText2 + keywordsText + fastText + literatureText + defaultText3 + endText;
+	var text = startText + titleText + authorText + corporateText + defaultText1 + isbnText + sudocText + originText + languageText + dimensionsText + locationText + keywordsText + fastText + literatureText + defaultText3 + endText;
 	downloadFile(text,'mods');
 }

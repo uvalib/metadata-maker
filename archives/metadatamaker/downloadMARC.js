@@ -1,6 +1,14 @@
-import { GovdocsMarcBuilder } from '../../shared/variants/govdocsMarcBuilder.js';
+import { ArchivesEADBuilder } from '../../shared/variants/archivesEADBuilder.js';
 
-const builder = new GovdocsMarcBuilder();
+const builder = new ArchivesEADBuilder();
 
-window.downloadMARC = builder.downloadMARC.bind(builder);
-window.downloadXML = builder.downloadXML.bind(builder);
+window.downloadMARC = function downloadMARCPlaceholder(record, institutionInfo) {
+	if (typeof console !== 'undefined') {
+		console.warn('downloadMARC is not supported for Archival Collections. Generating placeholder EAD record instead.');
+	}
+	return builder.downloadEAD(record, institutionInfo);
+};
+
+window.downloadXML = function downloadXMLPlaceholder(record, institutionInfo) {
+	return builder.downloadEAD(record, institutionInfo);
+};

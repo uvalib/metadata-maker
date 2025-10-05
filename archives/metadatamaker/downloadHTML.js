@@ -913,6 +913,10 @@ function downloadHTML(record,institution_info) {
 
 	metaTags += buildTag('inLanguage','eng',true,'');
 
+	if (checkExists(record.repository_name)) {
+		displayTags += buildTag('holdingArchive',record.repository_name,false,'Repository Name');
+	}
+
 	var subtitleTag = '';
 	if (checkExists(record.title[0]['subtitle'])) {
 		subtitleTag = ': ' + record.title[0]['subtitle'];

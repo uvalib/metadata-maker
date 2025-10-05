@@ -142,6 +142,7 @@ $("#marc-maker").submit(function(event) {
 	var entry110 = find110(complete_corporate_names_list);
 
 	var recordObject = {
+		repository_name: $("#repository_name").val(),
 		title: [
 			{
 				title: $("#title").val(),
