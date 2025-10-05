@@ -91,12 +91,14 @@
 				<input type="text" id="translit_subtitle" class="hidden translit translit-title">
 			</div>
 
-			<div id="isbn-block" class="standard-block">
-				<label for="isbn" class="heading">ISBN</label><br>
-				<input type="text" required id="isbn" class="conditional">
-				<label title="Record an ISBN, if present. Do not record hyphens. If multiple ISBNs are present, record only one. E.g., 9781234567890 or 1234567890"><span class="question-mark">?</span></label><br>
-				<span class="unlisted">Unlisted</span><input type="checkbox" id="isbn_listed" class="listed">
-			</div>
+			<standard-text-input
+				container-id="identifier-block"
+				heading="Identifier"
+				field-id="identifier"
+				required
+				required-marker="*"
+				input-class="required"
+			></standard-text-input>
 
 			<div id="edition-block" class="standard-block">
 				<label for="edition" class="heading">Edition statement</label><label for="edition" class="insert insert_normal" onClick='insertMenu("edition");'>Insert Special Characters</label><br>
