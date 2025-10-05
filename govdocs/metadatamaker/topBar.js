@@ -70,6 +70,7 @@ function buildVersionMenu() {
 		dataset: 'Data Sets',
 		ebooks: 'E-Books',
 		govdocs: 'Government Documents',
+		archives: 'Archival Collections',
 		monographs: 'Monographs',
 		theses: 'Theses & Dissertations'
 	};
