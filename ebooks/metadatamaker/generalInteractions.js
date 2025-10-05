@@ -30,9 +30,6 @@
         callSetUpPage(index);
       }
     },
-    corporate: {
-      enabled: true
-    },
     reset: {
       additional() {
         $('#level3-subject0').remove();
@@ -60,8 +57,12 @@
     global.counter = general.keywordCounter;
     global.authorCounter = general.authorCounter;
     global.aCounter = general.authorCounter;
-    global.corporateCounter = general.corporateCounter;
-    global.cCounter = general.corporateCounter;
+    const corporateElement = document.querySelector('corporate-organization-input');
+    const corporateCount = corporateElement && typeof corporateElement.additionalEntryCount === 'number'
+      ? corporateElement.additionalEntryCount
+      : (typeof window.cCounter === 'number' ? window.cCounter : 0);
+    global.corporateCounter = corporateCount;
+    global.cCounter = corporateCount;
   };
   syncCounters();
   $(document).on('click', ':reset', syncCounters);
@@ -83,13 +84,6 @@ global.requestInsertLabelUpgrade = general.requestInsertLabelUpgrade;
     syncCounters();
     return result;
   };
-  const addCorporateOriginal = general.addCorporate.bind(general);
-  global.addCorporate = function() {
-    const result = addCorporateOriginal();
-    syncCounters();
-    return result;
-  };
-
   global.checkExists = general.checkExists;
   global.downloadFile = general.downloadFile;
   global.getTimestamp = general.getTimestamp;

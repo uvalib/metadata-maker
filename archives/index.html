@@ -10,6 +10,8 @@
 	<script src="/assignFAST/assignFASTGadget.js"></script>
 	<script src="/assignFAST/assignFASTComplete.js"></script>
 	<script type="module" src="/shared/components/top-navigation.js"></script>
+	<script type="module" src="/shared/components/standard-text-input.js"></script>
+	<script type="module" src="/shared/components/repeatable-text-input.js"></script>
 
 
 	<link href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css" rel="stylesheet">
@@ -35,20 +37,21 @@
 	</div>
 	<div id="content">
 		<form id="marc-maker">
-			<div id="repository-block" class="standard-block">
-				<label for="repository_name" class="heading">Repository name<span class="required_marker">*</span></label><label for="repository_name" class="insert insert_normal" onClick='insertMenu("repository_name");'>Insert Special Characters</label><br>
-				<div id="insert-repository_name"></div>
-				<input type="text" required id="repository_name" class="required translit-listen">
-			</div>
+			<standard-text-input
+				heading="Repository name"
+				field-id="repository_name"
+				required
+				required-marker="*"
+				input-class="required translit-listen"
+			></standard-text-input>
 
-			<div id="repository-address-block" class="standard-block">
-				<label for="repository_address_0" class="heading">Repository address</label><label for="repository_address_0" class="insert insert_normal" onClick='insertMenu("repository_address_0");'>Insert Special Characters</label><br>
-				<div id="insert-repository_address_0"></div>
-				<input type="text" id="repository_address_0" class="repository-address-input translit-listen">
-				<input type="button" value="+" id="add-repository-address" onClick="addRepositoryAddress();" aria-label="Add repository address line">
-				<br>
-				<div id="repository-address-container"></div>
-			</div>
+			<repeatable-text-input
+				heading="Repository address"
+				field-prefix="repository_address"
+				input-class="repository-address-input translit-listen"
+				add-button-id="add-repository-address"
+				add-button-aria-label="Add repository address line"
+			></repeatable-text-input>
 
 			<div id="title-block">
 				<label for="title" class="heading">Title<span class="required_marker">*</span></label><label for="title" class="insert insert_normal" onClick='insertMenu("title");'>Insert Special Characters</label><br>
