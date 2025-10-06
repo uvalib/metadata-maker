@@ -11,6 +11,7 @@
 	<script src="/assignFAST/assignFASTComplete.js"></script>
 	<script type="module" src="/shared/components/top-navigation.js"></script>
 	<script type="module" src="/shared/components/standard-text-input.js"></script>
+	<script type="module" src="/shared/components/standard-date-input.js"></script>
 	<script type="module" src="/shared/components/repeatable-text-input.js"></script>
 	<script type="module" src="/shared/components/originator-input.js"></script>
 
@@ -101,11 +102,33 @@
 
 			<originator-input required></originator-input>
 
-			<div id="item-number-block" class="standard-block">
-				<label for="item-number" class="heading">Item number</label><label for="item-number" class="insert insert_normal" onClick='insertMenu("item-number");'>Insert Special Characters</label></br>
-				<div id="insert-item-number"></div>
-				<input type="text" class="conditional" required id="item-number"><br>
-				<span class="unlisted">Unlisted</span><input type="checkbox" id="item-number_listed" class="listed">
+			<div id="coverage-block" class="standard-block">
+				<label class="heading">Coverage date(s)</label>
+				<div class="coverage-fields">
+					<standard-date-input
+						container-class="coverage-field"
+						field-id="coverage_start"
+						heading="Start date"
+						input-class="coverage-start"
+						required
+						required-marker="*"
+					></standard-date-input>
+
+					<standard-date-input
+						container-class="coverage-field"
+						field-id="coverage_end"
+						heading="End date"
+						input-class="coverage-end"
+					></standard-date-input>
+
+					<div class="coverage-field">
+						<label for="coverage_type" class="heading">Coverage date type</label><br>
+						<select id="coverage_type" class="coverage-type" required>
+							<option value="bulk">bulk</option>
+							<option value="inclusive">inclusive</option>
+						</select>
+					</div>
+				</div>
 			</div>
 
 			<div id="sudoc-block" class="standard-block">

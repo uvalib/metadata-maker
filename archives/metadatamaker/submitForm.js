@@ -166,6 +166,9 @@ $("#marc-maker").submit(function(event) {
 		repository_location: $("#repository_location").val(),
 		repository_address: repositoryAddresses,
 		identifier: $("#identifier").val(),
+		coverage_start: $("#coverage_start").val(),
+		coverage_end: $("#coverage_end").val(),
+		coverage_type: $("#coverage_type").val(),
 		title: [
 			{
 				title: $("#title").val(),
@@ -183,7 +186,6 @@ $("#marc-maker").submit(function(event) {
 		publication_place: $("#place").val(),
 		publication_country: $("#country").val(),
 		copyright_year: $("#cyear").val(),
-		item_number: $("#item-number").val(),
 		sudoc: $("#sudoc").val(),
 		report_number: $("#report-number").val(),
 		volume_or_page: $("#vorp").val(),

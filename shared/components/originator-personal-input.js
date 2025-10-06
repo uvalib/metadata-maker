@@ -1,5 +1,7 @@
 import { html, nothing } from 'https://cdn.jsdelivr.net/npm/lit@3.1.0/+esm';
 import { RepeatableFieldBase } from './repeatable-field-base.js';
+import './standard-text-input.js';
+import './standard-date-input.js';
 
 export class OriginatorPersonalInput extends RepeatableFieldBase {
   firstUpdated() {
@@ -41,33 +43,39 @@ export class OriginatorPersonalInput extends RepeatableFieldBase {
 
     return html`
       <div class="originator-personal-entry" data-originator-index="${key}">
-        <label for="${familyId}" class="heading">Family name</label>
-        <label for="${familyId}" class="insert insert_normal" @click=${() => this.handleInsertClick(familyId)}>Insert Special Characters</label><br>
-        <div id="insert-${familyId}"></div>
-        <input type="text" id="${familyId}" class="originator-personal-family translit-listen" placeholder="Family name">
+        <standard-text-input
+          container-class="originator-field"
+          field-id="${familyId}"
+          heading="Family name"
+          input-class="originator-personal-family translit-listen"
+        ></standard-text-input>
 
-        <label for="${givenId}" class="heading">Given name</label>
-        <label for="${givenId}" class="insert insert_normal" @click=${() => this.handleInsertClick(givenId)}>Insert Special Characters</label><br>
-        <div id="insert-${givenId}"></div>
-        <input type="text" id="${givenId}" class="originator-personal-given translit-listen" placeholder="Given name">
+        <standard-text-input
+          container-class="originator-field"
+          field-id="${givenId}"
+          heading="Given name"
+          input-class="originator-personal-given translit-listen"
+        ></standard-text-input>
 
-        <label for="${birthId}" class="heading">Birth date</label><br>
-        <input type="date" id="${birthId}" class="originator-personal-birth">
+        <standard-date-input
+          container-class="originator-field"
+          field-id="${birthId}"
+          heading="Birth date"
+          input-class="originator-personal-birth"
+        ></standard-date-input>
 
-        <label for="${deathId}" class="heading">Death date</label><br>
-        <input type="date" id="${deathId}" class="originator-personal-death">
+        <standard-date-input
+          container-class="originator-field"
+          field-id="${deathId}"
+          heading="Death date"
+          input-class="originator-personal-death"
+        ></standard-date-input>
       </div>
     `;
   }
 
   _notifyChange() {
     this.dispatchEvent(new Event('input', { bubbles: true, composed: true }));
-  }
-
-  handleInsertClick(id) {
-    if (typeof window.insertMenu === 'function') {
-      window.insertMenu(id);
-    }
   }
 
   onEntryAdded(key) {
@@ -80,7 +88,7 @@ export class OriginatorPersonalInput extends RepeatableFieldBase {
 
   getEntries() {
     const entries = [];
-    Array.prototype.slice.call(this.querySelectorAll('.originator-personal-entry')).forEach((entry) => {
+    Array.from(this.querySelectorAll('.originator-personal-entry')).forEach((entry) => {
       const family = entry.querySelector('.originator-personal-family');
       const given = entry.querySelector('.originator-personal-given');
       const birth = entry.querySelector('.originator-personal-birth');
