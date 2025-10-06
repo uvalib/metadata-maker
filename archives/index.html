@@ -13,6 +13,7 @@
 	<script type="module" src="/shared/components/standard-text-input.js"></script>
 	<script type="module" src="/shared/components/standard-date-input.js"></script>
 	<script type="module" src="/shared/components/repeatable-text-input.js"></script>
+	<script type="module" src="/shared/components/repeatable-extent-input.js"></script>
 	<script type="module" src="/shared/components/originator-input.js"></script>
 
 	<link href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css" rel="stylesheet">
@@ -131,22 +132,20 @@
 				</div>
 			</div>
 
-			<div id="sudoc-block" class="standard-block">
-				<label for="sudoc" class="heading">SuDoc classification</label><label for="sudoc" class="insert insert_normal" onClick='insertMenu("sudoc");'>Insert Special Characters</label></br>
-				<div id="insert-sudoc"></div>
-				<input type="text" class="conditional" required id="sudoc"><br>
-				<span class="unlisted">Unlisted</span><input type="checkbox" id="sudoc_listed" class="listed">
-			</div>
+			<repeatable-text-input
+				heading="Language"
+				field-prefix="language"
+				input-class="language-input translit-listen required"
+				add-button-id="add-language"
+				add-button-aria-label="Add language"
+				required
+			></repeatable-text-input>
 
-			<div id="report-number-block" class="standard-block">
-				<label for="report-number" class="heading">Report number</label><label for="report-number" class="insert insert_normal" onClick='insertMenu("report-number");'>Insert Special Characters</label></br>
-				<div id="insert-report-number"></div>
-				<input type="text" class="conditional" required id="report-number"><br>
-				<span class="unlisted">Unlisted</span><input type="checkbox" id="report-number_listed" class="listed">
-			</div>
-
-			<div id="names_title" class="heading">Names<br></div>
-			<corporate-organization-input insert-class="insert insert_corporate" transliteration="false"></corporate-organization-input>
+			<repeatable-extent-input
+				heading="Extent"
+				field-prefix="extent"
+				required
+			></repeatable-extent-input>
 
 			<div id="publisher-block" class="standard-block">
 				<label for="publisher" class="heading">Name of publisher</label><label for="publisher" class="insert insert_normal" onClick='insertMenu("publisher");'>Insert Special Characters</label><br>

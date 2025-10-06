@@ -50,19 +50,21 @@ export class RepeatableTextInput extends RepeatableFieldBase {
     const id = `${this.fieldPrefix}_${key}`;
     const insertId = `insert-${id}`;
     const requiredMarker = this.required && this.requiredMarker ? this.requiredMarker : nothing;
-    const heading = this.heading ? html`<label for="${id}" class="heading">${this.heading}${requiredMarker !== nothing ? html`<span class="required_marker">${requiredMarker}</span>` : nothing}</label>` : nothing;
+    const headingLabel = isFirst && this.heading
+      ? html`<label for="${id}" class="heading">${this.heading}${requiredMarker !== nothing ? html`<span class="required_marker">${requiredMarker}</span>` : nothing}</label>`
+      : nothing;
     const insert = html`<label for="${id}" class="${this.insertClass}" @click=${() => this.handleInsertClick(id)}>${this.insertLabel}</label>`;
     const help = isFirst && this.helpText ? html`<label title="${this.helpText}"><span class="question-mark">?</span></label>` : nothing;
     const classes = this.inputClass ? this.inputClass : '';
-    const requiredAttr = this.required && isFirst;
-    const wrapperClass = isFirst ? 'repository-address-line' : 'repository-address-line added';
+    const requiredAttr = this.required;
+    const wrapperClass = isFirst ? 'repeatable-entry' : 'repeatable-entry added';
     return html`
       <div class="${wrapperClass}">
-        ${isFirst ? html`${heading}${insert}<br>` : html`${insert}<br>`}
+        ${headingLabel}
+        ${insert}<br>
         <div id="${insertId}"></div>
         <input type="text" id="${id}" class="${classes}" ?required=${requiredAttr}>
         ${help}
-        ${!isFirst ? html`<br>` : nothing}
       </div>
     `;
   }

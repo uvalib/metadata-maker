@@ -161,10 +161,23 @@ $("#marc-maker").submit(function(event) {
 		}
 	}
 
-	var recordObject = {
-		repository_name: $("#repository_name").val(),
-		repository_location: $("#repository_location").val(),
-		repository_address: repositoryAddresses,
+var languageEntries = Array.from(document.querySelectorAll('.language-input'))
+	.map(function(input) {
+		return (input.value || '').trim();
+	})
+	.filter(function(value) {
+		return value !== '';
+	});
+
+var extentComponent = document.querySelector('repeatable-extent-input');
+var extentEntries = extentComponent && typeof extentComponent.getEntries === 'function'
+	? extentComponent.getEntries()
+	: [];
+
+var recordObject = {
+	repository_name: $("#repository_name").val(),
+	repository_location: $("#repository_location").val(),
+	repository_address: repositoryAddresses,
 		identifier: $("#identifier").val(),
 		coverage_start: $("#coverage_start").val(),
 		coverage_end: $("#coverage_end").val(),
@@ -186,24 +199,24 @@ $("#marc-maker").submit(function(event) {
 		publication_place: $("#place").val(),
 		publication_country: $("#country").val(),
 		copyright_year: $("#cyear").val(),
-		sudoc: $("#sudoc").val(),
-		report_number: $("#report-number").val(),
+		languages: languageEntries,
 		volume_or_page: $("#vorp").val(),
 		pages: $("#pages").val(),
 		unpaged: $("#pages_listed").is(':checked'),
 		illustrations_yes: $("#illustrations-yes").is(':checked'),
 		dimensions: $("#dimensions").val(),
 		translit_publisher: $("#translit_publisher").val(),
-		translit_place: $("#translit_place").val(),
-		contents: $("#contents").val(),
-		notes: $("#notes").val(),
-		keywords: words,
-		fast: fast_array,
-		additional_authors: complete_names_list,
-		additional_corporate_names: complete_corporate_names_list,
-		originators_personal: originatorData.personalOriginators,
-		originators_corporate: originatorData.corporateOriginators
-	};
+	translit_place: $("#translit_place").val(),
+	contents: $("#contents").val(),
+	notes: $("#notes").val(),
+	keywords: words,
+	fast: fast_array,
+	additional_authors: complete_names_list,
+	additional_corporate_names: complete_corporate_names_list,
+	originators_personal: originatorData.personalOriginators,
+	originators_corporate: originatorData.corporateOriginators,
+	extent: extentEntries
+};
 
 	var institution_info = generateInstitutionInfo();
 
