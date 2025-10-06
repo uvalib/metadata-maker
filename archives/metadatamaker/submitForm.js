@@ -206,17 +206,21 @@ var recordObject = {
 		illustrations_yes: $("#illustrations-yes").is(':checked'),
 		dimensions: $("#dimensions").val(),
 		translit_publisher: $("#translit_publisher").val(),
-	translit_place: $("#translit_place").val(),
-	contents: $("#contents").val(),
-	notes: $("#notes").val(),
-	keywords: words,
-	fast: fast_array,
-	additional_authors: complete_names_list,
-	additional_corporate_names: complete_corporate_names_list,
-	originators_personal: originatorData.personalOriginators,
-	originators_corporate: originatorData.corporateOriginators,
-	extent: extentEntries
-};
+		translit_place: $("#translit_place").val(),
+		contents: $("#contents").val(),
+		notes: $("#notes").val(),
+		keywords: words,
+		fast: fast_array,
+		additional_authors: complete_names_list,
+		additional_corporate_names: complete_corporate_names_list,
+		originators_personal: originatorData.personalOriginators,
+		originators_corporate: originatorData.corporateOriginators,
+	extent: extentEntries,
+	dimensions: {
+		value: $("#dimensions_text").val(),
+		units: $("#dimensions_units").val()
+	}
+	};
 
 	var institution_info = generateInstitutionInfo();
 
