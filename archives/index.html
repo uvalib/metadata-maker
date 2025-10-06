@@ -12,8 +12,7 @@
 	<script type="module" src="/shared/components/top-navigation.js"></script>
 	<script type="module" src="/shared/components/standard-text-input.js"></script>
 	<script type="module" src="/shared/components/repeatable-text-input.js"></script>
-	<script type="module" src="/shared/components/originator-personal-input.js"></script>
-	<script type="module" src="/shared/components/originator-corporate-input.js"></script>
+	<script type="module" src="/shared/components/originator-input.js"></script>
 
 	<link href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css" rel="stylesheet">
 	<link href="https://jqueryui.com/jquery-wp-content/themes/jqueryui.com/style.css" rel="stylesheet">
@@ -74,8 +73,6 @@
 				container-id="subtitle-block"
 				heading="Subtitle"
 				field-id="subtitle"
-				required
-				required-marker=""
 				input-class="conditional"
 				help-text="Record the subtitle if one exists"
 				unlisted
@@ -102,11 +99,7 @@
 				input-class="required"
 			></standard-text-input>
 
-			<div id="originator-block" class="standard-block">
-				<label class="heading">Originator</label>
-				<originator-personal-input></originator-personal-input>
-				<originator-corporate-input></originator-corporate-input>
-			</div>
+			<originator-input required></originator-input>
 
 			<div id="item-number-block" class="standard-block">
 				<label for="item-number" class="heading">Item number</label><label for="item-number" class="insert insert_normal" onClick='insertMenu("item-number");'>Insert Special Characters</label></br>

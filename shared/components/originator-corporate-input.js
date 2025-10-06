@@ -2,6 +2,11 @@ import { html, nothing } from 'https://cdn.jsdelivr.net/npm/lit@3.1.0/+esm';
 import { RepeatableFieldBase } from './repeatable-field-base.js';
 
 export class OriginatorCorporateInput extends RepeatableFieldBase {
+  firstUpdated() {
+    this.addEventListener('input', () => this._notifyChange(), true);
+    this.addEventListener('change', () => this._notifyChange(), true);
+  }
+
   constructor() {
     super();
     this.addButtonLabel = '+';
@@ -28,17 +33,16 @@ export class OriginatorCorporateInput extends RepeatableFieldBase {
   }
 
   renderEntry(key) {
-    const suffix = `_${key}`;
-    const nameId = `originator_corporate_name${suffix}`;
-    const startId = `originator_corporate_start${suffix}`;
-    const endId = `originator_corporate_end${suffix}`;
+    const nameId = `originator_corporate_name_${key}`;
+    const startId = `originator_corporate_start_${key}`;
+    const endId = `originator_corporate_end_${key}`;
 
     return html`
       <div class="originator-corporate-entry" data-originator-index="${key}">
         <label for="${nameId}" class="heading">Name</label>
         <label for="${nameId}" class="insert insert_normal" @click=${() => this.handleInsertClick(nameId)}>Insert Special Characters</label><br>
         <div id="insert-${nameId}"></div>
-        <input type="text" id="${nameId}" class="originator-corporate-name translit-listen" placeholder="Name" ?required=${key === 0}>
+        <input type="text" id="${nameId}" class="originator-corporate-name translit-listen" placeholder="Name">
 
         <label for="${startId}" class="heading">Start date</label><br>
         <input type="date" id="${startId}" class="originator-corporate-start">
@@ -47,6 +51,10 @@ export class OriginatorCorporateInput extends RepeatableFieldBase {
         <input type="date" id="${endId}" class="originator-corporate-end">
       </div>
     `;
+  }
+
+  _notifyChange() {
+    this.dispatchEvent(new Event('input', { bubbles: true, composed: true }));
   }
 
   handleInsertClick(id) {
@@ -60,6 +68,27 @@ export class OriginatorCorporateInput extends RepeatableFieldBase {
     if (input) {
       input.focus();
     }
+    this._notifyChange();
+  }
+
+  getEntries() {
+    const entries = [];
+    Array.prototype.slice.call(this.querySelectorAll('.originator-corporate-entry')).forEach((entry) => {
+      const name = entry.querySelector('.originator-corporate-name');
+      const start = entry.querySelector('.originator-corporate-start');
+      const end = entry.querySelector('.originator-corporate-end');
+      const nameValue = name ? name.value.trim() : '';
+      const startValue = start ? start.value : '';
+      const endValue = end ? end.value : '';
+      if (nameValue !== '' || startValue !== '' || endValue !== '') {
+        entries.push({
+          name: nameValue,
+          start_date: startValue,
+          end_date: endValue
+        });
+      }
+    });
+    return entries;
   }
 }
 

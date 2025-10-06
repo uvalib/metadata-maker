@@ -149,42 +149,17 @@ $("#marc-maker").submit(function(event) {
 			return value !== '';
 		});
 
-	var personalOriginators = [];
-	Array.prototype.slice.call(document.querySelectorAll('.originator-personal-entry')).forEach(function(entry) {
-		var family = entry.querySelector('.originator-personal-family');
-		var given = entry.querySelector('.originator-personal-given');
-		var birth = entry.querySelector('.originator-personal-birth');
-		var death = entry.querySelector('.originator-personal-death');
-		var familyValue = family ? family.value.trim() : '';
-		var givenValue = given ? given.value.trim() : '';
-		var birthValue = birth ? birth.value : '';
-		var deathValue = death ? death.value : '';
-		if (familyValue !== '' || givenValue !== '' || birthValue !== '' || deathValue !== '') {
-			personalOriginators.push({
-				family: familyValue,
-				given: givenValue,
-				birth_date: birthValue,
-				death_date: deathValue
-			});
-		}
-	});
+	var originatorComponent = document.querySelector('originator-input');
+	var originatorData = originatorComponent && typeof originatorComponent.getValue === 'function'
+		? originatorComponent.getValue()
+		: { personalOriginators: [], corporateOriginators: [] };
 
-	var corporateOriginators = [];
-	Array.prototype.slice.call(document.querySelectorAll('.originator-corporate-entry')).forEach(function(entry) {
-		var name = entry.querySelector('.originator-corporate-name');
-		var start = entry.querySelector('.originator-corporate-start');
-		var end = entry.querySelector('.originator-corporate-end');
-		var nameValue = name ? name.value.trim() : '';
-		var startValue = start ? start.value : '';
-		var endValue = end ? end.value : '';
-		if (nameValue !== '' || startValue !== '' || endValue !== '') {
-			corporateOriginators.push({
-				name: nameValue,
-				start_date: startValue,
-				end_date: endValue
-			});
+	if (originatorComponent && typeof originatorComponent.validate === 'function') {
+		if (!originatorComponent.validate()) {
+			event.preventDefault();
+			return;
 		}
-	});
+	}
 
 	var recordObject = {
 		repository_name: $("#repository_name").val(),
@@ -224,8 +199,8 @@ $("#marc-maker").submit(function(event) {
 		fast: fast_array,
 		additional_authors: complete_names_list,
 		additional_corporate_names: complete_corporate_names_list,
-		originators_personal: personalOriginators,
-		originators_corporate: corporateOriginators
+		originators_personal: originatorData.personalOriginators,
+		originators_corporate: originatorData.corporateOriginators
 	};
 
 	var institution_info = generateInstitutionInfo();

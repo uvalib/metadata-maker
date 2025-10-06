@@ -2,6 +2,11 @@ import { html, nothing } from 'https://cdn.jsdelivr.net/npm/lit@3.1.0/+esm';
 import { RepeatableFieldBase } from './repeatable-field-base.js';
 
 export class OriginatorPersonalInput extends RepeatableFieldBase {
+  firstUpdated() {
+    this.addEventListener('input', () => this._notifyChange(), true);
+    this.addEventListener('change', () => this._notifyChange(), true);
+  }
+
   constructor() {
     super();
     this.addButtonLabel = '+';
@@ -39,12 +44,12 @@ export class OriginatorPersonalInput extends RepeatableFieldBase {
         <label for="${familyId}" class="heading">Family name</label>
         <label for="${familyId}" class="insert insert_normal" @click=${() => this.handleInsertClick(familyId)}>Insert Special Characters</label><br>
         <div id="insert-${familyId}"></div>
-        <input type="text" id="${familyId}" class="originator-personal-family translit-listen" placeholder="Family name" ?required=${isFirst}>
+        <input type="text" id="${familyId}" class="originator-personal-family translit-listen" placeholder="Family name">
 
         <label for="${givenId}" class="heading">Given name</label>
         <label for="${givenId}" class="insert insert_normal" @click=${() => this.handleInsertClick(givenId)}>Insert Special Characters</label><br>
         <div id="insert-${givenId}"></div>
-        <input type="text" id="${givenId}" class="originator-personal-given translit-listen" placeholder="Given name" ?required=${isFirst}>
+        <input type="text" id="${givenId}" class="originator-personal-given translit-listen" placeholder="Given name">
 
         <label for="${birthId}" class="heading">Birth date</label><br>
         <input type="date" id="${birthId}" class="originator-personal-birth">
@@ -53,6 +58,10 @@ export class OriginatorPersonalInput extends RepeatableFieldBase {
         <input type="date" id="${deathId}" class="originator-personal-death">
       </div>
     `;
+  }
+
+  _notifyChange() {
+    this.dispatchEvent(new Event('input', { bubbles: true, composed: true }));
   }
 
   handleInsertClick(id) {
@@ -66,6 +75,30 @@ export class OriginatorPersonalInput extends RepeatableFieldBase {
     if (input) {
       input.focus();
     }
+    this._notifyChange();
+  }
+
+  getEntries() {
+    const entries = [];
+    Array.prototype.slice.call(this.querySelectorAll('.originator-personal-entry')).forEach((entry) => {
+      const family = entry.querySelector('.originator-personal-family');
+      const given = entry.querySelector('.originator-personal-given');
+      const birth = entry.querySelector('.originator-personal-birth');
+      const death = entry.querySelector('.originator-personal-death');
+      const familyValue = family ? family.value.trim() : '';
+      const givenValue = given ? given.value.trim() : '';
+      const birthValue = birth ? birth.value : '';
+      const deathValue = death ? death.value : '';
+      if (familyValue !== '' || givenValue !== '' || birthValue !== '' || deathValue !== '') {
+        entries.push({
+          family: familyValue,
+          given: givenValue,
+          birth_date: birthValue,
+          death_date: deathValue
+        });
+      }
+    });
+    return entries;
   }
 }
 
