@@ -169,19 +169,36 @@ var languageEntries = Array.from(document.querySelectorAll('.language-input'))
 		return value !== '';
 	});
 
+var bibliographyEntries = Array.from(document.querySelectorAll('.bibliography-input'))
+	.map(function(input) {
+		return (input.value || '').trim();
+	})
+	.filter(function(value) {
+		return value !== '';
+	});
+
 var extentComponent = document.querySelector('repeatable-extent-input');
 var extentEntries = extentComponent && typeof extentComponent.getEntries === 'function'
 	? extentComponent.getEntries()
 	: [];
 
-var recordObject = {
-	repository_name: $("#repository_name").val(),
-	repository_location: $("#repository_location").val(),
-	repository_address: repositoryAddresses,
+var subjectComponent = document.querySelector('repeatable-subject-input');
+var subjectEntries = subjectComponent && typeof subjectComponent.getEntries === 'function'
+	? subjectComponent.getEntries()
+	: [];
+
+	var recordObject = {
+		repository_name: $("#repository_name").val(),
+		repository_location: $("#repository_location").val(),
+		repository_address: repositoryAddresses,
 		identifier: $("#identifier").val(),
 		coverage_start: $("#coverage_start").val(),
 		coverage_end: $("#coverage_end").val(),
 		coverage_type: $("#coverage_type").val(),
+		description: {
+			type: $("#description_type").val(),
+			text: $("#description_text").val()
+		},
 		title: [
 			{
 				title: $("#title").val(),
@@ -205,10 +222,6 @@ var recordObject = {
 		unpaged: $("#pages_listed").is(':checked'),
 		illustrations_yes: $("#illustrations-yes").is(':checked'),
 		dimensions: $("#dimensions").val(),
-		translit_publisher: $("#translit_publisher").val(),
-		translit_place: $("#translit_place").val(),
-		contents: $("#contents").val(),
-		notes: $("#notes").val(),
 		keywords: words,
 		fast: fast_array,
 		additional_authors: complete_names_list,
@@ -216,10 +229,12 @@ var recordObject = {
 		originators_personal: originatorData.personalOriginators,
 		originators_corporate: originatorData.corporateOriginators,
 	extent: extentEntries,
-	dimensions: {
-		value: $("#dimensions_text").val(),
-		units: $("#dimensions_units").val()
-	}
+		dimensions: {
+			value: $("#dimensions_text").val(),
+			units: $("#dimensions_units").val()
+		},
+		bibliography: bibliographyEntries,
+		subjects: subjectEntries
 	};
 
 	var institution_info = generateInstitutionInfo();

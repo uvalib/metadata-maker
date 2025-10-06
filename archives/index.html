@@ -13,6 +13,7 @@
 	<script type="module" src="/shared/components/standard-text-input.js"></script>
 	<script type="module" src="/shared/components/standard-date-input.js"></script>
 	<script type="module" src="/shared/components/repeatable-text-input.js"></script>
+	<script type="module" src="/shared/components/repeatable-subject-input.js"></script>
 	<script type="module" src="/shared/components/repeatable-extent-input.js"></script>
 	<script type="module" src="/shared/components/originator-input.js"></script>
 
@@ -166,43 +167,37 @@
 				</div>
 			</div>
 
-						<div id="illustrations-block" class="standard-block">
-				<label for="illustrations" class="heading">Does the item include illustrations?</label><br>
-				<input type="radio" name="illustrations" id="illustrations-yes" value="yes">Yes
-				<input type="radio" name="illustrations" id="illustrations-no" value="no">No
+			<div id="description-block" class="standard-block">
+				<label for="description_type" class="heading">Description<span class="required_marker">*</span></label><br>
+				<select id="description_type" required>
+					<option value="accessrestrict">accessrestrict</option>
+					<option value="accruals">accruals</option>
+					<option value="acqinfo">acqinfo</option>
+					<option value="altformavail">altformavail</option>
+					<option value="appraisal">appraisal</option>
+					<option value="arrangement">arrangement</option>
+					<option value="bioghist">bioghist</option>
+					<option value="note">note</option>
+					<option value="originalstoc">originalstoc</option>
+					<option value="phystech">phystech</option>
+					<option value="prefercite">prefercite</option>
+					<option value="relatedmaterial">relatedmaterial</option>
+					<option value="scopecontent">scopecontent</option>
+					<option value="separatedmaterial">separatedmaterial</option>
+					<option value="userestrict">userestrict</option>
+				</select><br>
+				<textarea id="description_text" required rows="5" class="description-text"></textarea>
 			</div>
 
-			<div id="keywords" class="standard-block">
-				<label for="keywords" class="heading">Keywords<span class="required_marker">*</span></label><br>
-				<input type="text" class="fastID hidden" id="fastID0">
-				<input type="number" class="fastType hidden" id="fastType0">
-				<input type="text" class="fastInd hidden" id="fastInd0">
-				<input type="text" class="keyword required" required id="keyword0"> <label title="Record, in English, any descriptive terms that describe the content of this book. Record only one term or phrase in each box. E.g., Astronomy or Politics of Egypt"><span class="question-mark">?</span></label>
-				<input type="button" value="+" id="add-button" onClick="addKeyword();">
-			</div>
+			<repeatable-text-input
+				heading="Bibliography"
+				field-prefix="bibliography"
+				input-class="bibliography-input translit-listen"
+				add-button-id="add-bibliography"
+				add-button-aria-label="Add bibliography reference"
+			></repeatable-text-input>
 
-			<div id="contents-block" class="standard-block">
-				<label for="contents" class="heading">Contents</label><br>
-				<textarea id="contents"></textarea>
-			</div>
-
-			<div id="notes-block">
-				<label for="notes">Notes to the Cataloger</label><br>
-				<textarea id="notes"></textarea>
-			</div>
-
-			<div id="save-as-block">
-				<label for="filename">Save as</label>
-				<input type="text" id="filename" placeholder="record">.[file type]
-			</div>
-
-			<div id="formats-block" class="standard-block">
-				<label for="filetype">Choose record formats:</label><br>
-				<input type="checkbox" id="MARC" class="filetype">MARC<br>
-				<input type="checkbox" id="MARCXML" class="filetype">MARCXML<br>
-				<input type="checkbox" id="MODS" class="filetype">MODS<br>
-				<input type="checkbox" id="HTML" class="filetype">HTML
-			</div>
+			<repeatable-subject-input></repeatable-subject-input>
 
 			<div id="buttons" class="standard-block">
 				<input type="submit" value="Make" id="make">
@@ -217,7 +212,6 @@
 		<div id="version">Version 1.1 – Updated on 11/10/2022. Metadata Maker for Government Documents created on 08/10/2015.</div>
 		<a id="code" href="https://github.com/UIUCLibrary/metadata-maker/tree/GovDocs">GitHub</a></div>
 		
-		<script type="module" src="../shared/components/corporate-organization-input.js"></script>
 		<script type="module" src="../shared/components/insert-diacritics.js"></script>
 		<script src="../shared/generalInteractionsBase.js"></script>
 		<script src="metadatamaker/generalInteractions.js"></script>
