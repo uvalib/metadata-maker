@@ -73,8 +73,26 @@ export class RepeatableSubjectInput extends RepeatableFieldBase {
   }
 
   firstUpdated() {
-    this.addEventListener('input', () => this._notifyChange(), true);
-    this.addEventListener('change', () => this._notifyChange(), true);
+    this.addEventListener(
+      'input',
+      (event) => {
+        if (event.target === this) {
+          return;
+        }
+        this._notifyChange();
+      },
+      true
+    );
+    this.addEventListener(
+      'change',
+      (event) => {
+        if (event.target === this) {
+          return;
+        }
+        this._notifyChange();
+      },
+      true
+    );
   }
 
   _notifyChange() {

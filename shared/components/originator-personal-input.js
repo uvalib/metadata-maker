@@ -1,12 +1,30 @@
 import { html, nothing } from 'https://cdn.jsdelivr.net/npm/lit@3.1.0/+esm';
 import { RepeatableFieldBase } from './repeatable-field-base.js';
 import './standard-text-input.js';
-import './standard-date-input.js';
+import './edtf-date-input.js';
 
 export class OriginatorPersonalInput extends RepeatableFieldBase {
   firstUpdated() {
-    this.addEventListener('input', () => this._notifyChange(), true);
-    this.addEventListener('change', () => this._notifyChange(), true);
+    this.addEventListener(
+      'input',
+      (event) => {
+        if (event.target === this) {
+          return;
+        }
+        this._notifyChange();
+      },
+      true
+    );
+    this.addEventListener(
+      'change',
+      (event) => {
+        if (event.target === this) {
+          return;
+        }
+        this._notifyChange();
+      },
+      true
+    );
   }
 
   constructor() {
@@ -57,19 +75,19 @@ export class OriginatorPersonalInput extends RepeatableFieldBase {
           input-class="originator-personal-given translit-listen"
         ></standard-text-input>
 
-        <standard-date-input
+        <edtf-date-input
           container-class="originator-field"
           field-id="${birthId}"
           heading="Birth date"
           input-class="originator-personal-birth"
-        ></standard-date-input>
+        ></edtf-date-input>
 
-        <standard-date-input
+        <edtf-date-input
           container-class="originator-field"
           field-id="${deathId}"
           heading="Death date"
           input-class="originator-personal-death"
-        ></standard-date-input>
+        ></edtf-date-input>
       </div>
     `;
   }
