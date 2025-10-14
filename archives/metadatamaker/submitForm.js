@@ -91,6 +91,7 @@ function find110(list) {
  * No information should be submitted to the server, so the default behavior of the button is blocked.
  */
 $("#marc-maker").submit(function(event) {
+	console.log('Archives form submission started');
 	var words = [];
 	var fast_array = [];
 	for (var i = 0; i < counter; i++) {
@@ -156,6 +157,7 @@ $("#marc-maker").submit(function(event) {
 
 	if (originatorComponent && typeof originatorComponent.validate === 'function') {
 		if (!originatorComponent.validate()) {
+			console.warn('Originator validation failed; blocking submission');
 			event.preventDefault();
 			return;
 		}
@@ -255,5 +257,12 @@ var subjectEntries = subjectComponent && typeof subjectComponent.getEntries === 
 		downloadHTML(recordObject,institution_info);
 	}
 
+	if (typeof downloadEAD === 'function') {
+		downloadEAD(recordObject, institution_info);
+	} else {
+		console.warn('downloadEAD function is not available; unable to download EAD.');
+	}
+
+	console.log('Archives form submission handled, preventing default');
 	event.preventDefault();
 });

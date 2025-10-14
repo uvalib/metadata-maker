@@ -12,3 +12,5 @@ window.downloadMARC = function downloadMARCPlaceholder(record, institutionInfo) 
 window.downloadXML = function downloadXMLPlaceholder(record, institutionInfo) {
 	return builder.downloadEAD(record, institutionInfo);
 };
+
+window.downloadEAD = builder.downloadEAD.bind(builder);

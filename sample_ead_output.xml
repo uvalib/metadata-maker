@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ead xmlns="urn:isbn:1-931666-22-9" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:isbn:1-931666-22-9 https://www.loc.gov/ead/ead.xsd">
+  <eadheader>
+    <eadid/>
+    <filedesc>
+      <titlestmt>
+        <titleproper>Guide to the Journal of Academic Research</titleproper>
+        <subtitle>A Quarterly Publication</subtitle>
+      </titlestmt>
+      <publicationstmt>
+        <publisher>University Library</publisher>
+        <date>2024-10-11T15:30:00.000Z</date>
+      </publicationstmt>
+    </filedesc>
+  </eadheader>
+  <archdesc level="collection">
+    <did>
+      <unittitle>Journal of Academic Research</unittitle>
+      <repository>
+        <corpname>University Library</corpname>
+      </repository>
+      <unitdate type="inclusive">1990/2023</unitdate>
+      <unitid>1234-5678</unitid>
+      <origination>Academic Press</origination>
+      <langmaterial>eng</langmaterial>
+      <physdesc>
+        <extent unit="item">1 serial</extent>
+        <dimensions unit="cm">28 cm</dimensions>
+      </physdesc>
+    </did>
+    <scopecontent><p>This quarterly journal covers topics in academic research across multiple disciplines.</p></scopecontent>
+    <controlaccess>
+      <subject>academic research</subject>
+      <subject>scholarly publishing</subject>
+      <subject source="fast">Universities</subject>
+      <subject source="fast">Academic writing</subject>
+    </controlaccess>
+  </archdesc>
+</ead>

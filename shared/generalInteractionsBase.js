@@ -156,15 +156,18 @@
     download: {
       headers: {
         mrc: 'data:application/marc;charset=utf-8,',
-        html: 'data:text/html;charset=utf-8,'
+        html: 'data:text/html;charset=utf-8,',
+        ead: 'data:application/xml;charset=utf-8,'
       },
       defaultHeader: 'data:text/plain;charset=utf-8,',
       suffixes: {
         xml: '_MARCXML',
-        mods: '_MODS'
+        mods: '_MODS',
+        ead: '_EAD'
       },
       extensionOverrides: {
-        mods: 'xml'
+        mods: 'xml',
+        ead: 'xml'
       }
     },
     additionalHandlers: []
@@ -504,10 +507,10 @@
     }
 
     downloadFile(text, filetype) {
-      const downloadFile = document.createElement('a');
+      const downloadLink = document.createElement('a');
       const headers = this.config.download.headers || {};
       const header = headers[filetype] || this.config.download.defaultHeader || 'data:text/plain;charset=utf-8,';
-      downloadFile.setAttribute('href', header + encodeURIComponent(text));
+      downloadLink.setAttribute('href', header + encodeURIComponent(text));
       let filename = this.getFilename();
       if (!this.checkExists(filename)) {
         filename = 'record';
@@ -520,13 +523,28 @@
       if (this.config.download.extensionOverrides && this.config.download.extensionOverrides[filetype]) {
         extension = this.config.download.extensionOverrides[filetype];
       }
-      downloadFile.setAttribute('download', filename + '.' + extension);
-      const clickReplacement = new MouseEvent('click', {
-        view: window,
-        bubbles: true,
-        cancleable: false
-      });
-      downloadFile.dispatchEvent(clickReplacement);
+      downloadLink.setAttribute('download', filename + '.' + extension);
+      downloadLink.style.display = 'none';
+
+      const container = document.body || document.documentElement;
+      if (!container) {
+        // As a last resort, open the data URI in the current window.
+        window.location.href = header + encodeURIComponent(text);
+        return;
+      }
+
+      container.appendChild(downloadLink);
+      if (typeof downloadLink.click === 'function') {
+        downloadLink.click();
+      } else {
+        const clickReplacement = new MouseEvent('click', {
+          view: window,
+          bubbles: true,
+          cancelable: true
+        });
+        downloadLink.dispatchEvent(clickReplacement);
+      }
+      container.removeChild(downloadLink);
     }
 
     getTimestamp() {

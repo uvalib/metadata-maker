@@ -48,7 +48,7 @@ export class OriginatorInput extends LitElement {
     return html`
       <div id="originator-block" class="standard-block">
         <label class="heading">Originator${marker}</label>
-        <input type="text" class="originator-required-flag" ?required=${this.isRequired} aria-hidden="true" tabindex="-1" style="position:absolute;opacity:0;width:1px;height:1px;border:0;padding:0;margin:0;">
+        <input type="text" class="originator-required-flag" aria-hidden="true" tabindex="-1" style="position:absolute;opacity:0;width:1px;height:1px;border:0;padding:0;margin:0;">
         <originator-personal-input></originator-personal-input>
         <originator-corporate-input></originator-corporate-input>
       </div>
@@ -76,27 +76,30 @@ export class OriginatorInput extends LitElement {
 
     const { personalOriginators, corporateOriginators } = this.getValue();
     const hasOriginator = personalOriginators.length > 0 || corporateOriginators.length > 0;
-
-    if (this.isRequired) {
-      hidden.value = hasOriginator ? 'valid' : '';
-      hidden.setCustomValidity(hasOriginator ? '' : 'Please provide at least one originator.');
-    } else {
-      hidden.value = '';
-      hidden.setCustomValidity('');
-    }
-
+    hidden.value = hasOriginator ? 'valid' : '';
     return !this.isRequired || hasOriginator;
   }
 
   validate() {
+    const hidden = this.hiddenInput;
     const valid = this.updateValidity();
-    if (!valid && this.hiddenInput) {
+    if (!valid && hidden) {
+      hidden.setCustomValidity('Please provide at least one originator.');
       try {
-        this.hiddenInput.focus({ preventScroll: true });
+        hidden.focus({ preventScroll: true });
       } catch (e) {
         // focus may fail silently for hidden inputs
       }
-      this.hiddenInput.reportValidity();
+      hidden.reportValidity();
+      hidden.setCustomValidity('');
+      const personalField = this.querySelector('.originator-personal-family');
+      if (personalField && typeof personalField.focus === 'function') {
+        try {
+          personalField.focus({ preventScroll: false });
+        } catch (e) {
+          personalField.focus();
+        }
+      }
     }
     return valid;
   }
