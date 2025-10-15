@@ -23,7 +23,6 @@ const DEFAULT_VERSION_ORDER = [
   'archives',
   'collections',
   'maps',
-  'microfilms',
   'mixedMedia',
   'monographs',
   'monoviaf',

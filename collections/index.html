@@ -39,27 +39,7 @@
 	</div>
 	<div id="content">
 		<form id="marc-maker">
-			<standard-text-input
-				heading="Repository name"
-				field-id="repository_name"
-				required
-				required-marker="*"
-				input-class="required translit-listen"
-			></standard-text-input>
 
-			<repeatable-text-input
-				heading="Repository address"
-				field-prefix="repository_address"
-				input-class="repository-address-input translit-listen"
-				add-button-id="add-repository-address"
-				add-button-aria-label="Add repository address line"
-			></repeatable-text-input>
-
-			<standard-text-input
-				heading="Location in repository"
-				field-id="repository_location"
-				input-class="translit-listen"
-			></standard-text-input>
 
 			<standard-text-input
 				container-id="title-block"
@@ -68,16 +48,7 @@
 				required
 				required-marker="*"
 				input-class="required translit-listen"
-				help-text="Record the title as it appears on the title page. If the title includes a subtitle, record only the main title here, and the subtitle in the next field."
-			></standard-text-input>
-
-			<standard-text-input
-				container-id="subtitle-block"
-				heading="Subtitle"
-				field-id="subtitle"
-				input-class="conditional"
-				help-text="Record the subtitle if one exists"
-				unlisted
+				help-text="Record the title as it appears on the title page."
 			></standard-text-input>
 
 			<div id="translit-title-block" class="translit-title-block translit-block standard-translit-block translit-title hidden">
@@ -86,11 +57,25 @@
 				<input type="text" id="translit_title" class="hidden translit translit-title">
 			</div>
 
-			<div id="translit-subtitle-block" class="translit-title-block translit-block standard-translit-block translit-title hidden">
-				<label for="translit_subtitle" class="hidden translit heading translit-title">Transliterated subtitle</label><label for="translit_subtitle" class="insert insert_normal hidden translit translit-title" onClick='insertMenu("translit_subtitle");'>Insert Special Characters</label><br>
-				<div id="insert-translit_subtitle" class="hidden translit translit-title"></div>
-				<input type="text" id="translit_subtitle" class="hidden translit translit-title">
+			<div id="level-block" class="standard-block">
+				<label for="level" class="heading">Level<span class="required_marker">*</span></label><br>
+				<select id="level" class="required" required>
+					<option selected disabled hidden value=''></option>
+					<option value="series">series</option>
+					<option value="subseries">subseries</option>
+					<option value="recordgrp">recordgrp</option>
+					<option value="subgrp">subgrp</option>
+					<option value="file">file</option>
+					<option value="item">item</option>
+					<option value="otherlevel">otherlevel</option>
+				</select><br>
+				<div id="other-level-block" class="standard-block hidden">
+					<label for="other_level" class="heading">Other level<span class="required_marker">*</span></label><br>
+					<input type="text" id="other_level" class="conditional">
+				</div>
 			</div>
+
+
 
 			<standard-text-input
 				container-id="identifier-block"
@@ -101,7 +86,39 @@
 				input-class="required"
 			></standard-text-input>
 
-			<originator-input required></originator-input>
+			<standard-text-input
+				container-id="parent-identifier-block"
+				heading="Parent identifier"
+				field-id="parent_identifier"
+				input-class="conditional"
+			></standard-text-input>
+
+			<standard-text-input
+				container-id="collection-title-block"
+				heading="Collection Title"
+				field-id="collection_title"
+				required
+				required-marker="*"
+				input-class="required"
+			></standard-text-input>
+
+			<standard-text-input
+				container-id="collection-identifier-block"
+				heading="Collection Identifier"
+				field-id="collection_identifier"
+				required
+				required-marker="*"
+				input-class="required"
+			></standard-text-input>
+
+			<standard-text-input
+				container-id="location-within-collection-block"
+				heading="Location within collection"
+				field-id="location_within_collection"
+				input-class="conditional"
+			></standard-text-input>
+
+			<originator-input heading="Originator (if different from that of collection)"></originator-input>
 
 			<div id="coverage-block" class="standard-block">
 				<label class="heading">Coverage date(s)</label>
@@ -111,8 +128,6 @@
 						field-id="coverage_start"
 						heading="Start date"
 						input-class="coverage-start"
-						required
-						required-marker="*"
 					></edtf-date-input>
 
 					<edtf-date-input
@@ -124,7 +139,7 @@
 
 					<div class="coverage-field">
 						<label for="coverage_type" class="heading">Coverage date type</label><br>
-						<select id="coverage_type" class="coverage-type" required>
+						<select id="coverage_type" class="coverage-type">
 							<option value="bulk">bulk</option>
 							<option value="inclusive">inclusive</option>
 						</select>

@@ -83,4 +83,19 @@ global.requestInsertLabelUpgrade = general.requestInsertLabelUpgrade;
       $('#literature-dropdown').hide();
     }
   });
+
+  // Handle Level select change to show/hide "Other level" input
+  $("#level").change(function() {
+    const value = $(this).val();
+    const otherLevelBlock = $('#other-level-block');
+    const otherLevelInput = $('#other_level');
+    
+    if (value === 'otherlevel') {
+      otherLevelBlock.removeClass('hidden').show();
+      otherLevelInput.attr('required', true).addClass('required');
+    } else {
+      otherLevelBlock.addClass('hidden').hide();
+      otherLevelInput.attr('required', false).removeClass('required').val('');
+    }
+  });
 })(window);
