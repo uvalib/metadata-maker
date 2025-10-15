@@ -5,6 +5,7 @@ const VERSION_DETAILS = {
   ebooks: { id: 'ebooks', label: 'E-Books', href: '/ebooks/' },
   govdocs: { id: 'govdocs', label: 'Government Documents', href: '/govdocs/' },
   archives: { id: 'archives', label: 'Archival Collections', href: '/archives/' },
+  collections: { id: 'collections', label: 'Collection Components', href: '/collections/' },
   maps: { id: 'maps', label: 'Maps', href: '/maps/' },
   microfilms: { id: 'microfilms', label: 'Microfilms', href: '/microfilms/' },
   mixedMedia: { id: 'mixedMedia', label: 'Mixed Media', href: '/mixedMedia/' },
@@ -20,8 +21,12 @@ const DEFAULT_VERSION_ORDER = [
   'ebooks',
   'govdocs',
   'archives',
+  'collections',
   'maps',
+  'microfilms',
+  'mixedMedia',
   'monographs',
+  'monoviaf',
   'scores',
   'serials',
   'theses'
@@ -63,7 +68,7 @@ class TopNavigation extends LitElement {
     super();
     this.currentVersion = 'monographs';
     this.versionLabel = 'Monographs';
-    this.versionIds = DEFAULT_VERSION_ORDER.slice();
+    this.versionIds = undefined; // Will use DEFAULT_VERSION_ORDER as fallback
     this.showInstitution = true;
     this.versionMenuOpen = false;
     this.institutionMenuOpen = false;
