@@ -13,6 +13,8 @@
 	<script type="module" src="/shared/components/standard-text-input.js"></script>
 	<script type="module" src="/shared/components/edtf-date-input.js"></script>
 	<script type="module" src="/shared/components/repeatable-text-input.js"></script>
+	<script type="module" src="/shared/components/language-select.js"></script>
+	<script type="module" src="/shared/components/repeatable-language-select.js"></script>
 	<script type="module" src="/shared/components/repeatable-subject-input.js"></script>
 	<script type="module" src="/shared/components/repeatable-extent-input.js"></script>
 	<script type="module" src="/shared/components/originator-input.js"></script>
@@ -132,14 +134,14 @@
 				</div>
 			</div>
 
-			<repeatable-text-input
+			<repeatable-language-select
 				heading="Language"
 				field-prefix="language"
-				input-class="language-input translit-listen required"
+				select-class="language-input translit-listen"
 				add-button-id="add-language"
 				add-button-aria-label="Add language"
 				required
-			></repeatable-text-input>
+			></repeatable-language-select>
 
 			<repeatable-extent-input
 				heading="Extent"
