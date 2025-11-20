@@ -1,85 +1,8 @@
-function get(name) {
-	if(name=(new RegExp('[?&]'+encodeURIComponent(name)+'=([^&]*)')).exec(location.search)) {
-		return decodeURIComponent(name[1]);
-	}
-}
-/* 
- * Edit the strings in this function to attribute records to another institution
- */
-function generateInstitutionInfo() {
-	var output = {
-		//040 $a, 040 $c
-		marc: 'ViU',
-		mods: {
-			physicalLocation: 'University of Virginia. Library',
-			recordContentSource: 'ViU'
-		},
-		//"seller" info
-		html: {
-			url: 'https://id.loc.gov/authorities/names/n79127895',
-			name: 'University of Virginia'
-		}
-	};
-
-	marc = get('marc');
-	if (typeof marc !== 'undefined') {
-		output['marc'] = marc;
-	}
-	physicalLocation = get('physicalLocation');
-	if (typeof physicalLocation !== 'undefined') {
-		output['mods']['physicalLocation'] = physicalLocation;
-	}
-	recordContentSource = get('recordContentSource');
-	if (typeof recordContentSource !== 'undefined') {
-		output['mods']['recordContentSource'] = recordContentSource;
-	}
-	lcn = get('lcn');
-	if (typeof lcn !== 'undefined') {
-		output['html']['url']  = 'https://id.loc.gov/authorities/names/' + lcn;
-	}
-	n = get('n');
-	if (typeof n !== 'undefined') {
-		output['html']['name'] = n;
-	}
-
-	return output;
-}
-
 /*
- * The first listed author should be placed in 100. If no author is listed, then the first
- * listed artist should be placed in 100. If neither role is listed, then we return a person
- * with no name or role listed.
- *
- * list: List of people. Each person is a list of two objects. The first object contains the
- *		 person's family name, given name, and role in creating the piece being catalogued.
- *		 The second object contains the transliterated family name and given name of the same
- *		 person if applicable. Otherwise those two fields are empty strings.
+ * Utility functions (get, generateInstitutionInfo, find100, find110, checkExists) 
+ * are now loaded from ../shared/sharedUtils.js
+ * See that file for documentation.
  */
-function find100(list) {
-	for (iterator = 0; iterator < list.length; iterator++) {
-		if (list[iterator][0]['role'] == 'aut') {
-			return list.splice(iterator,1);
-		}
-	}
-
-	for (iterator = 0; iterator < list.length; iterator++) {
-		if (list[iterator][0]['role'] == 'art') {
-			return list.splice(iterator,1);
-		}
-	}
-
-	return [[{'family':'','given':'','role':''},{'family':'','given':''}]];
-}
-
-function find110(list) {
-	for (var iterator = 0; iterator < list.length; iterator++) {
-		if (list[iterator][0]['role'] == 'cre') {
-			return list.splice(iterator,1);
-		}
-	}
-
-	return [{'corporate':'', 'role':''},{'corporate':''}];
-}
 
 /*
  * When the form is submitted, create an object with all user-submitted data. Pass that object to functions that

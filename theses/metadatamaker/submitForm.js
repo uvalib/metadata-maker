@@ -1,67 +1,19 @@
-function get(name) {
-	if(name=(new RegExp('[?&]'+encodeURIComponent(name)+'=([^&]*)')).exec(location.search)) {
-		return decodeURIComponent(name[1]);
-	}
-}
-/* 
- * Edit the strings in this function to attribute records to another institution
+/*
+ * Utility functions (get, generateInstitutionInfo, find100, find110, checkExists)
+ * are now loaded from ../shared/sharedUtils.js
+ * See that file for documentation.
  */
-function generateInstitutionInfo() {
-	var output = {
-		//040 $a, 040 $c
-		marc: 'ViU',
-		mods: {
-			physicalLocation: 'University of Virginia. Library',
-			recordContentSource: 'ViU'
-		},
-		//"seller" info
-		html: {
-			url: 'https://id.loc.gov/authorities/names/n79127895',
-			name: 'University of Virginia'
-		}
-	};
 
-	marc = get('marc');
-	if (typeof marc !== 'undefined') {
-		output['marc'] = marc;
-	}
-	physicalLocation = get('physicalLocation');
-	if (typeof physicalLocation !== 'undefined') {
-		output['mods']['physicalLocation'] = physicalLocation;
-	}
-	recordContentSource = get('recordContentSource');
-	if (typeof recordContentSource !== 'undefined') {
-		output['mods']['recordContentSource'] = recordContentSource;
-	}
-	lcn = get('lcn');
-	if (typeof lcn !== 'undefined') {
-		output['html']['url']  = 'https://id.loc.gov/authorities/names/' + lcn;
-	}
-	n = get('n');
-	if (typeof n !== 'undefined') {
-		output['html']['name'] = n;
-	}
-
-	return output;
-}
-
-function find110(list) {
-	for (var iterator = 0; iterator < list.length; iterator++) {
-		if (checkExists(list[iterator]) && checkExists(list[iterator][0]) && list[iterator][0]['role'] == 'cre' && checkExists(list[iterator][0]['corporate'])) {
-			return list.splice(iterator, 1);
-		}
-	}
-
-	for (var iterator = 0; iterator < list.length; iterator++) {
-		if (checkExists(list[iterator]) && checkExists(list[iterator][0]) && checkExists(list[iterator][0]['corporate'])) {
-			return list.splice(iterator, 1);
-		}
-	}
-
-	return [{'corporate':'', 'role':''},{'corporate':''}];
-}
-
-$("#marc-maker").submit(function(event) {
+/*
+ * When the form is submitted, create an object with all user-submitted data. Pass that object to functions that
+ * build a record around the data.
+ *
+ * The first listed author or artist is placed in recordObject.author, while all other credited individuals are
+ * placed into recordObject.additional_authors.
+ *
+ * No information should be submitted to the server, so the default behavior of the button is blocked.
+ */
+$("#marc-maker").submit(function (event) {
 	var additionalAuthorCount = typeof aCounter === 'number' ? aCounter : 0;
 	var authorEntries = [
 		{
@@ -99,7 +51,7 @@ $("#marc-maker").submit(function(event) {
 		[
 			{
 				corporate: $("#corporate_name").val(),
-				role:  $("#corporate_role").val()
+				role: $("#corporate_role").val()
 			},
 			{
 				corporate: $("#translit_corporate_name").val()
@@ -120,7 +72,7 @@ $("#marc-maker").submit(function(event) {
 		}
 	}
 
-	var corporate_author = [{'corporate':'', 'role':''},{'corporate':''}];
+	var corporate_author = [{ 'corporate': '', 'role': '' }, { 'corporate': '' }];
 	if (!hasPersonalAuthor && filtered_corporate_entries.length > 0) {
 		var selectedCorporate = find110(filtered_corporate_entries);
 		if (Array.isArray(selectedCorporate) && selectedCorporate.length === 1 && Array.isArray(selectedCorporate[0])) {
@@ -165,19 +117,19 @@ $("#marc-maker").submit(function(event) {
 	var institution_info = generateInstitutionInfo();
 
 	if ($("#MARC").is(':checked')) {
-		downloadMARC(recordObject,institution_info);
+		downloadMARC(recordObject, institution_info);
 	}
 
 	if ($("#MARCXML").is(':checked')) {
-		downloadXML(recordObject,institution_info);
+		downloadXML(recordObject, institution_info);
 	}
 
 	if ($("#MODS").is(':checked')) {
-		downloadMODS(recordObject,institution_info);
+		downloadMODS(recordObject, institution_info);
 	}
 
 	if ($("#HTML").is(':checked')) {
-		downloadHTML(recordObject,institution_info);
+		downloadHTML(recordObject, institution_info);
 	}
 
 	event.preventDefault();

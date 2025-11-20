@@ -1,77 +1,8 @@
 /*
- *	Reads the 'name' variable from the URL and returns the value. Used for passing custom institution info.
- *		if the value has not been passed the function will return undefined.
- *
- *	name: String with the name of an expected variable in the URL
+ * Utility functions (get, generateInstitutionInfo, find100, find110, checkExists) 
+ * are now loaded from ../shared/sharedUtils.js
+ * See that file for documentation.
  */
-function get(name) {
-	if(name=(new RegExp('[?&]'+encodeURIComponent(name)+'=([^&]*)')).exec(location.search)) {
-		return decodeURIComponent(name[1]);
-	}
-}
-/* 
- * Edit the strings in this output to attribute records to another institution. The second half of the
- *		function checks the URL for custom info. If that info exists, it overwrites the defaults.
- *
- *	Returns the institution info
- */
-function generateInstitutionInfo() {
-	var output = {
-		//040 $a, 040 $c
-		marc: 'ViU',
-		mods: {
-			physicalLocation: 'University of Virginia. Library',
-			recordContentSource: 'ViU'
-		},
-		//"seller" info
-		html: {
-			url: 'https://id.loc.gov/authorities/names/n79127895',
-			name: 'University of Virginia'
-		}
-	};
-
-	marc = get('marc');
-	if (typeof marc !== 'undefined') {
-		output['marc'] = marc;
-	}
-	physicalLocation = get('physicalLocation');
-	if (typeof physicalLocation !== 'undefined') {
-		output['mods']['physicalLocation'] = physicalLocation;
-	}
-	recordContentSource = get('recordContentSource');
-	if (typeof recordContentSource !== 'undefined') {
-		output['mods']['recordContentSource'] = recordContentSource;
-	}
-	lcn = get('lcn');
-	if (typeof lcn !== 'undefined') {
-		output['html']['url']  = 'https://id.loc.gov/authorities/names/' + lcn;
-	}
-	n = get('n');
-	if (typeof n !== 'undefined') {
-		output['html']['name'] = n;
-	}
-
-	return output;
-}
-
-/*
- * The first listed corporation that is listed as a creator should be placed in 110.
- * If creator is not listed, then we return a corporation with no name or role listed.
- *
- * list: List of corporations. Each corporation is a list of two objects. The first object contains the
- *		 corporate name, and role in creating the piece being catalogued.
- *		 The second object contains the transliterated corporate name of the same
- *		 corporation if applicable. Otherwise those two fields are empty strings.
- */
-function find110(list) {
-	for (var iterator = 0; iterator < list.length; iterator++) {
-		if (list[iterator][0]['role'] == 'cre') {
-			return list.splice(iterator,1);
-		}
-	}
-
-	return [[{'corporate':'', 'role':''},{'corporate':''}]];
-}
 
 /*
  * When the form is submitted, create an object with all user-submitted data. Pass that object to functions that

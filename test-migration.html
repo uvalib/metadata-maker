@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Shared Utilities Test Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .test-result {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+
+        .pass {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .fail {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        h2 {
+            color: #666;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+
+        .module-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .module-links a {
+            display: block;
+            padding: 15px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            text-align: center;
+            transition: background 0.3s;
+        }
+
+        .module-links a:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>🧪 Shared Utilities Migration Test</h1>
+
+    <div class="test-section">
+        <h2>Automated Function Tests</h2>
+        <p>Click the button below to run automated tests on the shared utility functions:</p>
+        <button onclick="runTests()">Run Tests</button>
+        <div id="test-results"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Module Links - Test Forms Manually</h2>
+        <p>Click any module below to test its form:</p>
+        <div class="module-links">
+            <a href="index.html" target="_blank">Main (Root)</a>
+            <a href="dataset/" target="_blank">Dataset</a>
+            <a href="ebooks/" target="_blank">eBooks</a>
+            <a href="archives/" target="_blank">Archives</a>
+            <a href="collections/" target="_blank">Collections</a>
+            <a href="govdocs/" target="_blank">Gov Docs</a>
+            <a href="maps/" target="_blank">Maps</a>
+            <a href="mixedMedia/" target="_blank">Mixed Media</a>
+            <a href="scores/" target="_blank">Scores</a>
+            <a href="serials/" target="_blank">Serials</a>
+            <a href="theses/" target="_blank">Theses</a>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>📋 Manual Testing Checklist</h2>
+        <p>For each module you test, verify:</p>
+        <ol>
+            <li>✅ Page loads without JavaScript errors (check console)</li>
+            <li>✅ Fill out required fields (Title, Language, etc.)</li>
+            <li>✅ Click "Make" button</li>
+            <li>✅ Record file downloads successfully</li>
+            <li>✅ No console errors during submission</li>
+        </ol>
+    </div>
+
+    <script src="shared/sharedUtils.js"></script>
+    <script>
+        function runTests() {
+            const resultsDiv = document.getElementById('test-results');
+            resultsDiv.innerHTML = '<h3>Running Tests...</h3>';
+
+            const tests = [];
+
+            // Test 1: checkExists with truthy value
+            try {
+                const result = checkExists('test');
+                tests.push({
+                    name: 'checkExists("test")',
+                    expected: true,
+                    actual: result,
+                    pass: result === true
+                });
+            } catch (e) {
+                tests.push({
+                    name: 'checkExists("test")',
+                    expected: true,
+                    actual: 'ERROR: ' + e.message,
+                    pass: false
+                });
+            }
+
+            // Test 2: checkExists with empty string
+            try {
+                const result = checkExists('');
+                tests.push({
+                    name: 'checkExists("")',
+                    expected: false,
+                    actual: result,
+                    pass: result === false
+                });
+            } catch (e) {
+                tests.push({
+                    name: 'checkExists("")',
+                    expected: false,
+                    actual: 'ERROR: ' + e.message,
+                    pass: false
+                });
+            }
+
+            // Test 3: checkExists with null
+            try {
+                const result = checkExists(null);
+                tests.push({
+                    name: 'checkExists(null)',
+                    expected: false,
+                    actual: result,
+                    pass: result === false
+                });
+            } catch (e) {
+                tests.push({
+                    name: 'checkExists(null)',
+                    expected: false,
+                    actual: 'ERROR: ' + e.message,
+                    pass: false
+                });
+            }
+
+            // Test 4: generateInstitutionInfo
+            try {
+                const result = generateInstitutionInfo();
+                const marcCorrect = result.marc === 'ViU';
+                const modsCorrect = result.mods && result.mods.physicalLocation === 'University of Virginia. Library';
+                tests.push({
+                    name: 'generateInstitutionInfo().marc',
+                    expected: 'ViU',
+                    actual: result.marc,
+                    pass: marcCorrect && modsCorrect
+                });
+            } catch (e) {
+                tests.push({
+                    name: 'generateInstitutionInfo()',
+                    expected: 'Object with marc="ViU"',
+                    actual: 'ERROR: ' + e.message,
+                    pass: false
+                });
+            }
+
+            // Test 5: find100
+            try {
+                const testList = [[{ family: 'Doe', given: 'John', role: 'aut' }, { family: '', given: '' }]];
+                const result = find100(testList);
+                tests.push({
+                    name: 'find100([author])',
+                    expected: 'Returns author entry',
+                    actual: result[0][0].family === 'Doe' ? 'Returned "Doe"' : 'ERROR',
+                    pass: result[0][0].family === 'Doe'
+                });
+            } catch (e) {
+                tests.push({
+                    name: 'find100([author])',
+                    expected: 'Returns author entry',
+                    actual: 'ERROR: ' + e.message,
+                    pass: false
+                });
+            }
+
+            // Display results
+            let html = '<h3>Test Results</h3>';
+            let passCount = 0;
+            const totalTests = tests.length;
+
+            tests.forEach(test => {
+                if (test.pass) passCount++;
+                const className = test.pass ? 'pass' : 'fail';
+                const icon = test.pass ? '✅' : '❌';
+                html += `
+                    <div class="test-result ${className}">
+                        ${icon} <strong>${test.name}</strong><br>
+                        Expected: ${test.expected}<br>
+                        Actual: ${test.actual}
+                    </div>
+                `;
+            });
+
+            html = `<h3>Test Results: ${passCount}/${totalTests} Passed</h3>` + html;
+
+            if (passCount === totalTests) {
+                html += '<div class="test-result pass"><strong>🎉 All tests passed! Shared utilities are working correctly.</strong></div>';
+            } else {
+                html += '<div class="test-result fail"><strong>⚠️ Some tests failed. Check console for details.</strong></div>';
+            }
+
+            resultsDiv.innerHTML = html;
+        }
+
+        // Auto-run tests on page load
+        window.addEventListener('load', () => {
+            console.log('Testing shared utilities...');
+            console.log('checkExists available:', typeof checkExists === 'function');
+            console.log('generateInstitutionInfo available:', typeof generateInstitutionInfo === 'function');
+            console.log('find100 available:', typeof find100 === 'function');
+            console.log('find110 available:', typeof find110 === 'function');
+        });
+    </script>
+</body>
+
+</html>
