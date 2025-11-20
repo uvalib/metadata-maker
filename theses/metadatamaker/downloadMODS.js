@@ -1,109 +1,15 @@
-const MODS_ROLE_LABELS = {
-	dis: 'dissertant',
-	csp: 'consultant to a project',
-	ctb: 'contributor',
-	dtc: 'data contributor',
-	dte: 'dedicatee',
-	dgc: 'degree committee member',
-	dgs: 'degree supervisor',
-	fnd: 'funder',
-	rtm: 'research team member',
-	spn: 'sponsor',
-	tad: 'technical advisor'
-};
-
 /*
- * Author output depends on how the name was entered
+ * MODS download for theses module
+ * Uses shared ModsBuilder with theses-specific configuration
  */
-function fillAuthorMODS(family,given,role) {
-	if (checkExists(given) || checkExists(family)) {
-		var roleCode = checkExists(role) ? role : 'ctb';
-		if (!checkExists(role)) {
-			roleCode = 'ctb';
-		}
-		var roleText = MODS_ROLE_LABELS[roleCode] || 'contributor';
-		var authorText = '    <name type="personal">\n';
-		if (checkExists(family)) {
-			authorText += '        <namePart type="family">' + escapeXML(family) + '</namePart>\n';
-		}
+import { ModsBuilder } from '../../shared/modsBuilder.js';
 
-		if (checkExists(given)) {
-			authorText += '        <namePart type="given">' + escapeXML(given) + '</namePart>\n';
-		}
+const builder = new ModsBuilder({
+	moduleType: 'theses',
+	includeTypeOfResource: true,
+	includeLiterature: false,  // Theses don't have literature genre
+	includeFAST: false,  // Theses don't use FAST subjects
+	includeISBN: false  // Theses don't have ISBN
+});
 
-		authorText += '        <role>\n            <roleTerm authority="marcrelator" type="text">' + roleText + '</roleTerm>\n            <roleTerm authority="marcrelator" type="code">' + roleCode + '</roleTerm>\n        </role>\n    </name>\n';
-		return authorText;
-	}
-	else {
-		return '';
-	}
-}
-
-function fillCorporateMODS(entry) {
-	if (!checkExists(entry) || !Array.isArray(entry) || !checkExists(entry[0]) || !checkExists(entry[0]['corporate'])) {
-		return '';
-	}
-	var role_index = { 'cre': 'creator', 'ctb': 'contributor' };
-	var primary = entry[0];
-	var role = primary['role'] || 'cre';
-	var authorText = '    <name type="corporate">\n';
-	authorText += '        <namePart>' + escapeXML(primary['corporate']) + '</namePart>\n';
-	authorText += '        <role>\n            <roleTerm authority="marcrelator" type="text">' + (role_index[role] || 'creator') + '</roleTerm>\n            <roleTerm authority="marcrelator" type="code">' + role + '</roleTerm>\n        </role>\n    </name>\n';
-	return authorText;
-}
-
-/*
- * Build a MODS record. Each DOM object is saved as a string, then all the strings are combined into one master text
- *
- * record: 			 object containing the user-input data
- * institution_info: object containing name of institution creating record
- */
-function downloadMODS(record,institution_info) {
-	var startText = '<?xml version="1.0" encoding="UTF-8"?>\n<mods:mods xmlns:mods="http://www.loc.gov/mods/v3"\n    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.loc.gov/mods/v3"\n    xmlns:xlink="http://www.w3.org/1999/xlink"\n    xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-5.xsd"\n    version="3.5">\n';
-
-	var defaultText1 = '    <typeOfResource>text</typeOfResource>\n';
-
-	var authorText = '';
-	if (record.author) {
-		authorText += fillAuthorMODS(record.author.family, record.author.given, record.author.role);
-	}
-	if (Array.isArray(record.additional_authors)) {
-		for (var i = 0; i < record.additional_authors.length; i++) {
-			var person = record.additional_authors[i];
-			authorText += fillAuthorMODS(person.family, person.given, person.role);
-		}
-	}
-	var corporateText = fillCorporateMODS(record.corporate_author);
-	if (checkExists(record.additional_corporate_authors)) {
-		for (var i = 0; i < record.additional_corporate_authors.length; i++) {
-			corporateText += fillCorporateMODS(record.additional_corporate_authors[i]);
-		}
-	}
-
-	var titleText = '    <titleInfo>\n        <title>' + record.title + '</title>\n    </titleInfo>\n';
-
-	var originText = '    <originInfo>\n';
-	originText += '        <place>\n            <placeTerm type="code" authority="marccountry">ilu</placeTerm>\n        </place>\n';
-	originText += '        <place>\n            <placeTerm type="text">Urbana, Ill.</placeTerm>\n        </place>\n';
-	originText += '        <publisher>University of Illinois at Urbana-Champaign</publisher>\n';
-	originText += '        <dateIssued>' + record.publication_year + '</dateIssued>\n';
-	originText += '    </originInfo>\n';
-
-	var languageText = '    <language>\n        <languageTerm authority="iso639-2b" type="code">' + record.language + '</languageTerm>\n    </language>\n';
-
-	var pagesText = '    <physicalDescription>\n        <form authority="marcform">print</form>\n        <extent>' + record.number_of_pages + ' ' + record.leaf_or_page + '</extent>\n    </physicalDescription>\n';
-
-	var majorText = '    <note type="thesis">Thesis (' + escapeXML(record.major) + ')-- University of Illinois at Urbana-Champaign, ' + record.publication_year + '.</note>\n';
-
-	var bibText = '    <note type="bibliography">' + escapeXML(record.bibliographies) + '.</note>\n';
-
-	var defaultText2 = '    <location>\n        <physicalLocation>' + escapeXML(institution_info['mods']['physicalLocation']) + '</physicalLocation>\n    </location>\n';
-
-	var timestamp = getTimestamp();
-	var formatted_date = timestamp.substring(2,8);
-	var defaultText3 = '    <recordInfo>\n        <descriptionStandard>rda</descriptionStandard>\n        <recordContentSource authority="marcorg">' + escapeXML(institution_info['mods']['recordContentSource']) + '</recordContentSource>\n        <recordCreationDate encoding="marc">' + formatted_date + '</recordCreationDate>\n    </recordInfo>\n'
-
-	var endText = '</mods:mods>\n';
-	var text = startText + titleText + authorText + corporateText + defaultText1 + originText + languageText + pagesText + majorText + defaultText2 + defaultText3 + endText;
-	downloadFile(text,'mods');
-}
+window.downloadMODS = builder.downloadMODS.bind(builder);
