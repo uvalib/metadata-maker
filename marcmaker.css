@@ -84,6 +84,23 @@ input[type="number"] {
 	color: #FF0000;
 }
 
+/* Automatically add asterisk to required field labels */
+input[required] + label::after,
+select[required] + label::after,
+textarea[required] + label::after {
+	content: " *";
+	color: #FF0000;
+	font-size: 0.9em;
+}
+
+/* Also support labels that come before the input */
+label.heading:has(+ input[required])::after,
+label.heading:has(+  * input[required])::after {
+	content: " *";
+	color: #FF0000;
+	font-size: 0.9em;
+}
+
 #star {
 	font-size: 10px;
 	margin-bottom: -23px;
