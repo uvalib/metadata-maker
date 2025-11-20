@@ -52,14 +52,13 @@ export class RepeatableLanguageSelect extends RepeatableFieldBase {
     return html`
       <div class="${wrapperClass}">
         <language-select
-          heading="${this.heading}"
           field-id="${selectId}"
           name="${nameAttr}"
           container-id="${selectId}_container"
           container-class="language-select-entry"
           select-class="${this.selectClass}"
           ?required=${this.required}
-          show-heading="false"
+          ?show-heading=${false}
         ></language-select>
       </div>
     `;
