@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 	<meta charset="utf-8">
 	<script>document.documentElement.classList.add('has-js');</script>
@@ -17,6 +18,8 @@
 	<script type="module" src="/shared/components/repeatable-language-select.js"></script>
 	<script type="module" src="/shared/components/repeatable-subject-input.js"></script>
 	<script type="module" src="/shared/components/repeatable-extent-input.js"></script>
+	<script type="module" src="/shared/components/repeatable-container-input.js"></script>
+	<script type="module" src="/shared/components/repeatable-description-input.js"></script>
 	<script type="module" src="/shared/components/originator-input.js"></script>
 
 	<link href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css" rel="stylesheet">
@@ -30,214 +33,150 @@
 </head>
 
 <body class="template template-collections">
-		<uv-top-navigation
-			current-version="collections"
-			version-label="Collection Components"
-	</uv-top-navigation>
+	<uv-top-navigation current-version="collections" version-label="Collection Components" </uv-top-navigation>
 
-	<div id="warning_system">
-		<noscript>WARNING: JavaScript is not enabled on this browser. This page requires JavaScript to function correctly.</noscript>
-		<script src="../shared/checkServer.js"></script>
-	</div>
-	<div id="content">
-		<form id="marc-maker">
+		<div id="warning_system">
+			<noscript>WARNING: JavaScript is not enabled on this browser. This page requires JavaScript to function
+				correctly.</noscript>
+			<script src="../shared/checkServer.js"></script>
+		</div>
+		<div id="content">
+			<form id="marc-maker">
 
 
-			<standard-text-input
-				container-id="title-block"
-				heading="Title"
-				field-id="title"
-				required
-				required-marker="*"
-				input-class="required translit-listen"
-				help-text="Record the title as it appears on the title page."
-			></standard-text-input>
+				<standard-text-input container-id="title-block" heading="Title" field-id="title" required
+					required-marker="*" input-class="required translit-listen"
+					help-text="Record the title as it appears on the title page."></standard-text-input>
 
-			<div id="translit-title-block" class="translit-title-block translit-block standard-translit-block translit-title hidden">
-				<label for="translit_title" class="hidden translit heading translit-title">Transliterated title</label><label for="translit_title" class="insert insert_normal hidden translit translit-title" style="left: -13px;" onClick='insertMenu("translit_title");'>Insert Special Characters</label><br>
-				<div id="insert-translit_title" class="hidden translit translit-title"></div>
-				<input type="text" id="translit_title" class="hidden translit translit-title">
-			</div>
-
-			<div id="level-block" class="standard-block">
-				<label for="level" class="heading">Level<span class="required_marker">*</span></label><br>
-				<select id="level" class="required" required>
-					<option selected disabled hidden value=''></option>
-					<option value="series">series</option>
-					<option value="subseries">subseries</option>
-					<option value="recordgrp">recordgrp</option>
-					<option value="subgrp">subgrp</option>
-					<option value="file">file</option>
-					<option value="item">item</option>
-					<option value="otherlevel">otherlevel</option>
-				</select><br>
-				<div id="other-level-block" class="standard-block hidden">
-					<label for="other_level" class="heading">Other level<span class="required_marker">*</span></label><br>
-					<input type="text" id="other_level" class="conditional">
+				<div id="translit-title-block"
+					class="translit-title-block translit-block standard-translit-block translit-title hidden">
+					<label for="translit_title" class="hidden translit heading translit-title">Transliterated
+						title</label><label for="translit_title"
+						class="insert insert_normal hidden translit translit-title" style="left: -13px;"
+						onClick='insertMenu("translit_title");'>Insert Special Characters</label><br>
+					<div id="insert-translit_title" class="hidden translit translit-title"></div>
+					<input type="text" id="translit_title" class="hidden translit translit-title">
 				</div>
-			</div>
+
+				<div id="level-block" class="standard-block">
+					<label for="level" class="heading">Level<span class="required_marker">*</span></label><br>
+					<select id="level" class="required" required>
+						<option selected disabled hidden value=''></option>
+						<option value="series">series</option>
+						<option value="subseries">subseries</option>
+						<option value="recordgrp">recordgrp</option>
+						<option value="subgrp">subgrp</option>
+						<option value="file">file</option>
+						<option value="item">item</option>
+						<option value="otherlevel">otherlevel</option>
+					</select><br>
+					<div id="other-level-block" class="standard-block hidden">
+						<label for="other_level" class="heading">Other level<span
+								class="required_marker">*</span></label><br>
+						<input type="text" id="other_level" class="conditional">
+					</div>
+				</div>
 
 
 
-			<standard-text-input
-				container-id="identifier-block"
-				heading="Identifier"
-				field-id="identifier"
-				required
-				required-marker="*"
-				input-class="required"
-			></standard-text-input>
+				<standard-text-input container-id="identifier-block" heading="Identifier" field-id="identifier" required
+					required-marker="*" input-class="required"></standard-text-input>
 
-			<standard-text-input
-				container-id="parent-identifier-block"
-				heading="Parent identifier"
-				field-id="parent_identifier"
-				input-class="conditional"
-			></standard-text-input>
+				<standard-text-input container-id="parent-identifier-block" heading="Parent identifier"
+					field-id="parent_identifier" input-class="conditional"></standard-text-input>
 
-			<standard-text-input
-				container-id="collection-title-block"
-				heading="Collection Title"
-				field-id="collection_title"
-				required
-				required-marker="*"
-				input-class="required"
-			></standard-text-input>
+				<standard-text-input container-id="collection-title-block" heading="Collection Title"
+					field-id="collection_title" required required-marker="*"
+					input-class="required"></standard-text-input>
 
-			<standard-text-input
-				container-id="collection-identifier-block"
-				heading="Collection Identifier"
-				field-id="collection_identifier"
-				required
-				required-marker="*"
-				input-class="required"
-			></standard-text-input>
+				<standard-text-input container-id="collection-identifier-block" heading="Collection Identifier"
+					field-id="collection_identifier" required required-marker="*"
+					input-class="required"></standard-text-input>
 
-			<standard-text-input
-				container-id="location-within-collection-block"
-				heading="Location within collection"
-				field-id="location_within_collection"
-				input-class="conditional"
-			></standard-text-input>
+				<standard-text-input container-id="location-within-collection-block"
+					heading="Location within collection" field-id="location_within_collection"
+					input-class="conditional"></standard-text-input>
 
-			<originator-input heading="Originator (if different from that of collection)"></originator-input>
+				<originator-input heading="Originator (if different from that of collection)"></originator-input>
 
-			<div id="coverage-block" class="standard-block">
-				<label class="heading">Coverage date(s)</label>
-				<div class="coverage-fields">
-					<edtf-date-input
-						container-class="coverage-field"
-						field-id="coverage_start"
-						heading="Start date"
-						input-class="coverage-start"
-					></edtf-date-input>
+				<div id="coverage-block" class="standard-block">
+					<label class="heading">Coverage date(s)</label>
+					<div class="coverage-fields">
+						<edtf-date-input container-class="coverage-field" field-id="coverage_start" heading="Start date"
+							input-class="coverage-start"></edtf-date-input>
 
-					<edtf-date-input
-						container-class="coverage-field"
-						field-id="coverage_end"
-						heading="End date"
-						input-class="coverage-end"
-					></edtf-date-input>
+						<edtf-date-input container-class="coverage-field" field-id="coverage_end" heading="End date"
+							input-class="coverage-end"></edtf-date-input>
 
-					<div class="coverage-field">
-						<label for="coverage_type" class="heading">Coverage date type</label><br>
-						<select id="coverage_type" class="coverage-type">
-							<option value="bulk">bulk</option>
-							<option value="inclusive">inclusive</option>
+						<div class="coverage-field">
+							<label for="coverage_type" class="heading">Coverage date type</label><br>
+							<select id="coverage_type" class="coverage-type">
+								<option value="bulk">bulk</option>
+								<option value="inclusive" selected>inclusive</option>
+							</select>
+						</div>
+					</div>
+				</div>
+
+				<repeatable-language-select heading="Language" field-prefix="language"
+					select-class="language-input translit-listen" add-button-id="add-language"
+					add-button-aria-label="Add language"></repeatable-language-select>
+
+				<repeatable-extent-input heading="Extent" field-prefix="extent" required></repeatable-extent-input>
+
+				<div class="standard-block" id="dimensions-block">
+					<label class="heading">Dimensions</label>
+					<standard-text-input container-class="extent-field" field-id="dimensions_text" heading="Value"
+						input-class="dimensions-text" required required-marker="*"></standard-text-input>
+					<div class="extent-field">
+						<label for="dimensions_units" class="heading">Units</label><br>
+						<select id="dimensions_units" class="dimensions-units" required>
+							<option value="linear ft.">linear ft.</option>
+							<option value="cubic ft.">cubic ft.</option>
 						</select>
 					</div>
 				</div>
-			</div>
 
-			<repeatable-language-select
-				heading="Language"
-				field-prefix="language"
-				select-class="language-input translit-listen"
-				add-button-id="add-language"
-				add-button-aria-label="Add language"
-			></repeatable-language-select>
+				<repeatable-container-input heading="Container" field-prefix="container"
+					required></repeatable-container-input>
 
-			<repeatable-extent-input
-				heading="Extent"
-				field-prefix="extent"
-				required
-			></repeatable-extent-input>
+				<repeatable-description-input heading="Description" field-prefix="description"
+					required></repeatable-description-input>
 
-			<div class="standard-block" id="dimensions-block">
-				<label class="heading">Dimensions</label>
-				<standard-text-input
-					container-class="extent-field"
-					field-id="dimensions_text"
-					heading="Value"
-					input-class="dimensions-text"
-					required
-					required-marker="*"
-				></standard-text-input>
-				<div class="extent-field">
-					<label for="dimensions_units" class="heading">Units</label><br>
-					<select id="dimensions_units" class="dimensions-units" required>
-						<option value="linear ft.">linear ft.</option>
-						<option value="cubic ft.">cubic ft.</option>
-					</select>
+				<repeatable-text-input heading="Bibliography" field-prefix="reference"
+					input-class="reference-input translit-listen" add-button-id="add-reference"
+					add-button-aria-label="Add bibliography reference"></repeatable-text-input>
+
+				<repeatable-subject-input heading="Keywords"></repeatable-subject-input>
+
+				<div id="buttons" class="standard-block">
+					<input type="submit" value="Make" id="make">
+					<input type="reset" value="Clear" id="Clear">
 				</div>
-			</div>
 
-			<div id="description-block" class="standard-block">
-				<label for="description_type" class="heading">Description<span class="required_marker">*</span></label><br>
-				<select id="description_type" required>
-					<option value="accessrestrict">accessrestrict</option>
-					<option value="accruals">accruals</option>
-					<option value="acqinfo">acqinfo</option>
-					<option value="altformavail">altformavail</option>
-					<option value="appraisal">appraisal</option>
-					<option value="arrangement">arrangement</option>
-					<option value="bioghist">bioghist</option>
-					<option value="note">note</option>
-					<option value="originalstoc">originalstoc</option>
-					<option value="phystech">phystech</option>
-					<option value="prefercite">prefercite</option>
-					<option value="relatedmaterial">relatedmaterial</option>
-					<option value="scopecontent">scopecontent</option>
-					<option value="separatedmaterial">separatedmaterial</option>
-					<option value="userestrict">userestrict</option>
-				</select><br>
-				<textarea id="description_text" required rows="5" class="description-text"></textarea>
-			</div>
+				<div id="star" class="required_marker standard-block">
+					* Required field
+				</div>
+			</form>
+			<div id="disclaimer">The Metadata Maker Project was funded by the University of Illinois at Urbana-Champaign
+				Library's Innovation and Seed Funds.</div>
+			<div id="version">Version 1.1 – Updated on 11/10/2022. Metadata Maker for Collection Components created on
+				08/10/2015.</div>
+			<a id="code" href="https://github.com/UIUCLibrary/metadata-maker">GitHub</a>
+		</div>
 
-			<repeatable-text-input
-				heading="Bibliography"
-				field-prefix="bibliography"
-				input-class="bibliography-input translit-listen"
-				add-button-id="add-bibliography"
-				add-button-aria-label="Add bibliography reference"
-			></repeatable-text-input>
-
-			<repeatable-subject-input></repeatable-subject-input>
-
-			<div id="buttons" class="standard-block">
-				<input type="submit" value="Make" id="make">
-				<input type="reset" value="Clear" id="Clear">
-			</div>
-
-			<div id="star" class="required_marker standard-block">
-				* Required field
-			</div>
-		</form>
-		<div id="disclaimer">The Metadata Maker Project was funded by the University of Illinois at Urbana-Champaign Library's Innovation and Seed Funds.</div>
-		<div id="version">Version 1.1 – Updated on 11/10/2022. Metadata Maker for Collection Components created on 08/10/2015.</div>
-		<a id="code" href="https://github.com/UIUCLibrary/metadata-maker">GitHub</a></div>
-		
 		<script type="module" src="../shared/components/insert-diacritics.js"></script>
 		<script src="../shared/generalInteractionsBase.js"></script>
 		<script src="metadatamaker/generalInteractions.js"></script>
 		<script type="module" src="metadatamaker/downloadMARC.js"></script>
 		<script src="metadatamaker/downloadMODS.js"></script>
-	<script src="/shared/languageLookups.js"></script>
-	<script src="/shared/countryLookups.js"></script>
+		<script src="/shared/languageLookups.js"></script>
+		<script src="/shared/countryLookups.js"></script>
 		<script src="metadatamaker/downloadHTML.js"></script>
+		<script src="metadatamaker/downloadEAD.js"></script>
 		<script src="../shared/sharedUtils.js"></script>
 		<script src="metadatamaker/submitForm.js"></script>
-	</div>
+		</div>
 </body>
 
 </html>

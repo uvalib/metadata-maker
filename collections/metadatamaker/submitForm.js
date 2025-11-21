@@ -13,18 +13,18 @@
  *
  * No information should be submitted to the server, so the default behavior of the button is blocked.
  */
-$("#marc-maker").submit(function(event) {
+$("#marc-maker").submit(function (event) {
 	console.log('Collection Components form submission started');
 	var words = [];
 	var fast_array = [];
 	for (var i = 0; i < counter; i++) {
-		if(checkExists($("#fastID" + i).val()) && checkExists($("#keyword" + i).val())) {
+		if (checkExists($("#fastID" + i).val()) && checkExists($("#keyword" + i).val())) {
 			if ($("#keyword" + i).val().substring($("#keyword" + i).val().length - 1) == ']') {
 				var endpoint = $("#keyword" + i).val().lastIndexOf('[');
-				fast_array.push([$("#keyword" + i).val().substring(0,endpoint-1),$("#fastID" + i).val(),$("#fastType" + i).val(),$("#fastInd" + i).val()]);
+				fast_array.push([$("#keyword" + i).val().substring(0, endpoint - 1), $("#fastID" + i).val(), $("#fastType" + i).val(), $("#fastInd" + i).val()]);
 			}
 			else {
-				fast_array.push([$("#keyword" + i).val(),$("#fastID" + i).val(),$("#fastType" + i).val(),$("#fastInd" + i).val()]);
+				fast_array.push([$("#keyword" + i).val(), $("#fastID" + i).val(), $("#fastType" + i).val(), $("#fastInd" + i).val()]);
 			}
 		}
 		else {
@@ -48,7 +48,7 @@ $("#marc-maker").submit(function(event) {
 		]
 	];
 	for (var i = 0; i < aCounter; i++) {
-		complete_names_list.push([{ "family": $("#family_name" + i).val(), "given": $("#given_name" + i).val(), "role": $("#role" + i).val()},{ "family": $("#translit_family_name" + i).val(), "given": $("#translit_given_name" + i).val()}]);
+		complete_names_list.push([{ "family": $("#family_name" + i).val(), "given": $("#given_name" + i).val(), "role": $("#role" + i).val() }, { "family": $("#translit_family_name" + i).val(), "given": $("#translit_given_name" + i).val() }]);
 	}
 	//Find the first listed author or artist
 	var entry100 = find100(complete_names_list);
@@ -56,20 +56,20 @@ $("#marc-maker").submit(function(event) {
 	var complete_corporate_names_list = [
 		{
 			corporate: $("#corporate_name").val(),
-			role:  $("#corporate_role").val()
+			role: $("#corporate_role").val()
 		}
 	];
 	for (var i = 0; i < cCounter; i++) {
-		complete_corporate_names_list.push({"corporate": $("#corporate_name" + i).val(), "role": $("#corporate_role" + i).val()});
+		complete_corporate_names_list.push({ "corporate": $("#corporate_name" + i).val(), "role": $("#corporate_role" + i).val() });
 	}
 
 	var entry110 = find110(complete_corporate_names_list);
 
 	var repositoryAddresses = Array.prototype.slice.call(document.querySelectorAll('.repository-address-input'))
-		.map(function(input) {
+		.map(function (input) {
 			return (input.value || '').trim();
 		})
-		.filter(function(value) {
+		.filter(function (value) {
 			return value !== '';
 		});
 
@@ -86,44 +86,65 @@ $("#marc-maker").submit(function(event) {
 		}
 	}
 
-var languageEntries = Array.from(document.querySelectorAll('.language-input'))
-	.map(function(input) {
-		return (input.value || '').trim();
-	})
-	.filter(function(value) {
-		return value !== '';
-	});
+	var languageEntries = Array.from(document.querySelectorAll('.language-input'))
+		.map(function (input) {
+			return (input.value || '').trim();
+		})
+		.filter(function (value) {
+			return value !== '';
+		});
 
-var bibliographyEntries = Array.from(document.querySelectorAll('.bibliography-input'))
-	.map(function(input) {
-		return (input.value || '').trim();
-	})
-	.filter(function(value) {
-		return value !== '';
-	});
+	var bibliographyEntries = Array.from(document.querySelectorAll('.bibliography-input'))
+		.map(function (input) {
+			return (input.value || '').trim();
+		})
+		.filter(function (value) {
+			return value !== '';
+		});
 
-var extentComponent = document.querySelector('repeatable-extent-input');
-var extentEntries = extentComponent && typeof extentComponent.getEntries === 'function'
-	? extentComponent.getEntries()
-	: [];
+	var extentComponent = document.querySelector('repeatable-extent-input');
+	var extentEntries = extentComponent && typeof extentComponent.getEntries === 'function'
+		? extentComponent.getEntries()
+		: [];
 
-var subjectComponent = document.querySelector('repeatable-subject-input');
-var subjectEntries = subjectComponent && typeof subjectComponent.getEntries === 'function'
-	? subjectComponent.getEntries()
-	: [];
+	var subjectComponent = document.querySelector('repeatable-subject-input');
+	var subjectEntries = subjectComponent && typeof subjectComponent.getEntries === 'function'
+		? subjectComponent.getEntries()
+		: [];
+
+	var containerComponent = document.querySelector('repeatable-container-input');
+	var containerEntries = containerComponent && typeof containerComponent.getEntries === 'function'
+		? containerComponent.getEntries()
+		: [];
+
+	var descriptionComponent = document.querySelector('repeatable-description-input');
+	var descriptionEntries = descriptionComponent && typeof descriptionComponent.getEntries === 'function'
+		? descriptionComponent.getEntries()
+		: [];
+
+	var referenceEntries = Array.from(document.querySelectorAll('.reference-input'))
+		.map(function (input) {
+			return (input.value || '').trim();
+		})
+		.filter(function (value) {
+			return value !== '';
+		});
 
 	var recordObject = {
 		repository_name: $("#repository_name").val(),
 		repository_location: $("#repository_location").val(),
 		repository_address: repositoryAddresses,
 		identifier: $("#identifier").val(),
+		parent_identifier: $("#parent_identifier").val(),
+		collection_title: $("#collection_title").val(),
+		collection_identifier: $("#collection_identifier").val(),
+		location_within_collection: $("#location_within_collection").val(),
+		level: $("#level").val(),
+		other_level: $("#other_level").val(),
 		coverage_start: $("#coverage_start").val(),
 		coverage_end: $("#coverage_end").val(),
 		coverage_type: $("#coverage_type").val(),
-		description: {
-			type: $("#description_type").val(),
-			text: $("#description_text").val()
-		},
+		descriptions: descriptionEntries,
 		title: [
 			{
 				title: $("#title").val(),
@@ -146,44 +167,45 @@ var subjectEntries = subjectComponent && typeof subjectComponent.getEntries === 
 		pages: $("#pages").val(),
 		unpaged: $("#pages_listed").is(':checked'),
 		illustrations_yes: $("#illustrations-yes").is(':checked'),
-		dimensions: $("#dimensions").val(),
 		keywords: words,
 		fast: fast_array,
 		additional_authors: complete_names_list,
 		additional_corporate_names: complete_corporate_names_list,
 		originators_personal: originatorData.personalOriginators,
 		originators_corporate: originatorData.corporateOriginators,
-	extent: extentEntries,
+		extent: extentEntries,
 		dimensions: {
 			value: $("#dimensions_text").val(),
 			units: $("#dimensions_units").val()
 		},
 		bibliography: bibliographyEntries,
+		references: referenceEntries,
+		containers: containerEntries,
 		subjects: subjectEntries
 	};
 
 	var institution_info = generateInstitutionInfo();
 
 	if ($("#MARC").is(':checked')) {
-		downloadMARC(recordObject,institution_info);
+		downloadMARC(recordObject, institution_info);
 	}
 
 	if ($("#MARCXML").is(':checked')) {
-		downloadXML(recordObject,institution_info);
+		downloadXML(recordObject, institution_info);
 	}
 
 	if ($("#MODS").is(':checked')) {
-		downloadMODS(recordObject,institution_info);
+		downloadMODS(recordObject, institution_info);
 	}
 
 	if ($("#HTML").is(':checked')) {
-		downloadHTML(recordObject,institution_info);
+		downloadHTML(recordObject, institution_info);
 	}
 
 	if (typeof downloadEAD === 'function') {
 		downloadEAD(recordObject, institution_info);
 	} else {
-			console.warn('downloadEAD function is not available; unable to download Collection Components EAD.');
+		console.warn('downloadEAD function is not available; unable to download Collection Components EAD.');
 	}
 
 	console.log('Collection Components form submission handled, preventing default');
