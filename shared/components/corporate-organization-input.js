@@ -139,6 +139,22 @@ export class CorporateOrganizationInput extends RepeatableFieldBase {
     }
   }
 
+  firstUpdated() {
+    const nameId = 'corporate_name';
+    const inputElement = this.querySelector(`#${nameId}`);
+    const unlistedCheckbox = this.querySelector(`#${nameId}_listed`);
+
+    if (inputElement && unlistedCheckbox) {
+      unlistedCheckbox.addEventListener('change', () => {
+        if (unlistedCheckbox.checked) {
+          inputElement.removeAttribute('required');
+        } else if (this.isRequired) {
+          inputElement.setAttribute('required', '');
+        }
+      });
+    }
+  }
+
   onEntryAdded(key, index) {
     const targetId = index === 0 ? 'corporate_name' : `corporate_name${key}`;
     const input = this.querySelector(`#${targetId}`);

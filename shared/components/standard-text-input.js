@@ -80,6 +80,27 @@ export class StandardTextInput extends LitElement {
     }
   }
 
+  firstUpdated() {
+    if (!this.hasUnlisted) {
+      return;
+    }
+
+    const id = this.fieldId || 'standard_input';
+    const inputElement = this.querySelector(`#${id}`);
+    const unlistedId = this.unlistedId && this.unlistedId.trim().length > 0 ? this.unlistedId : `${id}_listed`;
+    const unlistedCheckbox = this.querySelector(`#${unlistedId}`);
+
+    if (inputElement && unlistedCheckbox) {
+      unlistedCheckbox.addEventListener('change', () => {
+        if (unlistedCheckbox.checked) {
+          inputElement.removeAttribute('required');
+        } else if (this.isRequired) {
+          inputElement.setAttribute('required', '');
+        }
+      });
+    }
+  }
+
   get hasUnlisted() {
     return normalizeBoolean(this.unlisted, false);
   }
