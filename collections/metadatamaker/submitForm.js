@@ -4,6 +4,19 @@
  * See that file for documentation.
  */
 
+/**
+ * Vanilla JS helper functions to replace jQuery
+ */
+function getValue(id) {
+	const element = document.getElementById(id);
+	return element ? (element.value || '').trim() : '';
+}
+
+function isChecked(id) {
+	const element = document.getElementById(id);
+	return element ? element.checked : false;
+}
+
 /*
  * When the form is submitted, create an object with all user-submitted data. Pass that object to functions that
  * build a record around the data.
@@ -13,22 +26,24 @@
  *
  * No information should be submitted to the server, so the default behavior of the button is blocked.
  */
-$("#marc-maker").submit(function (event) {
+document.getElementById("marc-maker").addEventListener("submit", function (event) {
 	console.log('Collection Components form submission started');
 	var words = [];
 	var fast_array = [];
 	for (var i = 0; i < counter; i++) {
-		if (checkExists($("#fastID" + i).val()) && checkExists($("#keyword" + i).val())) {
-			if ($("#keyword" + i).val().substring($("#keyword" + i).val().length - 1) == ']') {
-				var endpoint = $("#keyword" + i).val().lastIndexOf('[');
-				fast_array.push([$("#keyword" + i).val().substring(0, endpoint - 1), $("#fastID" + i).val(), $("#fastType" + i).val(), $("#fastInd" + i).val()]);
+		var keywordVal = getValue("keyword" + i);
+		var fastIDVal = getValue("fastID" + i);
+		if (checkExists(fastIDVal) && checkExists(keywordVal)) {
+			if (keywordVal.substring(keywordVal.length - 1) == ']') {
+				var endpoint = keywordVal.lastIndexOf('[');
+				fast_array.push([keywordVal.substring(0, endpoint - 1), fastIDVal, getValue("fastType" + i), getValue("fastInd" + i)]);
 			}
 			else {
-				fast_array.push([$("#keyword" + i).val(), $("#fastID" + i).val(), $("#fastType" + i).val(), $("#fastInd" + i).val()]);
+				fast_array.push([keywordVal, fastIDVal, getValue("fastType" + i), getValue("fastInd" + i)]);
 			}
 		}
 		else {
-			words.push($("#keyword" + i).val());
+			words.push(keywordVal);
 		}
 	};
 
@@ -37,30 +52,30 @@ $("#marc-maker").submit(function (event) {
 	var complete_names_list = [
 		[
 			{
-				family: $("#family_name").val(),
-				given: $("#given_name").val(),
-				role: $("#role").val()
+				family: getValue("family_name"),
+				given: getValue("given_name"),
+				role: getValue("role")
 			},
 			{
-				family: $("#translit_family_name").val(),
-				given: $("#translit_given_name").val()
+				family: getValue("translit_family_name"),
+				given: getValue("translit_given_name")
 			}
 		]
 	];
 	for (var i = 0; i < aCounter; i++) {
-		complete_names_list.push([{ "family": $("#family_name" + i).val(), "given": $("#given_name" + i).val(), "role": $("#role" + i).val() }, { "family": $("#translit_family_name" + i).val(), "given": $("#translit_given_name" + i).val() }]);
+		complete_names_list.push([{ "family": getValue("family_name" + i), "given": getValue("given_name" + i), "role": getValue("role" + i) }, { "family": getValue("translit_family_name" + i), "given": getValue("translit_given_name" + i) }]);
 	}
 	//Find the first listed author or artist
 	var entry100 = find100(complete_names_list);
 
 	var complete_corporate_names_list = [
 		{
-			corporate: $("#corporate_name").val(),
-			role: $("#corporate_role").val()
+			corporate: getValue("corporate_name"),
+			role: getValue("corporate_role")
 		}
 	];
 	for (var i = 0; i < cCounter; i++) {
-		complete_corporate_names_list.push({ "corporate": $("#corporate_name" + i).val(), "role": $("#corporate_role" + i).val() });
+		complete_corporate_names_list.push({ "corporate": getValue("corporate_name" + i), "role": getValue("corporate_role" + i) });
 	}
 
 	var entry110 = find110(complete_corporate_names_list);
@@ -142,43 +157,43 @@ $("#marc-maker").submit(function (event) {
 		});
 
 	var recordObject = {
-		repository_name: $("#repository_name").val(),
-		repository_location: $("#repository_location").val(),
+		repository_name: getValue("repository_name"),
+		repository_location: getValue("repository_location"),
 		repository_address: repositoryAddresses,
-		identifier: $("#identifier").val(),
-		parent_identifier: $("#parent_identifier").val(),
-		collection_title: $("#collection_title").val(),
-		collection_identifier: $("#collection_identifier").val(),
-		location_within_collection: $("#location_within_collection").val(),
-		level: $("#level").val(),
-		other_level: $("#other_level").val(),
-		coverage_start: $("#coverage_start").val(),
-		coverage_end: $("#coverage_end").val(),
-		coverage_type: $("#coverage_type").val(),
+		identifier: getValue("identifier"),
+		parent_identifier: getValue("parent_identifier"),
+		collection_title: getValue("collection_title"),
+		collection_identifier: getValue("collection_identifier"),
+		location_within_collection: getValue("location_within_collection"),
+		level: getValue("level"),
+		other_level: getValue("other_level"),
+		coverage_start: getValue("coverage_start"),
+		coverage_end: getValue("coverage_end"),
+		coverage_type: getValue("coverage_type"),
 		descriptions: descriptionEntries,
 		title: [
 			{
-				title: $("#title").val(),
-				subtitle: $("#subtitle").val()
+				title: getValue("title"),
+				subtitle: getValue("subtitle")
 			},
 			{
-				title: $("#translit_title").val(),
-				subtitle: $("#translit_subtitle").val()
+				title: getValue("translit_title"),
+				subtitle: getValue("translit_subtitle")
 			}
 		],
 		author: entry100[0],
 		corporate_author: entry110[0],
-		publisher: $("#publisher").val(),
-		publication_year: $("#year").val(),
-		publication_place: $("#place").val(),
-		publication_country: $("#country").val(),
-		copyright_year: $("#cyear").val(),
+		publisher: getValue("publisher"),
+		publication_year: getValue("year"),
+		publication_place: getValue("place"),
+		publication_country: getValue("country"),
+		copyright_year: getValue("cyear"),
 		languages: languageEntries,
 		notes: noteInputs,
-		volume_or_page: $("#vorp").val(),
-		pages: $("#pages").val(),
-		unpaged: $("#pages_listed").is(':checked'),
-		illustrations_yes: $("#illustrations-yes").is(':checked'),
+		volume_or_page: getValue("vorp"),
+		pages: getValue("pages"),
+		unpaged: isChecked("pages_listed"),
+		illustrations_yes: isChecked("illustrations-yes"),
 		keywords: words,
 		fast: fast_array,
 		additional_authors: complete_names_list,
@@ -187,8 +202,8 @@ $("#marc-maker").submit(function (event) {
 		originators_corporate: originatorData.corporateOriginators,
 		extent: extentEntries,
 		dimensions: {
-			value: $("#dimensions_text").val(),
-			units: $("#dimensions_units").val()
+			value: getValue("dimensions_text"),
+			units: getValue("dimensions_units")
 		},
 		bibliography: bibliographyEntries,
 		references: referenceEntries,
@@ -198,23 +213,23 @@ $("#marc-maker").submit(function (event) {
 
 	var institution_info = generateInstitutionInfo();
 
-	if ($("#MARC").is(':checked')) {
+	if (isChecked("MARC")) {
 		downloadMARC(recordObject, institution_info);
 	}
 
-	if ($("#MARCXML").is(':checked')) {
+	if (isChecked("MARCXML")) {
 		downloadXML(recordObject, institution_info);
 	}
 
-	if ($("#MODS").is(':checked')) {
+	if (isChecked("MODS")) {
 		downloadMODS(recordObject, institution_info);
 	}
 
-	if ($("#HTML").is(':checked')) {
+	if (isChecked("HTML")) {
 		downloadHTML(recordObject, institution_info);
 	}
 
-	if (typeof downloadEAD === 'function') {
+	if (isChecked("EAD")) {
 		downloadEAD(recordObject, institution_info);
 	} else {
 		console.warn('downloadEAD function is not available; unable to download Collection Components EAD.');
