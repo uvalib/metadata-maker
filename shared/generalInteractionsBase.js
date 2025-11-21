@@ -253,12 +253,14 @@
         return;
       }
       const regex = this.config.transliteration.nonRomanRegex || NON_ROMAN_REGEX;
-      const value = $('#' + id).val();
+      const inputElement = document.getElementById(id);
+      const value = inputElement ? inputElement.value : '';
       const needsTranslit = regex.test(value || '');
 
       if (id.substring(0, 5) === 'given') {
         const familyId = 'family' + id.substring(5);
-        const familyValue = $('#' + familyId).val();
+        const familyElement = document.getElementById(familyId);
+        const familyValue = familyElement ? familyElement.value : '';
         if (!needsTranslit && regex.test(familyValue || '')) {
           return;
         }
@@ -266,19 +268,36 @@
       }
 
       if (needsTranslit) {
-        $('.translit-' + id).show();
-        $('#translit-' + id + '-block').show();
-        $('.translit-' + id + '-block').css('padding', '3px');
+        const translitElements = document.querySelectorAll('.translit-' + id);
+        translitElements.forEach(el => el.style.display = 'block'); // Assuming block display
+
+        const translitBlock = document.getElementById('translit-' + id + '-block');
+        if (translitBlock) {
+          translitBlock.style.display = 'block';
+        }
+
+        const translitBlockClass = document.querySelectorAll('.translit-' + id + '-block');
+        translitBlockClass.forEach(el => el.style.padding = '3px');
       } else {
         if (id.substring(0, 6) === 'family' && !this.config.listed.skipGivenCheck) {
-          const givenValue = $('#given' + id.substring(6)).val();
+          const givenId = 'given' + id.substring(6);
+          const givenElement = document.getElementById(givenId);
+          const givenValue = givenElement ? givenElement.value : '';
           if (regex.test(givenValue || '')) {
             return;
           }
         }
-        $('.translit-' + id).hide();
-        $('#translit-' + id + '-block').hide();
-        $('.translit-' + id + '-block').css('padding', '0px');
+
+        const translitElements = document.querySelectorAll('.translit-' + id);
+        translitElements.forEach(el => el.style.display = 'none');
+
+        const translitBlock = document.getElementById('translit-' + id + '-block');
+        if (translitBlock) {
+          translitBlock.style.display = 'none';
+        }
+
+        const translitBlockClass = document.querySelectorAll('.translit-' + id + '-block');
+        translitBlockClass.forEach(el => el.style.padding = '0px');
       }
     }
 
