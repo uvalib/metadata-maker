@@ -1,5 +1,5 @@
 import { LitElement, html, nothing } from 'https://cdn.jsdelivr.net/npm/lit@3.1.0/+esm';
-import parseEdtf from 'https://cdn.jsdelivr.net/npm/edtf@4.4.2/+esm';
+import { parse as parseEdtf } from 'https://cdn.jsdelivr.net/npm/edtf@4.4.2/+esm';
 
 const FALSE_VALUES = new Set(['false', '0', 'off', 'no']);
 
@@ -35,7 +35,7 @@ export class EdtfDateInput extends LitElement {
     this.required = null;
     this.requiredMarker = '*';
     this.helpText = '';
-    this.invalidMessage = 'Enter a valid EDTF date.';
+    this.invalidMessage = 'Enter a valid EDTF date (examples: 2024, 2024-11, 2024-11-21, -0500 for BC, 2024? for uncertain)';
   }
 
   createRenderRoot() {
@@ -66,6 +66,7 @@ export class EdtfDateInput extends LitElement {
         ?required=${this.isRequired}
         @input=${this._handleInput}
         @blur=${this._handleBlur}
+        placeholder="YYYY or YYYY-MM or YYYY-MM-DD"
       >
       ${help}
     </div>`;
@@ -110,12 +111,24 @@ export class EdtfDateInput extends LitElement {
 
   _isValidEdtf(value) {
     if (typeof parseEdtf !== 'function') {
-      return true;
+      console.warn('EDTF parse function not available');
+      return true; // Fail open if library not loaded
     }
     try {
+      // The parse function returns an object with type, level, values etc.
+      // If parsing succeeds, it returns a truthy object
+      // If parsing fails, it returns null or throws
       const parsed = parseEdtf(value);
-      return parsed !== null && parsed !== undefined;
+
+      // Check if we got a valid result
+      // The parsed object should have a 'type' property at minimum
+      if (parsed && typeof parsed === 'object' && parsed.type) {
+        return true;
+      }
+      return false;
     } catch (error) {
+      // Parse threw an error, date is invalid
+      console.debug('EDTF parse error for', value, ':', error.message);
       return false;
     }
   }
