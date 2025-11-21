@@ -1,4 +1,4 @@
-(function(global) {
+(function (global) {
   const base = global.GeneralInteractionsBase;
   if (!base || !base.GeneralInteractions) {
     console.error('GeneralInteractionsBase is not available.');
@@ -45,25 +45,32 @@
     global.cCounter = corporateCount;
   };
   syncCounters();
-  $(document).on('click', ':reset', syncCounters);
+
+  // Replace jQuery reset handler
+  document.addEventListener('click', (event) => {
+    if (event.target.type === 'reset') {
+      // Allow the reset to happen first, then sync
+      setTimeout(syncCounters, 0);
+    }
+  });
 
 
   const diacritics = base.createDiacriticsHelper({
     scheduleInsertLabelUpgrade: scheduleUpgrade
   });
 
-  
 
-global.requestInsertLabelUpgrade = general.requestInsertLabelUpgrade;
+
+  global.requestInsertLabelUpgrade = general.requestInsertLabelUpgrade;
   global.toggleTranslit = general.toggleTranslit;
   const addKeywordOriginal = general.addKeyword.bind(general);
-  global.addKeyword = function() {
+  global.addKeyword = function () {
     const result = addKeywordOriginal();
     syncCounters();
     return result;
   };
   const addAuthorOriginal = general.addAuthor.bind(general);
-  global.addAuthor = function() {
+  global.addAuthor = function () {
     const result = addAuthorOriginal();
     syncCounters();
     return result;
@@ -75,27 +82,44 @@ global.requestInsertLabelUpgrade = general.requestInsertLabelUpgrade;
   global.insertChar = diacritics.insertChar;
   global.insertMenu = diacritics.insertMenu;
 
-  $("input:radio[name=literature]").click(function() {
-    const value = $(this).val();
-    if (value === 'yes') {
-      $('#literature-dropdown').show();
-    } else {
-      $('#literature-dropdown').hide();
-    }
+  // Handle Literature radio buttons
+  const literatureRadios = document.querySelectorAll("input[type='radio'][name='literature']");
+  literatureRadios.forEach(radio => {
+    radio.addEventListener('click', function () {
+      const value = this.value;
+      const dropdown = document.getElementById('literature-dropdown');
+      if (dropdown) {
+        if (value === 'yes') {
+          dropdown.style.display = 'block';
+        } else {
+          dropdown.style.display = 'none';
+        }
+      }
+    });
   });
 
   // Handle Level select change to show/hide "Other level" input
-  $("#level").change(function() {
-    const value = $(this).val();
-    const otherLevelBlock = $('#other-level-block');
-    const otherLevelInput = $('#other_level');
-    
-    if (value === 'otherlevel') {
-      otherLevelBlock.removeClass('hidden').show();
-      otherLevelInput.attr('required', true).addClass('required');
-    } else {
-      otherLevelBlock.addClass('hidden').hide();
-      otherLevelInput.attr('required', false).removeClass('required').val('');
-    }
-  });
+  const levelSelect = document.getElementById("level");
+  if (levelSelect) {
+    levelSelect.addEventListener('change', function () {
+      const value = this.value;
+      const otherLevelBlock = document.getElementById('other-level-block');
+      const otherLevelInput = document.getElementById('other_level');
+
+      if (otherLevelBlock && otherLevelInput) {
+        if (value === 'otherlevel') {
+          otherLevelBlock.classList.remove('hidden');
+          otherLevelBlock.style.display = 'block';
+          otherLevelInput.required = true;
+          otherLevelInput.classList.add('required');
+        } else {
+          otherLevelBlock.classList.add('hidden');
+          otherLevelBlock.style.display = 'none';
+          otherLevelInput.required = false;
+          otherLevelInput.classList.remove('required');
+          otherLevelInput.value = '';
+        }
+      }
+    });
+  }
 })(window);
