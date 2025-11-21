@@ -98,13 +98,13 @@ export class ScoresMarcBuilder extends MarcBuilder {
     const scoreFormatCode = typeof record.score_format === 'string' ? record.score_format : '';
     field[21] = validScoreFormats.has(scoreFormatCode) ? scoreFormatCode : '|';
 
+    // Positions 24-29: Accompanying matter (up to 6 codes)
     if (Array.isArray(record.accompanying_matters) && record.accompanying_matters.length > 0) {
-      for (let i = 0; i < record.accompanying_matters.length; i++) {
+      for (let i = 0; i < Math.min(record.accompanying_matters.length, 6); i++) {
         field[24 + i] = record.accompanying_matters[i];
       }
-    } else {
-      field[24] = '#';
     }
+    // If no accompanying matter, positions 24-29 remain as spaces (default from initialization)
 
     field[30] = 'n';
 
