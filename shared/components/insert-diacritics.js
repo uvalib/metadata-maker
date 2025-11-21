@@ -1,4 +1,4 @@
-import { LitElement, html } from 'https://cdn.jsdelivr.net/npm/lit@3.1.0/+esm';
+import { LitElement, html } from 'https://cdn.jsdelivr.net/npm/lit@3.2.1/+esm';
 import { SPECIAL_CHARACTERS } from '../data/special-characters.js';
 
 const INSERT_LABEL_SELECTOR = 'label.insert';

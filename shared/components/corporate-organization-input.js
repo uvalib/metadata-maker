@@ -1,4 +1,4 @@
-import { html, nothing } from 'https://cdn.jsdelivr.net/npm/lit@3.1.0/+esm';
+import { html, nothing } from 'https://cdn.jsdelivr.net/npm/lit@3.2.1/+esm';
 import { RepeatableFieldBase } from './repeatable-field-base.js';
 
 const FALSE_VALUES = new Set(['false', '0', 'off', 'no']);
