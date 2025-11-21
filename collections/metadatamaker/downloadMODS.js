@@ -7,9 +7,7 @@ import { ModsBuilder } from '../../shared/modsBuilder.js';
 const builder = new ModsBuilder({
 	moduleType: 'collections',
 	includeTypeOfResource: true,
-	include
-
-Literature: true,
+	includeLiterature: true,
 	includeFAST: true,
 	includeISBN: true
 });
