@@ -35,7 +35,7 @@ export class EdtfDateInput extends LitElement {
     this.required = null;
     this.requiredMarker = '*';
     this.helpText = '';
-    this.invalidMessage = 'Enter a valid EDTF date (examples: 2024, 2024-11, 2024-11-21, -0500 for BC, 2024? for uncertain)';
+    this.invalidMessage = 'Enter a valid EDTF date (examples: 2024, 2024-11, 2024-11-21, -0500 for BC, 2024? uncertain, 2024~ approximate, 2024% both)';
   }
 
   createRenderRoot() {

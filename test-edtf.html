@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>EDTF Date Validation Test</title>
+    <script type="module" src="/shared/components/edtf-date-input.js"></script>
+    <link href="/marcmaker.css" rel="stylesheet" media="screen">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+
+        .test-section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 5px;
+        }
+
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 15px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        h2 {
+            color: #666;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 10px;
+        }
+
+        .expected {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .valid {
+            color: green;
+        }
+
+        .invalid {
+            color: red;
+        }
+
+        button {
+            padding: 10px 20px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background: #45a049;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>EDTF Date Validation Test</h1>
+    <p>Testing the edtf-date-input component with various date formats to identify issues mentioned in GitHub issue #29.
+    </p>
+
+    <div class="test-section">
+        <h2>Standard Dates (Should ALL be valid)</h2>
+        <div class="test-grid">
+            <edtf-date-input field-id="test_1" heading="Year only: 2024"></edtf-date-input>
+            <edtf-date-input field-id="test_2" heading="Year-Month: 2024-11"></edtf-date-input>
+            <edtf-date-input field-id="test_3" heading="Full date: 2024-11-21"></edtf-date-input>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>BC / Negative Dates (PROBLEM AREA - Should be valid)</h2>
+        <div class="test-grid">
+            <edtf-date-input field-id="test_4" heading="500 BC: -0500"></edtf-date-input>
+            <edtf-date-input field-id="test_5" heading="44 BC (Caesar): -0044-03-15"></edtf-date-input>
+            <edtf-date-input field-id="test_6" heading="1 BC: -0001"></edtf-date-input>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>Early AD Dates (PROBLEM AREA - Should be valid)</h2>
+        <div class="test-grid">
+            <edtf-date-input field-id="test_7" heading="950 AD: 0950"></edtf-date-input>
+            <edtf-date-input field-id="test_8" heading="100 AD: 0100-01-01"></edtf-date-input>
+            <edtf-date-input field-id="test_9" heading="Year 1 AD: 0001"></edtf-date-input>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>EDTF Level 1: Uncertain/Approximate (Should be valid)</h2>
+        <div class="test-grid">
+            <edtf-date-input field-id="test_10" heading="Uncertain: 2024?"></edtf-date-input>
+            <edtf-date-input field-id="test_11" heading="Approximate: 2024~"></edtf-date-input>
+            <edtf-date-input field-id="test_12" heading="Both (uncertain & approximate): 2024%"></edtf-date-input>
+        </div>
+        <p style="font-size: 0.9em; color: #666; margin-top: 10px;">
+            <strong>Note:</strong> Per EDTF spec, use <code>%</code> (not <code>?~</code>) for uncertain AND
+            approximate.
+        </p>
+    </div>
+
+    <div class="test-section">
+        <h2>EDTF Level 2: Unspecified Digits (Should be valid)</h2>
+        <div class="test-grid">
+            <edtf-date-input field-id="test_13" heading="Unspecified month: 2024-XX"></edtf-date-input>
+            <edtf-date-input field-id="test_14" heading="Unspecified day: 2024-05-XX"></edtf-date-input>
+            <edtf-date-input field-id="test_15" heading="Decade: 202X"></edtf-date-input>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>Invalid Dates (Should be REJECTED)</h2>
+        <div class="test-grid">
+            <edtf-date-input field-id="test_16" heading="Invalid text: abc"></edtf-date-input>
+            <edtf-date-input field-id="test_17" heading="Invalid month: 2024-13"></edtf-date-input>
+            <edtf-date-input field-id="test_18" heading="Invalid day: 2024-02-30"></edtf-date-input>
+        </div>
+    </div>
+
+    <button onclick="testAllFields()">Test All Fields</button>
+    <div id="results"
+        style="margin-top: 20px; padding: 20px; background: white; border: 1px solid #ddd; border-radius: 5px;"></div>
+
+    <script>
+        // Pre-fill test values
+        const testData = {
+            test_1: '2024',
+            test_2: '2024-11',
+            test_3: '2024-11-21',
+            test_4: '-0500',
+            test_5: '-0044-03-15',
+            test_6: '-0001',
+            test_7: '0950',
+            test_8: '0100-01-01',
+            test_9: '0001',
+            test_10: '2024?',
+            test_11: '2024~',
+            test_12: '2024%',
+            test_13: '2024-XX',
+            test_14: '2024-05-XX',
+            test_15: '202X',
+            test_16: 'abc',
+            test_17: '2024-13',
+            test_18: '2024-02-30'
+        };
+
+        // Fill all fields on load
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                Object.entries(testData).forEach(([id, value]) => {
+                    const input = document.getElementById(id);
+                    if (input) {
+                        input.value = value;
+                        input.dispatchEvent(new Event('input', { bubbles: true }));
+                        input.dispatchEvent(new Event('blur', { bubbles: true }));
+                    }
+                });
+            }, 500);
+        });
+
+        function testAllFields() {
+            const results = [];
+            Object.entries(testData).forEach(([id, value]) => {
+                const input = document.getElementById(id);
+                if (input) {
+                    const isValid = input.checkValidity();
+                    const message = input.validationMessage;
+                    results.push({
+                        id,
+                        value,
+                        valid: isValid,
+                        message: message || 'Valid'
+                    });
+                }
+            });
+
+            // Display results
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<h3>Validation Results:</h3>' +
+                results.map(r =>
+                    `<div style="padding: 5px; margin: 5px 0;">
+						<strong>${r.value}</strong>: 
+						<span class="${r.valid ? 'valid' : 'invalid'}">
+							${r.valid ? '✓ Valid' : '✗ Invalid'}
+						</span>
+						${r.message !== 'Valid' ? ` - ${r.message}` : ''}
+					</div>`
+                ).join('');
+        }
+    </script>
+</body>
+
+</html>
