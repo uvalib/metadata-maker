@@ -3,8 +3,8 @@ import { MarcBuilder } from '../marcBuilder.js';
 export class DatasetMarcBuilder extends MarcBuilder {
   constructor(options = {}) {
     super({
-      marcLeaderType: 'mam',
-      xmlLeaderType: 'mam',
+      marcLeaderType: 'man',
+      xmlLeaderType: 'man',
       ...options
     });
   }
@@ -28,8 +28,8 @@ export class DatasetMarcBuilder extends MarcBuilder {
     const titleInd1 = hasAuthor ? '1' : '0';
     const latinIndex =
       checkExists(record.title) &&
-      checkExists(record.title[1]) &&
-      (checkExists(record.title[1]['title']) || checkExists(record.title[1]['subtitle']))
+        checkExists(record.title[1]) &&
+        (checkExists(record.title[1]['title']) || checkExists(record.title[1]['subtitle']))
         ? 1
         : 0;
 
@@ -64,7 +64,7 @@ export class DatasetMarcBuilder extends MarcBuilder {
 
     const latinIndex =
       checkExists(record.corporate_author[1]) &&
-      checkExists(record.corporate_author[1]['corporate'])
+        checkExists(record.corporate_author[1]['corporate'])
         ? 1
         : 0;
 
