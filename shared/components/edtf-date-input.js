@@ -1,5 +1,5 @@
 import { LitElement, html, nothing } from 'https://cdn.jsdelivr.net/npm/lit@3.1.0/+esm';
-import { parse as parseEdtf } from 'https://cdn.jsdelivr.net/npm/edtf@4.4.2/+esm';
+import { parse as parseEdtf } from 'https://cdn.jsdelivr.net/npm/edtf@4.9.0/+esm';
 
 const FALSE_VALUES = new Set(['false', '0', 'off', 'no']);
 
