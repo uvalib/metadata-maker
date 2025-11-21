@@ -550,7 +550,8 @@
 
     getFilename() {
       const selector = this.config.filenameSelector || '#filename';
-      return $(selector).val();
+      const element = document.querySelector(selector);
+      return element ? element.value : '';
     }
 
     downloadFile(text, filetype) {
