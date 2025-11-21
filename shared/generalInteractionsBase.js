@@ -277,9 +277,12 @@
       if (!root) {
         return;
       }
-      $(root).on('blur', '.translit-listen', (event) => {
-        this.toggleTranslit(event.target.id);
-      });
+      // Replace jQuery event delegation with vanilla JS
+      document.addEventListener('blur', (event) => {
+        if (event.target.classList.contains('translit-listen')) {
+          this.toggleTranslit(event.target.id);
+        }
+      }, true); // Use capture phase for delegation
     }
 
     registerFastKeywordReset() {
