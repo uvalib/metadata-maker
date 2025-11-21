@@ -107,10 +107,21 @@ $("#marc-maker").submit(function (event) {
 		? extentComponent.getEntries()
 		: [];
 
-	var subjectComponent = document.querySelector('repeatable-subject-input');
-	var subjectEntries = subjectComponent && typeof subjectComponent.getEntries === 'function'
-		? subjectComponent.getEntries()
-		: [];
+	// Collect subjects
+	const subjectInputs = document.querySelector('repeatable-subject-input');
+	let subjects = [];
+	if (subjectInputs && typeof subjectInputs.getEntries === 'function') {
+		subjects = subjectInputs.getEntries();
+	}
+	subjects.forEach((subject, index) => {
+		console.log(`Subject ${index}:`, subject);
+	});
+
+	// Collect notes
+	const noteInputs = Array.from(document.querySelectorAll('.note-input'))
+		.map(input => (input.value || '').trim())
+		.filter(value => value !== '');
+	console.log('Notes:', noteInputs);
 
 	var containerComponent = document.querySelector('repeatable-container-input');
 	var containerEntries = containerComponent && typeof containerComponent.getEntries === 'function'
@@ -163,6 +174,7 @@ $("#marc-maker").submit(function (event) {
 		publication_country: $("#country").val(),
 		copyright_year: $("#cyear").val(),
 		languages: languageEntries,
+		notes: noteInputs,
 		volume_or_page: $("#vorp").val(),
 		pages: $("#pages").val(),
 		unpaged: $("#pages_listed").is(':checked'),

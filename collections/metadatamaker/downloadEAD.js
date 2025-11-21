@@ -189,15 +189,25 @@ function downloadEAD(record, institution_info) {
     // Bibliography
     if (referenceInputs.length > 0) {
         xml += '  <bibliography>\n';
-        referenceInput
-
-        s.forEach(ref => {
+        referenceInputs.forEach(ref => {
             if (ref) {
                 xml += `    <bibref>${escapeXML(ref)}</bibref>\n`;
             }
         });
         xml += '  </bibliography>\n';
     }
+
+    // Notes  
+    const notes = record.notes || [];
+    notes.forEach(note => {
+        if (note) {
+            xml += `  <odd>\n`;
+            xml += `    <note>\n`;
+            xml += `      <p>${escapeXML(note)}</p>\n`;
+            xml += `    </note>\n`;
+            xml += `  </odd>\n`;
+        }
+    });
 
     // Control access (keywords/subjects)
     if (subjects.length > 0) {
