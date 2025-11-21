@@ -290,6 +290,13 @@
       if (!conf || !conf.enabled) {
         return;
       }
+
+      // Skip if jQuery is not available (FAST features disabled)
+      if (typeof $ === 'undefined') {
+        console.log('FAST keyword reset skipped - jQuery not loaded');
+        return;
+      }
+
       const root = conf.eventSelector ? $(conf.eventSelector) : $(this.config.rootSelector);
       if (!root.length) {
         return;
@@ -318,9 +325,9 @@
       };
 
       if (conf.delegateSelector) {
-        root.on(conf.eventName || 'keyup', conf.delegateSelector, handler);
+        root.on(conf.eventName || 'keydown', conf.delegateSelector, handler);
       } else {
-        root.on(conf.eventName || 'keyup', handler);
+        root.on(conf.eventName || 'keydown', handler);
       }
     }
 
