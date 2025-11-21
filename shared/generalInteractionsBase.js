@@ -194,13 +194,23 @@
     }
 
     initialize() {
-      this.initDocumentReady();
       this.registerTranslitHandler();
-      this.registerFastKeywordReset();
-      this.registerAuthorRequirementHandler();
-      this.registerDateMax();
-      this.registerResetHandler();
-      this.registerListedHandler();
+
+      // Skip jQuery-dependent features if jQuery is not loaded
+      const jQueryAvailable = typeof $ !== 'undefined';
+
+      if (jQueryAvailable) {
+        this.registerFastKeywordReset();
+        this.registerAuthorRequirementHandler();
+        this.registerDateMax(); // Renamed from registerYearMaxHandler to match existing method
+        // this.registerCountersHandler(); // This method does not exist in the provided code, keeping original counter logic
+        this.registerResetHandler();
+        this.registerListedHandler();
+      } else {
+        console.log('Skipping jQuery-dependent features (jQuery not loaded)');
+      }
+
+      this.initDocumentReady();
       if (Array.isArray(this.config.additionalHandlers)) {
         this.config.additionalHandlers.forEach((handler) => {
           if (typeof handler === 'function') {
