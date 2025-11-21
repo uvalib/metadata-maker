@@ -686,11 +686,14 @@
       const wrapper = document.createElement('div');
       wrapper.setAttribute('id', config.containerId);
       wrapper.innerHTML = constructMenu(field, insertAt);
-      $('#insert-' + field).append(wrapper);
+      const insertContainer = document.getElementById('insert-' + field);
+      if (insertContainer) {
+        insertContainer.appendChild(wrapper);
+      }
     }
 
     if (!global.__diacriticsEscHandlerBound) {
-      $(document).on('keyup', function (event) {
+      document.addEventListener('keyup', function (event) {
         if (event.keyCode === 27) {
           const popup = document.getElementById(config.containerId);
           if (popup) {
