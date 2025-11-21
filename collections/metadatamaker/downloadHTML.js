@@ -1,19 +1,11 @@
 /*
- * Language and country lookups now in shared modules
- * This reduces duplication across all modules
- */
-
-// Import lookup functions from shared modules
-// These will be loaded via script tags, making functions globally available
-// (See shared/languageLookups.js and shared/countryLookups.js)
-
-/*
  * HTML generation now uses shared HtmlBuilder
- * Language and country lookup functions are defined above
+ * Language and country lookup functions are loaded from shared modules
+ * 
+ * HtmlBuilder is loaded as a UMD global from htmlBuilder.js
  */
-import { HtmlBuilder } from '../../shared/htmlBuilder.js';
 
-const builder = new HtmlBuilder({
+const builder = new window.HtmlBuilder({
   itemType: 'http://schema.org/Book',
   moduleType: 'collections'
 });

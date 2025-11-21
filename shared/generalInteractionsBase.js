@@ -1,4 +1,4 @@
-(function(global) {
+(function (global) {
   const NON_ROMAN_REGEX = /[^\u0000-\u024F\u0263\u02B9\u02BA\u02DD\u0300\u0301\u0302\u0303\u0304\u0306\u0308\u0309\u030A\u030C\u0310\u0313\u0315\u0321\u0322\u0323\u0324\u0325\u0327\u0328\u032E\u0332\u0333\u0351\u0357\u0366\u03B1\u04D4\u04D5\u2020\u2070\u2074\u2075\u2076\u2077\u2078\u2079\u207A\u207B\u207D\u207E\u2080\u2081\u2082\u2083\u2084\u2085\u2086\u2087\u2088\u2089\u20AC\u220E\u2113\u01C2\u2117\u266D\u266F\uFE20\uFE21\uFE22\uFE23\u02C7\u0307\u208E\u208D\u208B\u208A]/;
 
   function deepMerge(target, source) {
@@ -39,16 +39,16 @@
     const givenPlaceholder = options.givenPlaceholder || 'Given Name';
 
     let markup = '';
-  markup += '<label for="' + familyId + '" class="insert insert_family_name additional_insert" onClick=\'insertMenu("' + familyId + '");\'>Insert other Characters</label>';
-  markup += '<label for="given_name' + index + '" class="insert insert_given_name additional_insert" onClick=\'insertMenu("given_name' + index + '");\'>Insert other Characters</label><br>';
+    markup += '<label for="' + familyId + '" class="insert insert_family_name additional_insert" onClick=\'insertMenu("' + familyId + '");\'>Insert other Characters</label>';
+    markup += '<label for="given_name' + index + '" class="insert insert_given_name additional_insert" onClick=\'insertMenu("given_name' + index + '");\'>Insert other Characters</label><br>';
     markup += '<div id="insert-' + familyId + '" class="additional_menu"></div><div id="insert-given_name' + index + '" class="insert-given_name additional_menu"></div>';
     markup += '<span class="added-author"><input type="text" class="author translit-listen" id="' + familyId + '" placeholder="' + familyPlaceholder + '">, ';
     markup += '<input type="text" class="author translit-listen" id="given_name' + index + '" placeholder="' + givenPlaceholder + '"> ';
     markup += '<select name="role' + index + '" id="role' + index + '">' + roleOptions + '</select></span>';
 
     markup += '<div class="translit-' + familyId + '-block translit-block translit-author hidden" id="translit-' + familyId + '-block">';
-  markup += '<label for="translit_' + familyId + '" class="insert insert_family_name hidden translit translit-' + familyId + '" onClick=\'insertMenu("translit_' + familyId + '");\'>Insert other Characters</label>';
-  markup += '<label for="translit_given_name' + index + '" class="insert insert_given_name hidden translit translit-' + familyId + '" onClick=\'insertMenu("translit_given_name' + index + '");\'>Insert other Characters</label><br>';
+    markup += '<label for="translit_' + familyId + '" class="insert insert_family_name hidden translit translit-' + familyId + '" onClick=\'insertMenu("translit_' + familyId + '");\'>Insert other Characters</label>';
+    markup += '<label for="translit_given_name' + index + '" class="insert insert_given_name hidden translit translit-' + familyId + '" onClick=\'insertMenu("translit_given_name' + index + '");\'>Insert other Characters</label><br>';
     markup += '<div id="insert-translit_' + familyId + '"></div><div id="insert-translit_given_name' + index + '" class="insert-given_name"></div>';
     markup += '<input type="text" id="translit_' + familyId + '" class="hidden translit translit-' + familyId + '" placeholder="Transliterated Family Name"><span class="hidden translit-' + familyId + '">, </span>';
     markup += '<input type="text" id="translit_given_name' + index + '" class="hidden translit translit-' + familyId + '" placeholder="Transliterated Given Name">';
@@ -68,12 +68,12 @@
     }).join('');
 
     let markup = '';
-  markup += '<label for="' + blockId + '" class="insert insert_corporate_name" onClick=\'insertMenu("' + blockId + '");\'>Insert other Characters</label><br>';
+    markup += '<label for="' + blockId + '" class="insert insert_corporate_name" onClick=\'insertMenu("' + blockId + '");\'>Insert other Characters</label><br>';
     markup += '<div id="insert-' + blockId + '" class="additional_corporate_menu"></div>';
     markup += '<span class="added-corporate"><input type="text" class="corporate translit-listen" id="' + blockId + '"> ';
     markup += '<select name="role' + index + '" id="corporate_role' + index + '">' + roleOptions + '</select></span>';
     markup += '<div class="translit-' + blockId + '-block translit-block translit-' + blockId + ' hidden" id="translit-' + blockId + '-block">';
-  markup += '<label for="translit_' + blockId + '" class="insert insert_translit_corporate_name hidden translit translit-' + blockId + '" onClick=\'insertMenu("translit_' + blockId + '");\'>Insert other Characters</label><br>';
+    markup += '<label for="translit_' + blockId + '" class="insert insert_translit_corporate_name hidden translit translit-' + blockId + '" onClick=\'insertMenu("translit_' + blockId + '");\'>Insert other Characters</label><br>';
     markup += '<div id="insert-translit_' + blockId + '"></div>';
     markup += '<input type="text" id="translit_' + blockId + '" class="hidden translit translit-' + blockId + '">';
     markup += '</div>';
@@ -211,7 +211,8 @@
     }
 
     initDocumentReady() {
-      $(document).ready(() => {
+      // Replace jQuery $(document).ready with vanilla JS
+      const executeOnReady = () => {
         if (typeof this.config.setUpInstitution === 'function') {
           this.config.setUpInstitution();
         }
@@ -221,7 +222,14 @@
         if (typeof this.config.scheduleInsertLabelUpgrade === 'function') {
           this.config.scheduleInsertLabelUpgrade(document);
         }
-      });
+      };
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', executeOnReady);
+      } else {
+        // Already loaded
+        executeOnReady();
+      }
     }
 
     requestInsertLabelUpgrade(root) {
@@ -390,7 +398,7 @@
       if (!conf || !conf.enabled) {
         return;
       }
-      $(conf.selector).click(function() {
+      $(conf.selector).click(function () {
         let field = $(this).attr('id');
         field = field.substring(0, field.length - 7);
         if (field !== 'author') {
@@ -567,7 +575,7 @@
 
   function createDiacriticsHelper(options) {
     const config = Object.assign({
-      codes: ['0301','04D5','04D4','0357','0351','0306','00A3','0310','0327','030A','0325','0302','005E','00A9','0111','0110','0366','0323','00B7','02DD','0324','FE22','FE23','0333','00DF','00F0','00D0','20AC','220E','0060','0300','030C','0313','0315','0328','00A1','00BF','0142','0141','007B','0321','FE20','FE21','0304','02B9','266D','266F','01A1','01A0','00F8','00D8','0153','0152','2117','00B1','0309','007D','0322','2113','01C2','2080','2081','2082','2083','2084','2085','2086','2087','2088','2089','208D','208B','00AE','208A','208E','0307','2070','00B9','00B2','00B3','2074','2075','2076','2077','2078','2079','207D','207B','207A','207E','00FE','00DE','0303','007E','0131','02BA','01B0','01AF','0308','0332','005F','032E'],
+      codes: ['0301', '04D5', '04D4', '0357', '0351', '0306', '00A3', '0310', '0327', '030A', '0325', '0302', '005E', '00A9', '0111', '0110', '0366', '0323', '00B7', '02DD', '0324', 'FE22', 'FE23', '0333', '00DF', '00F0', '00D0', '20AC', '220E', '0060', '0300', '030C', '0313', '0315', '0328', '00A1', '00BF', '0142', '0141', '007B', '0321', 'FE20', 'FE21', '0304', '02B9', '266D', '266F', '01A1', '01A0', '00F8', '00D8', '0153', '0152', '2117', '00B1', '0309', '007D', '0322', '2113', '01C2', '2080', '2081', '2082', '2083', '2084', '2085', '2086', '2087', '2088', '2089', '208D', '208B', '00AE', '208A', '208E', '0307', '2070', '00B9', '00B2', '00B3', '2074', '2075', '2076', '2077', '2078', '2079', '207D', '207B', '207A', '207E', '00FE', '00DE', '0303', '007E', '0131', '02BA', '01B0', '01AF', '0308', '0332', '005F', '032E'],
       buttonClass: 'diacritics',
       containerId: 'insert-popup',
       minWidth: 10,
@@ -662,7 +670,7 @@
     }
 
     if (!global.__diacriticsEscHandlerBound) {
-      $(document).on('keyup', function(event) {
+      $(document).on('keyup', function (event) {
         if (event.keyCode === 27) {
           const popup = document.getElementById(config.containerId);
           if (popup) {
