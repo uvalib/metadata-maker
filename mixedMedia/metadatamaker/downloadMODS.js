@@ -2,14 +2,21 @@
  * MODS download for mixedMedia module
  * Uses shared ModsBuilder with default configuration
  */
-import { ModsBuilder } from '../../shared/modsBuilder.js';
+(function () {
+	'use strict';
 
-const builder = new ModsBuilder({
-	moduleType: 'mixedMedia',
-	includeTypeOfResource: true,
-	includeLiterature: true,
-	includeFAST: true,
-	includeISBN: true
-});
+	if (typeof ModsBuilder === 'undefined') {
+		console.error('ModsBuilder not found. Make sure modsBuilder.js is loaded first.');
+		return;
+	}
 
-window.downloadMODS = builder.downloadMODS.bind(builder);
+	const builder = new ModsBuilder({
+		moduleType: 'mixedMedia',
+		includeTypeOfResource: true,
+		includeLiterature: true,
+		includeFAST: true,
+		includeISBN: true
+	});
+
+	window.downloadMODS = builder.downloadMODS.bind(builder);
+})();

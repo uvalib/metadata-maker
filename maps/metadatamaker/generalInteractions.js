@@ -1,4 +1,4 @@
-(function(global) {
+(function (global) {
   const base = global.GeneralInteractionsBase;
   if (!base || !base.GeneralInteractions) {
     console.error('GeneralInteractionsBase is not available.');
@@ -45,25 +45,29 @@
     global.cCounter = corporateCount;
   };
   syncCounters();
-  $(document).on('click', ':reset', syncCounters);
+  document.addEventListener('click', (event) => {
+    if (event.target.type === 'reset') {
+      setTimeout(syncCounters, 0);
+    }
+  });
 
 
   const diacritics = base.createDiacriticsHelper({
     scheduleInsertLabelUpgrade: scheduleUpgrade
   });
 
-  
 
-global.requestInsertLabelUpgrade = general.requestInsertLabelUpgrade;
+
+  global.requestInsertLabelUpgrade = general.requestInsertLabelUpgrade;
   global.toggleTranslit = general.toggleTranslit;
   const addKeywordOriginal = general.addKeyword.bind(general);
-  global.addKeyword = function() {
+  global.addKeyword = function () {
     const result = addKeywordOriginal();
     syncCounters();
     return result;
   };
   const addAuthorOriginal = general.addAuthor.bind(general);
-  global.addAuthor = function() {
+  global.addAuthor = function () {
     const result = addAuthorOriginal();
     syncCounters();
     return result;

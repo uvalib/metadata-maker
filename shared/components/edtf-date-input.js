@@ -55,11 +55,11 @@ export class EdtfDateInput extends LitElement {
     const inputClasses = this.inputClass || '';
 
     return html`<div id=${containerId} class=${containerClass}>
-      <label for="${id}" class="heading">${this.heading}${marker}</label><br>
+      <label for="${id}" class="heading">${this.heading}${marker}</label>
       <input
         type="text"
         id="${id}"
-        class="${inputClasses}"
+        class="${inputClasses} input-base"
         inputmode="text"
         autocomplete="off"
         spellcheck="false"

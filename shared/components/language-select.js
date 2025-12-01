@@ -65,18 +65,18 @@ class LanguageSelect extends LitElement {
     const selectClasses = initialClasses.join(' ').trim();
     const nameAttr = this.name && this.name.length > 0 ? this.name : this.fieldId;
     const headingTemplate = this.showHeading
-      ? html`<label for="${this.fieldId}" class="heading">
-          ${this.heading}${this.required ? html`<span class="required_marker">${this.requiredMarker}</span>` : nothing}
-        </label><br>`
+      ? html`<label for="${this.fieldId}" class="block text-sm font-medium leading-6 text-gray-900 mb-2">
+          ${this.heading}${this.required ? html`<span class="required_marker ml-1 text-red-500">${this.requiredMarker}</span>` : nothing}
+        </label>`
       : nothing;
 
     return html`
-      <div id="${blockId}" class="${this.containerClass}">
+      <div id=${blockId} class=${this.containerClass}>
         ${headingTemplate}
         <select
           name="${nameAttr}"
           id="${this.fieldId}"
-          class="${selectClasses}"
+          class="${selectClasses} block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
           ?required=${this.required}
           .value=${this.value ?? ''}
           @change=${this._handleChange}

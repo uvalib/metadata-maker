@@ -74,18 +74,17 @@ export class RepeatableFieldBase extends LitElement {
 
   renderAddControl() {
     if (!this.allowAdd) {
-      return html``;
+      return nothing;
     }
-    const ariaLabel = this.addButtonAriaLabel || this.addButtonLabel;
-    const idValue = this.addButtonId && this.addButtonId.length > 0 ? this.addButtonId : nothing;
-    const ariaValue = ariaLabel && ariaLabel.length > 0 ? ariaLabel : nothing;
-    return html`<input
-      type="button"
-      value="${this.addButtonLabel}"
-      id=${idValue}
-      aria-label=${ariaValue}
-      @click=${(event) => this.addEntry(event)}
-    >`;
+    return html`<button
+          type="button"
+          id="${this.addButtonId}"
+          class="btn-primary text-sm mt-2"
+          aria-label="${this.addButtonAriaLabel}"
+          @click="${this.addEntry}"
+        >
+          ${this.addButtonLabel}
+        </button>`;
   }
 
   render() {

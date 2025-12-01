@@ -13,165 +13,221 @@
  *
  * No information should be submitted to the server, so the default behavior of the button is blocked.
  */
-$("#marc-maker").submit(function(event) {
-	var words = [];
-	var fast_array = [];
-	for (var i = 0; i < counter; i++) {
-		if(checkExists($("#fastID" + i).val()) && checkExists($("#keyword" + i).val())) {
-			if ($("#keyword" + i).val().substring($("#keyword" + i).val().length - 1) == ']') {
-				var endpoint = $("#keyword" + i).val().lastIndexOf('[');
-				fast_array.push([$("#keyword" + i).val().substring(0,endpoint-1),$("#fastID" + i).val(),$("#fastType" + i).val(),$("#fastInd" + i).val()]);
-			}
-			else {
-				fast_array.push([$("#keyword" + i).val(),$("#fastID" + i).val(),$("#fastType" + i).val(),$("#fastInd" + i).val()]);
-			}
-		}
-		else {
-			words.push($("#keyword" + i).val());
-		}
-	};
+document.addEventListener('DOMContentLoaded', function () {
+	const form = document.getElementById("marc-maker");
+	if (form) {
+		form.addEventListener("submit", function (event) {
+			event.preventDefault();
 
-	var additional_names = [];
-	var translit_additional_names = [];
-	var complete_names_list = [
-		[
-			{
-				family: $("#family_name").val(),
-				given: $("#given_name").val(),
-				role: $("#role").val()
-			},
-			{
-				family: $("#translit_family_name").val(),
-				given: $("#translit_given_name").val()
-			}
-		]
-	];
-	for (var i = 0; i < aCounter; i++) {
-		complete_names_list.push([{ "family": $("#family_name" + i).val(), "given": $("#given_name" + i).val(), "role": $("#role" + i).val()},{ "family": $("#translit_family_name" + i).val(), "given": $("#translit_given_name" + i).val()}]);
-	}
-	//Find the first listed author or artist
-	var entry100 = find100(complete_names_list);
+			var words = [];
+			var fast_array = [];
+			var loopCounter = (typeof window.counter !== 'undefined') ? window.counter : 0;
 
-	var corporate_entries = [
-		[
-			{
-				corporate: $("#corporate_name").val(),
-				role:  $("#corporate_role").val()
-			},
-			{
-				corporate: $("#translit_corporate_name").val()
-			}
-		]
-	];
-	for (var i = 0; i < cCounter; i++) {
-		corporate_entries.push([
-			{ corporate: $("#corporate_name" + i).val(), role: $("#corporate_role" + i).val() },
-			{ corporate: $("#translit_corporate_name" + i).val() }
-		]);
-	}
+			for (var i = 0; i < loopCounter; i++) {
+				var fastIdElem = document.getElementById("fastID" + i);
+				var keywordElem = document.getElementById("keyword" + i);
+				var fastTypeElem = document.getElementById("fastType" + i);
+				var fastIndElem = document.getElementById("fastInd" + i);
 
-	var filtered_corporate_entries = [];
-	for (var i = 0; i < corporate_entries.length; i++) {
-		if (checkExists(corporate_entries[i][0]['corporate']) || checkExists(corporate_entries[i][1]['corporate'])) {
-			filtered_corporate_entries.push(corporate_entries[i]);
-		}
-	}
+				if (fastIdElem && keywordElem && checkExists(fastIdElem.value) && checkExists(keywordElem.value)) {
+					if (keywordElem.value.substring(keywordElem.value.length - 1) == ']') {
+						var endpoint = keywordElem.value.lastIndexOf('[');
+						fast_array.push([keywordElem.value.substring(0, endpoint - 1), fastIdElem.value, fastTypeElem ? fastTypeElem.value : '', fastIndElem ? fastIndElem.value : '']);
+					}
+					else {
+						fast_array.push([keywordElem.value, fastIdElem.value, fastTypeElem ? fastTypeElem.value : '', fastIndElem ? fastIndElem.value : '']);
+					}
+				}
+				else if (keywordElem) {
+					words.push(keywordElem.value);
+				}
+			};
 
-	var hasPersonalAuthor = checkExists(entry100[0]) && checkExists(entry100[0][0]) && (checkExists(entry100[0][0]['family']) || checkExists(entry100[0][0]['given']));
-	var corporate_author = [{'corporate':'', 'role':''},{'corporate':''}];
-	if (!hasPersonalAuthor && filtered_corporate_entries.length > 0) {
-		var selectedCorporate = find110(filtered_corporate_entries);
-		if (Array.isArray(selectedCorporate) && selectedCorporate.length === 1 && Array.isArray(selectedCorporate[0])) {
-			selectedCorporate = selectedCorporate[0];
-		}
-		if (Array.isArray(selectedCorporate) && selectedCorporate.length >= 2) {
-			corporate_author = [
-				{ corporate: selectedCorporate[0]['corporate'] || '', role: selectedCorporate[0]['role'] || '' },
-				{ corporate: (selectedCorporate[1] && selectedCorporate[1]['corporate']) || '' }
+			// Helper to safely get value
+			const getValue = (id) => {
+				const el = document.getElementById(id);
+				return el ? el.value : '';
+			};
+
+			// Helper to check if checkbox is checked
+			const isChecked = (id) => {
+				const el = document.getElementById(id);
+				return el ? el.checked : false;
+			};
+
+			var additional_names = [];
+			var translit_additional_names = [];
+			var complete_names_list = [
+				[
+					{
+						family: getValue("family_name"),
+						given: getValue("given_name"),
+						role: getValue("role")
+					},
+					{
+						family: getValue("translit_family_name"),
+						given: getValue("translit_given_name")
+					}
+				]
 			];
-		}
-	}
 
-	var additional_corporate_authors = [];
-	for (var i = 0; i < filtered_corporate_entries.length; i++) {
-		additional_corporate_authors.push(filtered_corporate_entries[i]);
-	}
+			var authorLoopCounter = (typeof window.aCounter !== 'undefined') ? window.aCounter : 0;
+			for (var i = 0; i < authorLoopCounter; i++) {
+				var fName = document.getElementById("family_name" + i);
+				var gName = document.getElementById("given_name" + i);
+				var r = document.getElementById("role" + i);
+				var tfName = document.getElementById("translit_family_name" + i);
+				var tgName = document.getElementById("translit_given_name" + i);
 
-	var accompanying_matter_selections = [];
-	for (var i = 0; i <= 13; i++) {
-		if($("#accompanying-matter" + i.toString()).is(":checked")) {
-			accompanying_matter_selections.push($("#accompanying-matter" + i.toString()).val());
-		}
-	}
-
-	const physicalFormRaw = $("#physical-form").val();
-	const physicalFormCode = (physicalFormRaw === null || physicalFormRaw === '') ? '|' : physicalFormRaw;
-
-	var recordObject = {
-		title: [
-			{
-				title: $("#title").val(),
-				subtitle: $("#subtitle").val()
-			},
-			{
-				title: $("#translit_title").val(),
-				subtitle: $("#translit_subtitle").val()
+				complete_names_list.push([
+					{
+						"family": fName ? fName.value : '',
+						"given": gName ? gName.value : '',
+						"role": r ? r.value : ''
+					},
+					{
+						"family": tfName ? tfName.value : '',
+						"given": tgName ? tgName.value : ''
+					}
+				]);
 			}
-		],
-		uniform_title: $("#uniform_title").val(),
-		author: entry100[0],
-		publisher: $("#publisher").val(),
-		publication_year: $("#year").val(),
-		publication_place: $("#place").val(),
-		publication_country: $("#country").val(),
-		copyright_year: $("#cyear").val(),
-		language: $("#language").val(),
-		isbn: $("#isbn").val(),
-		ismn: $("#ismn").val(),
-		volume_or_page: $("#vorp").val(),
-		pages: $("#pages").val(),
-		unpaged: $("#pages_listed").is(':checked'),
-		literature_yes: $("#literature-yes").is(':checked'),
-		literature_dropdown: $("#literature-dropdown").val(),
-		illustrations_yes: $("#illustrations-yes").is(':checked'),
-		physical_form_code: physicalFormCode,
-		dimensions: $("#dimensions").val(),
-		edition: $("#edition").val(),
-		composition_form: $("#composition-form-dropdown").val(),
-		score_format: $("#score-format-dropdown").val(),
-		music_parts: $("#music-parts-dropdown").val(),
-		transposition_arrangement: $("#transposition-arrangement-dropdown").val(),
-		accompanying_matters: accompanying_matter_selections,
-		translit_edition: $("#translit_edition").val(),
-		translit_publisher: $("#translit_publisher").val(),
-		translit_place: $("#translit_place").val(),
-		contents: $("#contents").val(),
-		notes: $("#notes").val(),
-		formatted_contents_note: $("#formatted-contents-note").val(),
-		keywords: words,
-		fast: fast_array,
-		additional_authors: complete_names_list,
-		corporate_author: corporate_author,
-		additional_corporate_authors: additional_corporate_authors
-	};
+			//Find the first listed author or artist
+			var entry100 = find100(complete_names_list);
 
-	var institution_info = generateInstitutionInfo();
+			var corporate_entries = [
+				[
+					{
+						corporate: getValue("corporate_name"),
+						role: getValue("corporate_role")
+					},
+					{
+						corporate: getValue("translit_corporate_name")
+					}
+				]
+			];
 
-	if ($("#MARC").is(':checked')) {
-		downloadMARC(recordObject,institution_info);
+			var corporateLoopCounter = (typeof window.cCounter !== 'undefined') ? window.cCounter : 0;
+			for (var i = 0; i < corporateLoopCounter; i++) {
+				var cName = document.getElementById("corporate_name" + i);
+				var cRole = document.getElementById("corporate_role" + i);
+				var tcName = document.getElementById("translit_corporate_name" + i);
+
+				corporate_entries.push([
+					{
+						corporate: cName ? cName.value : '',
+						role: cRole ? cRole.value : ''
+					},
+					{
+						corporate: tcName ? tcName.value : ''
+					}
+				]);
+			}
+
+			var filtered_corporate_entries = [];
+			for (var i = 0; i < corporate_entries.length; i++) {
+				if (checkExists(corporate_entries[i][0]['corporate']) || checkExists(corporate_entries[i][1]['corporate'])) {
+					filtered_corporate_entries.push(corporate_entries[i]);
+				}
+			}
+
+			var hasPersonalAuthor = checkExists(entry100[0]) && checkExists(entry100[0][0]) && (checkExists(entry100[0][0]['family']) || checkExists(entry100[0][0]['given']));
+			var corporate_author = [{ 'corporate': '', 'role': '' }, { 'corporate': '' }];
+			if (!hasPersonalAuthor && filtered_corporate_entries.length > 0) {
+				var selectedCorporate = find110(filtered_corporate_entries);
+				if (Array.isArray(selectedCorporate) && selectedCorporate.length === 1 && Array.isArray(selectedCorporate[0])) {
+					selectedCorporate = selectedCorporate[0];
+				}
+				if (Array.isArray(selectedCorporate) && selectedCorporate.length >= 2) {
+					corporate_author = [
+						{ corporate: selectedCorporate[0]['corporate'] || '', role: selectedCorporate[0]['role'] || '' },
+						{ corporate: (selectedCorporate[1] && selectedCorporate[1]['corporate']) || '' }
+					];
+				}
+			}
+
+			var additional_corporate_authors = [];
+			for (var i = 0; i < filtered_corporate_entries.length; i++) {
+				additional_corporate_authors.push(filtered_corporate_entries[i]);
+			}
+
+			var accompanying_matter_selections = [];
+			for (var i = 0; i <= 13; i++) {
+				if (isChecked("accompanying-matter" + i.toString())) {
+					var elem = document.getElementById("accompanying-matter" + i.toString());
+					if (elem) {
+						accompanying_matter_selections.push(elem.value);
+					}
+				}
+			}
+
+			const physicalFormRaw = getValue("physical-form");
+			const physicalFormCode = (physicalFormRaw === null || physicalFormRaw === '') ? '|' : physicalFormRaw;
+
+			var recordObject = {
+				title: [
+					{
+						title: getValue("title"),
+						subtitle: getValue("subtitle")
+					},
+					{
+						title: getValue("translit_title"),
+						subtitle: getValue("translit_subtitle")
+					}
+				],
+				uniform_title: getValue("uniform_title"),
+				author: entry100[0],
+				publisher: getValue("publisher"),
+				publication_year: getValue("year"),
+				publication_place: getValue("place"),
+				publication_country: getValue("country"),
+				copyright_year: getValue("cyear"),
+				language: getValue("language"),
+				isbn: getValue("isbn"),
+				ismn: getValue("ismn"),
+				volume_or_page: getValue("vorp"),
+				pages: getValue("pages"),
+				unpaged: isChecked("pages_listed"),
+				literature_yes: isChecked("literature-yes"),
+				literature_dropdown: getValue("literature-dropdown"),
+				illustrations_yes: isChecked("illustrations-yes"),
+				physical_form_code: physicalFormCode,
+				dimensions: getValue("dimensions"),
+				edition: getValue("edition"),
+				composition_form: getValue("composition-form-dropdown"),
+				score_format: getValue("score-format-dropdown"),
+				music_parts: getValue("music-parts-dropdown"),
+				transposition_arrangement: getValue("transposition-arrangement-dropdown"),
+				accompanying_matters: accompanying_matter_selections,
+				translit_edition: getValue("translit_edition"),
+				translit_publisher: getValue("translit_publisher"),
+				translit_place: getValue("translit_place"),
+				contents: getValue("contents"),
+				notes: getValue("notes"),
+				formatted_contents_note: getValue("formatted-contents-note"),
+				keywords: words,
+				fast: fast_array,
+				additional_authors: complete_names_list,
+				corporate_author: corporate_author,
+				additional_corporate_authors: additional_corporate_authors
+			};
+
+			var institution_info = generateInstitutionInfo();
+
+			if (isChecked("MARC")) {
+				downloadMARC(recordObject, institution_info);
+			}
+
+			if (isChecked("MARCXML")) {
+				downloadXML(recordObject, institution_info);
+			}
+
+			if (isChecked("MODS")) {
+				downloadMODS(recordObject, institution_info);
+			}
+
+			if (isChecked("HTML")) {
+				downloadHTML(recordObject, institution_info);
+			}
+		});
 	}
-
-	if ($("#MARCXML").is(':checked')) {
-		downloadXML(recordObject,institution_info);
-	}
-
-	if ($("#MODS").is(':checked')) {
-		downloadMODS(recordObject,institution_info);
-	}
-
-	if ($("#HTML").is(':checked')) {
-		downloadHTML(recordObject,institution_info);
-	}
-
-	event.preventDefault();
 });

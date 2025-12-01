@@ -13,119 +13,181 @@
  *
  * No information should be submitted to the server, so the default behavior of the button is blocked.
  */
-$("#marc-maker").submit(function (event) {
-	var words = [];
-	var fast_array = [];
-	for (var i = 0; i < counter; i++) {
-		if (checkExists($("#fastID" + i).val()) && checkExists($("#keyword" + i).val())) {
-			if ($("#keyword" + i).val().substring($("#keyword" + i).val().length - 1) == ']') {
-				var endpoint = $("#keyword" + i).val().lastIndexOf('[');
-				fast_array.push([$("#keyword" + i).val().substring(0, endpoint - 1), $("#fastID" + i).val(), $("#fastType" + i).val(), $("#fastInd" + i).val()]);
+document.addEventListener('DOMContentLoaded', function () {
+	const form = document.getElementById("marc-maker");
+	if (form) {
+		form.addEventListener("submit", function (event) {
+			event.preventDefault();
+
+			var words = [];
+			var fast_array = [];
+			// Use global counter if available, otherwise default to 0 or handle gracefully
+			var loopCounter = (typeof window.counter !== 'undefined') ? window.counter : 0;
+
+			for (var i = 0; i < loopCounter; i++) {
+				var fastIdElem = document.getElementById("fastID" + i);
+				var keywordElem = document.getElementById("keyword" + i);
+				var fastTypeElem = document.getElementById("fastType" + i);
+				var fastIndElem = document.getElementById("fastInd" + i);
+
+				if (fastIdElem && keywordElem && checkExists(fastIdElem.value) && checkExists(keywordElem.value)) {
+					if (keywordElem.value.substring(keywordElem.value.length - 1) == ']') {
+						var endpoint = keywordElem.value.lastIndexOf('[');
+						fast_array.push([keywordElem.value.substring(0, endpoint - 1), fastIdElem.value, fastTypeElem ? fastTypeElem.value : '', fastIndElem ? fastIndElem.value : '']);
+					}
+					else {
+						fast_array.push([keywordElem.value, fastIdElem.value, fastTypeElem ? fastTypeElem.value : '', fastIndElem ? fastIndElem.value : '']);
+					}
+				}
+				else if (keywordElem) {
+					words.push(keywordElem.value);
+				}
+			};
+
+			var additional_names = [];
+			var translit_additional_names = [];
+
+			var familyName = document.getElementById("family_name");
+			var givenName = document.getElementById("given_name");
+			var role = document.getElementById("role");
+			var translitFamilyName = document.getElementById("translit_family_name");
+			var translitGivenName = document.getElementById("translit_given_name");
+
+			var complete_names_list = [
+				[
+					{
+						family: familyName ? familyName.value : '',
+						given: givenName ? givenName.value : '',
+						role: role ? role.value : ''
+					},
+					{
+						family: translitFamilyName ? translitFamilyName.value : '',
+						given: translitGivenName ? translitGivenName.value : ''
+					}
+				]
+			];
+
+			var authorLoopCounter = (typeof window.aCounter !== 'undefined') ? window.aCounter : 0;
+			for (var i = 0; i < authorLoopCounter; i++) {
+				var fName = document.getElementById("family_name" + i);
+				var gName = document.getElementById("given_name" + i);
+				var r = document.getElementById("role" + i);
+				var tfName = document.getElementById("translit_family_name" + i);
+				var tgName = document.getElementById("translit_given_name" + i);
+
+				complete_names_list.push([
+					{
+						"family": fName ? fName.value : '',
+						"given": gName ? gName.value : '',
+						"role": r ? r.value : ''
+					},
+					{
+						"family": tfName ? tfName.value : '',
+						"given": tgName ? tgName.value : ''
+					}
+				]);
 			}
-			else {
-				fast_array.push([$("#keyword" + i).val(), $("#fastID" + i).val(), $("#fastType" + i).val(), $("#fastInd" + i).val()]);
+
+			//Find the first listed author or artist
+			var entry100 = find100(complete_names_list);
+
+			var corporateName = document.getElementById("corporate_name");
+			var corporateRole = document.getElementById("corporate_role");
+			var translitCorporateName = document.getElementById("translit_corporate_name");
+
+			var complete_corporate_names_list = [
+				[
+					{
+						corporate: corporateName ? corporateName.value : '',
+						role: corporateRole ? corporateRole.value : ''
+					},
+					{
+						corporate: translitCorporateName ? translitCorporateName.value : ''
+					}
+				]
+			];
+
+			var corporateLoopCounter = (typeof window.cCounter !== 'undefined') ? window.cCounter : 0;
+			for (var i = 0; i < corporateLoopCounter; i++) {
+				var cName = document.getElementById("corporate_name" + i);
+				var cRole = document.getElementById("corporate_role" + i);
+				var tcName = document.getElementById("translit_corporate_name" + i);
+
+				complete_corporate_names_list.push([
+					{
+						"corporate": cName ? cName.value : '',
+						"role": cRole ? cRole.value : ''
+					},
+					{
+						"corporate": tcName ? tcName.value : ''
+					}
+				]);
 			}
-		}
-		else {
-			words.push($("#keyword" + i).val());
-		}
-	};
-
-	var additional_names = [];
-	var translit_additional_names = [];
-	var complete_names_list = [
-		[
-			{
-				family: $("#family_name").val(),
-				given: $("#given_name").val(),
-				role: $("#role").val()
-			},
-			{
-				family: $("#translit_family_name").val(),
-				given: $("#translit_given_name").val()
+			var entry110 = [[{ 'corporate': '', 'role': '' }, { 'corporate': '' }]];
+			if (!entry100[0]) {
+				entry110 = find110(complete_corporate_names_list);
 			}
-		]
-	];
-	for (var i = 0; i < aCounter; i++) {
-		complete_names_list.push([{ "family": $("#family_name" + i).val(), "given": $("#given_name" + i).val(), "role": $("#role" + i).val() }, { "family": $("#translit_family_name" + i).val(), "given": $("#translit_given_name" + i).val() }]);
-	}
 
-	//Find the first listed author or artist
-	var entry100 = find100(complete_names_list);
+			// Helper to safely get value
+			const getValue = (id) => {
+				const el = document.getElementById(id);
+				return el ? el.value : '';
+			};
 
-	var complete_corporate_names_list = [
-		[
-			{
-				corporate: $("#corporate_name").val(),
-				role: $("#corporate_role").val()
-			},
-			{
-				corporate: $("#translit_corporate_name").val()
+			var recordObject = {
+				title: [
+					{
+						title: getValue("title"),
+						subtitle: getValue("subtitle")
+					},
+					{
+						title: getValue("translit_title"),
+						subtitle: getValue("translit_subtitle")
+					}
+				],
+				author: entry100[0],
+				corporate_author: entry110[0],
+				publisher: getValue("publisher"),
+				publication_year: getValue("year"),
+				publication_place: getValue("place"),
+				publication_country: getValue("country"),
+				copyright_year: getValue("cyear"),
+				web_url: 'http://' + getValue("web-url"),
+				language: getValue("language"),
+				translit_publisher: getValue("translit_publisher"),
+				translit_place: getValue("translit_place"),
+				contents: getValue("contents"),
+				notes: getValue("notes"),
+				keywords: words,
+				fast: fast_array,
+				additional_authors: complete_names_list,
+				additional_corporate_names: complete_corporate_names_list,
+				format: getValue("format"),
+				size: getValue("size"),
+				daterange: getValue("daterange"),
+				datecollected: getValue("datecollected"),
+				gcoverage: getValue("gcoverage"),
+				access_terms: getValue("access_terms"),
+				use_terms: getValue("use_terms")
+			};
+
+			var institution_info = generateInstitutionInfo();
+
+			if (document.getElementById("MARC") && document.getElementById("MARC").checked) {
+				downloadMARC(recordObject, institution_info);
 			}
-		]
-	];
-	for (var i = 0; i < cCounter; i++) {
-		complete_corporate_names_list.push([{ "corporate": $("#corporate_name" + i).val(), "role": $("#corporate_role" + i).val() }, { "corporate": $("#translit_corporate_name" + i).val() }]);
-	}
-	var entry110 = [[{ 'corporate': '', 'role': '' }, { 'corporate': '' }]];
-	if (!entry100[0]) {
-		entry110 = find110(complete_corporate_names_list);
-	}
 
-	var recordObject = {
-		title: [
-			{
-				title: $("#title").val(),
-				subtitle: $("#subtitle").val()
-			},
-			{
-				title: $("#translit_title").val(),
-				subtitle: $("#translit_subtitle").val()
+			if (document.getElementById("MARCXML") && document.getElementById("MARCXML").checked) {
+				downloadXML(recordObject, institution_info);
 			}
-		],
-		author: entry100[0],
-		corporate_author: entry110[0],
-		publisher: $("#publisher").val(),
-		publication_year: $("#year").val(),
-		publication_place: $("#place").val(),
-		publication_country: $("#country").val(),
-		copyright_year: $("#cyear").val(),
-		web_url: 'http://' + $("#web-url").val(),
-		language: $("#language").val(),
-		translit_publisher: $("#translit_publisher").val(),
-		translit_place: $("#translit_place").val(),
-		contents: $("#contents").val(),
-		notes: $("#notes").val(),
-		keywords: words,
-		fast: fast_array,
-		additional_authors: complete_names_list,
-		additional_corporate_names: complete_corporate_names_list,
-		format: $("#format").val(),
-		size: $("#size").val(),
-		daterange: $("#daterange").val(),
-		datecollected: $("#datecollected").val(),
-		gcoverage: $("#gcoverage").val(),
-		access_terms: $("#access_terms").val(),
-		use_terms: $("#use_terms").val()
-	};
 
-	var institution_info = generateInstitutionInfo();
+			if (document.getElementById("MODS") && document.getElementById("MODS").checked) {
+				downloadMODS(recordObject, institution_info);
+			}
 
-	if ($("#MARC").is(':checked')) {
-		downloadMARC(recordObject, institution_info);
+			if (document.getElementById("HTML") && document.getElementById("HTML").checked) {
+				downloadHTML(recordObject, institution_info);
+			}
+		});
 	}
-
-	if ($("#MARCXML").is(':checked')) {
-		downloadXML(recordObject, institution_info);
-	}
-
-	if ($("#MODS").is(':checked')) {
-		downloadMODS(recordObject, institution_info);
-	}
-
-	if ($("#HTML").is(':checked')) {
-		downloadHTML(recordObject, institution_info);
-	}
-
-	event.preventDefault();
 });

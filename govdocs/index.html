@@ -1,298 +1,155 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-	<meta charset="utf-8">
-	<script>document.documentElement.classList.add('has-js');</script>
+	<meta charset="utf-8" />
 	<title>Metadata Maker for Government Documents</title>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.14.0/jquery-ui.min.js"></script>
-	<script src="/assignFAST/assignFASTExample.js"></script>
-	<script src="/assignFAST/assignFASTGadget.js"></script>
-	<script src="/assignFAST/assignFASTComplete.js"></script>
+	<!-- Tailwind CSS CDN -->
+	<script src="https://cdn.tailwindcss.com"></script>
+	<script>
+		// Tailwind config for UVA branding
+		tailwind.config = {
+			theme: {
+				extend: {
+					colors: {
+						'uva-blue': '#00205b',
+						'uva-orange': '#ff8200',
+					},
+					fontFamily: {
+						sans: ['"Inter"', 'system-ui', 'sans-serif'],
+					},
+				},
+			},
+		};
+	</script>
+	<!-- Top navigation styles -->
+	<link href="/top_bar.css" rel="stylesheet" media="screen">
+	<!-- Component scripts (no jQuery) -->
 	<script type="module" src="/shared/components/top-navigation.js"></script>
 	<script type="module" src="/shared/components/standard-text-input.js"></script>
-
-	<link href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.14.0/themes/smoothness/jquery-ui.css" rel="stylesheet">
-	<link href="https://jqueryui.com/jquery-wp-content/themes/jqueryui.com/style.css" rel="stylesheet">
-	<link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
-	<link href='https://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
-	<link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
-	<link href="/marcmaker.css" rel="stylesheet" media="screen">
-	<link href="/top_bar.css" rel="stylesheet" media="screen">
-
+	<script type="module" src="/shared/components/language-select.js"></script>
+	<link href="https://fonts.googleapis.com/css?family=Inter" rel="stylesheet" />
+	<style type="text/tailwindcss">
+		@layer components {
+			.standard-block {
+				@apply bg-white p-6 rounded-lg shadow-sm border border-gray-200 mb-6;
+			}
+			.heading {
+				@apply block text-lg font-bold text-uva-blue mb-2;
+			}
+			.input-base {
+				@apply w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-uva-orange focus:border-transparent;
+			}
+			.btn-primary {
+				@apply bg-uva-blue text-white px-4 py-2 rounded hover:bg-blue-900 transition-colors cursor-pointer;
+			}
+			.btn-secondary {
+				@apply bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300 transition-colors cursor-pointer;
+			}
+			.required_marker {
+				@apply text-red-600 ml-1;
+			}
+			/* Legacy overrides */
+			.hidden { display: none; }
+		}
+	</style>
 </head>
 
-<body class="template template-govdocs template-corporate">
-		<uv-top-navigation
-		current-version="govdocs"
-		version-label="Government Documents">
-	</uv-top-navigation>
-
+<body class="template template-govdocs template-corporate bg-gray-50 text-gray-900">
+	<script>document.documentElement.classList.add('has-js');</script>
+	<uv-top-navigation current-version="govdocs" version-label="Government Documents"></uv-top-navigation>
 	<div id="warning_system">
-		<noscript>WARNING: JavaScript is not enabled on this browser. This page requires JavaScript to function correctly.</noscript>
+		<noscript>WARNING: JavaScript is not enabled on this browser. This page requires JavaScript to function
+			correctly.</noscript>
 		<script src="../shared/checkServer.js"></script>
 	</div>
-	<div id="content">
-		<form id="marc-maker">
-			<standard-text-input
-				container-id="title-block"
-				heading="Title"
-				field-id="title"
-				required
-				required-marker="*"
-				input-class="required translit-listen"
-				help-text="Record the title as it appears on the title page. If the title includes a subtitle, record only the main title here, and the subtitle in the next field."
-			></standard-text-input>
-
-			<standard-text-input
-				container-id="subtitle-block"
-				heading="Subtitle"
-				field-id="subtitle"
-				input-class="conditional"
-				help-text="Record the subtitle if one exists"
-				unlisted
-			></standard-text-input>
-
-			<div id="translit-title-block" class="translit-title-block translit-block standard-translit-block translit-title hidden">
-				<label for="translit_title" class="hidden translit heading translit-title">Transliterated title</label><label for="translit_title" class="insert insert_normal hidden translit translit-title" style="left: -13px;" onClick='insertMenu("translit_title");'>Insert Special Characters</label><br>
+	<div id="content" class="max-w-4xl mx-auto p-4">
+		<form id="marc-maker" class="space-y-6">
+			<standard-text-input container-id="title-block" heading="Title" field-id="title" required
+				required-marker="*" input-class="required translit-listen"
+				help-text="Record the title as it appears on the title page. If the title includes a subtitle, record only the main title here, and the subtitle in the next field."></standard-text-input>
+			<standard-text-input container-id="subtitle-block" heading="Subtitle" field-id="subtitle"
+				input-class="conditional" help-text="Record the subtitle if one exists" unlisted></standard-text-input>
+			<div id="translit-title-block"
+				class="translit-title-block translit-block standard-translit-block translit-title hidden standard-block">
+				<label for="translit_title" class="hidden translit heading translit-title">Transliterated title</label>
+				<label for="translit_title" class="insert insert_normal hidden translit translit-title"
+					onClick='insertMenu("translit_title");'>Insert Special Characters</label><br />
 				<div id="insert-translit_title" class="hidden translit translit-title"></div>
-				<input type="text" id="translit_title" class="hidden translit translit-title">
+				<input type="text" id="translit_title" class="hidden translit translit-title" />
 			</div>
-
-			<div id="translit-subtitle-block" class="translit-title-block translit-block standard-translit-block translit-title hidden">
-				<label for="translit_subtitle" class="hidden translit heading translit-title">Transliterated subtitle</label><label for="translit_subtitle" class="insert insert_normal hidden translit translit-title" onClick='insertMenu("translit_subtitle");'>Insert Special Characters</label><br>
+			<div id="translit-subtitle-block"
+				class="translit-title-block translit-block standard-translit-block translit-title hidden standard-block">
+				<label for="translit_subtitle" class="hidden translit heading translit-title">Transliterated
+					subtitle</label>
+				<label for="translit_subtitle" class="insert insert_normal hidden translit translit-title"
+					onClick='insertMenu("translit_subtitle");'>Insert Special Characters</label><br />
 				<div id="insert-translit_subtitle" class="hidden translit translit-title"></div>
-				<input type="text" id="translit_subtitle" class="hidden translit translit-title">
+				<input type="text" id="translit_subtitle" class="hidden translit translit-title" />
 			</div>
-
-			<div id="isbn-block" class="standard-block">
-				<label for="isbn" class="heading">ISBN</label><br>
-				<input type="text" required id="isbn" class="conditional">
-				<label title="Record an ISBN, if present. Do not record hyphens. If multiple ISBNs are present, record only one. E.g., 9781234567890 or 1234567890"><span class="question-mark">?</span></label><br>
-				<span class="unlisted">Unlisted</span><input type="checkbox" id="isbn_listed" class="listed">
-			</div>
-
-			<div id="edition-block" class="standard-block">
-				<label for="edition" class="heading">Edition statement</label><label for="edition" class="insert insert_normal" onClick='insertMenu("edition");'>Insert Special Characters</label><br>
-				<div id="insert-edition"></div>
-				<input type="text" class="conditional translit-listen" required id="edition">
-				<label title="Record an edition statement if it appears on the piece. E.g., First edition, 1st ed., etc."><span class="question-mark">?</span></label><br>
-				<span class="unlisted">Unlisted</span><input type="checkbox" id="edition_listed" class="listed">
-			</div>
-
-			<div id="translit-edition-block" class="translit-edition-block translit-block hidden standard-translit-block">
-				<label for="translit_edition" class="hidden translit heading translit-edition">Transliterated edition</label><label for="translit_edition" class="insert insert_normal hidden translit translit-edition" onClick='insertMenu("translit_edition");'>Insert Special Characters</label><br>
-				<div id="insert-translit_edition" class="hidden translit translit-edition"></div>
-				<input type="text" id="translit_edition" class="hidden translit translit-edition">
-			</div>
-
-			<div id="item-number-block" class="standard-block">
-				<label for="item-number" class="heading">Item number</label><label for="item-number" class="insert insert_normal" onClick='insertMenu("item-number");'>Insert Special Characters</label></br>
-				<div id="insert-item-number"></div>
-				<input type="text" class="conditional" required id="item-number"><br>
-				<span class="unlisted">Unlisted</span><input type="checkbox" id="item-number_listed" class="listed">
-			</div>
-
-			<div id="sudoc-block" class="standard-block">
-				<label for="sudoc" class="heading">SuDoc classification</label><label for="sudoc" class="insert insert_normal" onClick='insertMenu("sudoc");'>Insert Special Characters</label></br>
-				<div id="insert-sudoc"></div>
-				<input type="text" class="conditional" required id="sudoc"><br>
-				<span class="unlisted">Unlisted</span><input type="checkbox" id="sudoc_listed" class="listed">
-			</div>
-
-			<div id="report-number-block" class="standard-block">
-				<label for="report-number" class="heading">Report number</label><label for="report-number" class="insert insert_normal" onClick='insertMenu("report-number");'>Insert Special Characters</label></br>
-				<div id="insert-report-number"></div>
-				<input type="text" class="conditional" required id="report-number"><br>
-				<span class="unlisted">Unlisted</span><input type="checkbox" id="report-number_listed" class="listed">
-			</div>
-
-			<div id="names_title" class="heading">Names<br></div>
-			<corporate-organization-input insert-class="insert insert_corporate" transliteration="false"></corporate-organization-input>
-
-			<div id="publisher-block" class="standard-block">
-				<label for="publisher" class="heading">Name of publisher</label><label for="publisher" class="insert insert_normal" onClick='insertMenu("publisher");'>Insert Special Characters</label><br>
-				<div id="insert-publisher"></div>
-				<input type="text" required id="publisher" class="conditional translit-listen">
-				<label title="Record the name of the publisher as it appears on the piece. Prefer the name that appears on the title page."><span class="question-mark">?</span></label><br>
-				<span class="unlisted">Unlisted</span><input type="checkbox" id="publisher_listed" class="listed">
-			</div>
-
-			<div id="translit-publisher-block" class="translit-publisher-block translit-block hidden standard-translit-block">
-				<label for="translit_publisher" class="hidden translit heading translit-publisher">Transliterated publisher</label><label for="translit_publisher" class="insert insert_normal hidden translit translit-publisher" onClick='insertMenu("translit_publisher");'>Insert Special Characters</label><br>
-				<div id="insert-translit_publisher" class="hidden translit translit-publisher"></div>
-				<input type="text" id="translit_publisher" class="hidden translit translit-publisher">
-			</div>
-
-			<div id="place-block" class="standard-block">
-				<label for="place" class="heading">Place of publication</label><label for="place" class="insert insert_normal" onClick='insertMenu("place");'>Insert Special Characters</label><br>
-				<div id="insert-place"></div>
-				<input type="text" required id="place" class="conditional translit-listen">
-				<label title="Record the place of publication as it appears on the piece. Prefer the place that appears on the title page. If there is more than one place, record only one. E.g., Boston, Massachusetts"><span class="question-mark">?</span></label><br>
-				<span class="unlisted">Unlisted</span><input type="checkbox" id="place_listed" class="listed">
-			</div>
-
-			<div id="translit-place-block" class="translit-place-block translit-block hidden standard-translit-block">
-				<label for="translit_place" class="hidden translit heading translit-place">Transliterated place</label><label for="translit_place" class="insert insert_normal hidden translit translit-publisher" onClick='insertMenu("translit_place");'>Insert Special Characters</label><br>
-				<div id="insert-translit_place" class="hidden translit translit-publisher"></div>
-				<input type="text" id="translit_place" class="hidden translit translit-place">
-			</div>
-
-			<div id="country-block" class="standard-block">
-				<label for="country" class="heading">State of publication</label><br>
-				<select name="country" required id="country" class="conditional">
-					<option selected disabled hidden value=''></option>
-					<option value="alu">Alabama</option>
-					<option value="aku">Alaska</option>
-					<option value="azu">Arizona</option>
-					<option value="aru">Arkansas</option>
-					<option value="cau">California</option>
-					<option value="cou">Colorado</option>
-					<option value="ctu">Connecticut</option>
-					<option value="deu">Delaware</option>
-					<option value="dcu">District of Columbia</option>
-					<option value="flu">Florida</option>
-					<option value="gau">Georgia</option>
-					<option value="hiu">Hawaii</option>
-					<option value="idu">Idaho</option>
-					<option value="ilu">Illinois</option>
-					<option value="inu">Indiana</option>
-					<option value="iau">Iowa</option>
-					<option value="ksu">Kansas</option>
-					<option value="kyu">Kentucky</option>
-					<option value="lau">Louisiana</option>
-					<option value="meu">Maine</option>
-					<option value="mdu">Maryland</option>
-					<option value="mau">Massachusetts</option>
-					<option value="miu">Michigan</option>
-					<option value="mnu">Minnesota</option>
-					<option value="msu">Mississippi</option>
-					<option value="mou">Missouri</option>
-					<option value="mtu">Montana</option>
-					<option value="nbu">Nebraska</option>
-					<option value="nvu">Nevada</option>
-					<option value="nhu">New Hampshire</option>
-					<option value="nju">New Jersey</option>
-					<option value="nmu">New Mexico</option>
-					<option value="nyu">New York (State)</option>
-					<option value="ncu">North Carolina</option>
-					<option value="ndu">North Dakota</option>
-					<option value="ohu">Ohio</option>
-					<option value="oku">Oklahoma</option>
-					<option value="oru">Oregon</option>
-					<option value="pau">Pennsylvania</option>
-					<option value="riu">Rhode Island</option>
-					<option value="scu">South Carolina</option>
-					<option value="sdu">South Dakota</option>
-					<option value="tnu">Tennessee</option>
-					<option value="txu">Texas</option>
-					<option value="utu">Utah</option>
-					<option value="vtu">Vermont</option>
-					<option value="vau">Virginia</option>
-					<option value="wau">Washington (State)</option>
-					<option value="wvu">West Virginia</option>
-					<option value="wiu">Wisconsin</option>
-					<option value="wyu">Wyoming</option>
-				</select>
-				<label title="Select the country of publication from the drop-down menu. If published in the United States, Canada, Australia, or the United Kingdom, select the state, province, or geographic region"><span class="question-mark">?</span></label><br>
-				<span class="unlisted">Unlisted</span><input type="checkbox" id="country_listed" class="listed">
-			</div>
-
-			<div id="publication-block">
-				<label for="date" class="heading">Date of publication</label><br>
-				<input type="number" class="date conditional" required id="year" min="0">
-				<label title="Record the year of publication if it appears on the piece. Do not record a copyright date here. Copyright dates should be recorded in the next field."><span class="question-mark">?</span></label><br>
-				<span class="unlisted">Unlisted</span><input type="checkbox" id="year_listed" class="listed">
-			</div>
-
-			<div id="copyright-block">
-				<label for="cyear" class="heading">Copyright date</label><br>
-				<input type="number" class="date conditional" required id="cyear" min="0">
-				<label title="Record the year of copyright if it appears on the piece."><span class="question-mark">?</span></label><br>
-				<span class="unlisted">Unlisted</span><input type="checkbox" id="cyear_listed" class="listed">
-			</div>
-
-			<div id="pages-block" class="standard-block">
-				<label for="number" class="heading">Number of</label>
-				<select name="vorp" id="vorp">
-					<option selected value="pages">pages</option>
-					<option value="volumes">volumes</option>
-				</select><br>
-				<input type="text" required id="pages" class="conditional">
-				<label title="Record the number of pages in each numbered sequence. E.g., 356 or xii, 254. Record the number from the last numbered page, and do not include unnumbered pages. 
-	If a multi-volume set, do not record the number of pages, but instead record the number of physical volumes, E.g., 4"><span class="question-mark">?</span></label><br>
-				<span class="unlisted">Unpaged</span><input type="checkbox" id="pages_listed" class="listed">
-			</div>
-
-			<div id="dimensions-block" class="standard-block">
-				<label for="dimensions" class="heading">Dimensions<span class="required_marker">*</span></label><br>
-				<input type="text" required id="dimensions" class="required"> cm
-				<label title="Record the height of the piece in cm. Always round up, so that if a piece measures 25.1 cm, record 26 cm"><span class="question-mark">?</span></label>
-			</div>
-
-			<div id="illustrations-block" class="standard-block">
-				<label for="illustrations" class="heading">Does the item include illustrations?</label><br>
-				<input type="radio" name="illustrations" id="illustrations-yes" value="yes">Yes
-				<input type="radio" name="illustrations" id="illustrations-no" value="no">No
-			</div>
-
+			<standard-text-input heading="ISBN" field-id="isbn" required class="conditional"
+				help-text="Record an ISBN, if present. Do not record hyphens."></standard-text-input>
+			<standard-text-input heading="Edition statement" field-id="edition" class="conditional translit-listen"
+				help-text="Record an edition statement if it appears on the piece."></standard-text-input>
+			<standard-text-input heading="Item number" field-id="item-number" required class="conditional"
+				help-text="Record the item number."></standard-text-input>
+			<standard-text-input heading="SuDoc classification" field-id="sudoc" class="conditional"
+				help-text="Record SuDoc classification."></standard-text-input>
+			<standard-text-input heading="Report number" field-id="report-number" class="conditional"
+				help-text="Record report number."></standard-text-input>
+			<language-select required field-id="language" container-id="language-block"></language-select>
+			<standard-text-input heading="Publisher" field-id="publisher" required class="conditional translit-listen"
+				help-text="Record the name of the publisher."></standard-text-input>
+			<standard-text-input heading="Place of publication" field-id="place" required
+				class="conditional translit-listen" help-text="Record place of publication."></standard-text-input>
+			<standard-text-input heading="Date of publication" field-id="year" required type="number"
+				class="date conditional" help-text="Record the year of publication."></standard-text-input>
+			<standard-text-input heading="Copyright date" field-id="cyear" type="number" class="date conditional"
+				help-text="Record the copyright date."></standard-text-input>
+			<standard-text-input heading="Dimensions" field-id="dimensions" required class="required"
+				help-text="Record dimensions in cm."></standard-text-input>
+			<standard-text-input heading="Illustrations?" field-id="illustrations" type="text"
+				help-text="Yes/No"></standard-text-input>
 			<div id="keywords" class="standard-block">
-				<label for="keywords" class="heading">Keywords<span class="required_marker">*</span></label><br>
-				<input type="text" class="fastID hidden" id="fastID0">
-				<input type="number" class="fastType hidden" id="fastType0">
-				<input type="text" class="fastInd hidden" id="fastInd0">
-				<input type="text" class="keyword required" required id="keyword0"> <label title="Record, in English, any descriptive terms that describe the content of this book. Record only one term or phrase in each box. E.g., Astronomy or Politics of Egypt"><span class="question-mark">?</span></label>
-				<input type="button" value="+" id="add-button" onClick="addKeyword();">
+				<label for="keywords" class="heading">Keywords<span class="required_marker">*</span></label><br />
+				<input type="text" class="fastID hidden" id="fastID0" />
+				<input type="number" class="fastType hidden" id="fastType0" />
+				<input type="text" class="fastInd hidden" id="fastInd0" />
+				<div class="flex gap-2 items-center mb-2">
+					<input type="text" class="keyword required input-base" required id="keyword0" />
+					<label title="Enter keywords."><span
+							class="question-mark text-uva-orange cursor-help">?</span></label>
+					<input type="button" value="+" id="add-button" onClick="addKeyword();" class="btn-primary ml-2" />
+				</div>
 			</div>
-
-			<div id="contents-block" class="standard-block">
-				<label for="contents" class="heading">Contents</label><br>
-				<textarea id="contents"></textarea>
+			<div id="buttons" class="standard-block flex gap-4">
+				<input type="submit" value="Make" id="make" class="btn-primary" />
+				<input type="reset" value="Clear" id="Clear" class="btn-secondary" />
 			</div>
-
-			<div id="notes-block">
-				<label for="notes">Notes to the Cataloger</label><br>
-				<textarea id="notes"></textarea>
-			</div>
-
-			<div id="save-as-block">
-				<label for="filename">Save as</label>
-				<input type="text" id="filename" placeholder="record">.[file type]
-			</div>
-
-			<div id="formats-block" class="standard-block">
-				<label for="filetype">Choose record formats:</label><br>
-				<input type="checkbox" id="MARC" class="filetype">MARC<br>
-				<input type="checkbox" id="MARCXML" class="filetype">MARCXML<br>
-				<input type="checkbox" id="MODS" class="filetype">MODS<br>
-				<input type="checkbox" id="HTML" class="filetype">HTML
-			</div>
-
-			<div id="buttons" class="standard-block">
-				<input type="submit" value="Make" id="make">
-				<input type="reset" value="Clear" id="Clear">
-			</div>
-
-			<div id="star" class="required_marker standard-block">
-				* Required field
-			</div>
+			<div id="star" class="required_marker mt-2">* Required field</div>
 		</form>
-		<div id="disclaimer">The Metadata Maker Project was funded by the University of Illinois at Urbana-Champaign Library's Innovation and Seed Funds.</div>
-		<div id="version">Version 1.1 – Updated on 11/10/2022. Metadata Maker for Government Documents created on 08/10/2015.</div>
-		<a id="code" href="https://github.com/UIUCLibrary/metadata-maker/tree/GovDocs">GitHub</a></div>
-		
-		<script type="module" src="../shared/components/corporate-organization-input.js"></script>
-		<script type="module" src="../shared/components/insert-diacritics.js"></script>
-		<script src="../shared/generalInteractionsBase.js"></script>
-		<script src="metadatamaker/generalInteractions.js"></script>
-		<script type="module" src="metadatamaker/downloadMARC.js"></script>
-		<script src="metadatamaker/downloadMODS.js"></script>
+		<div id="disclaimer" class="mt-4 text-sm text-gray-600">The Metadata Maker Project was funded by the University
+			of Illinois at Urbana-Champaign Library's Innovation and Seed Funds.</div>
+		<div id="version" class="mt-2 text-xs text-gray-500">Version 1.1 – Updated on 11/10/2022. Metadata Maker for
+			Government Documents created on 08/10/2015.</div>
+		<a id="code" href="https://github.com/UIUCLibrary/metadata-maker/tree/GovDocs"
+			class="text-blue-600 hover:underline">GitHub</a>
+	</div>
+	<script type="module" src="../shared/components/insert-diacritics.js"></script>
+	<script src="../shared/generalInteractionsBase.js"></script>
+	<script src="metadatamaker/generalInteractions.js"></script>
+
+	<!-- Shared Builders (Must be loaded before download scripts) -->
+	<script src="../shared/modsBuilder.js"></script>
+	<script src="../shared/htmlBuilder.js"></script>
+
+	<script type="module" src="metadatamaker/downloadMARC.js"></script>
+	<script src="metadatamaker/downloadMODS.js"></script>
 	<script src="/shared/languageLookups.js"></script>
 	<script src="/shared/countryLookups.js"></script>
-		<script src="metadatamaker/downloadHTML.js"></script>
-		<script src="../shared/sharedUtils.js"></script>
-		<script src="metadatamaker/submitForm.js"></script>
-	</div>
+	<script src="metadatamaker/downloadHTML.js"></script>
+	<script src="../shared/sharedUtils.js"></script>
+	<script src="metadatamaker/submitForm.js"></script>
 </body>
 
 </html>

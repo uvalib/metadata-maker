@@ -1,78 +1,119 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-	<meta charset="utf-8">
+	<meta charset="utf-8" />
 	<title>Metadata Maker for Theses & Dissertations</title>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.14.0/jquery-ui.min.js"></script>
+	<!-- Tailwind CSS CDN -->
+	<script src="https://cdn.tailwindcss.com"></script>
+	<script>
+		// Tailwind config for UVA branding
+		tailwind.config = {
+			theme: {
+				extend: {
+					colors: {
+						'uva-blue': '#00205b',
+						'uva-orange': '#ff8200',
+					},
+					fontFamily: {
+						sans: ['"Inter"', 'system-ui', 'sans-serif'],
+					},
+				},
+			},
+		};
+	</script>
+	<!-- Top navigation styles -->
+	<link href="/top_bar.css" rel="stylesheet" media="screen">
+	<!-- Component scripts (no jQuery) -->
 	<script type="module" src="/shared/components/top-navigation.js"></script>
 	<script type="module" src="/shared/components/standard-text-input.js"></script>
 	<script type="module" src="/shared/components/language-select.js"></script>
-
-	<link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
-	<link href='https://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
-	<link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
-	<link href="/marcmaker.css" rel="stylesheet" media="screen">
-	<link href="/top_bar.css" rel="stylesheet" media="screen">
-
+	<link href="https://fonts.googleapis.com/css?family=Inter" rel="stylesheet" />
+	<style type="text/tailwindcss">
+		@layer components {
+			.standard-block {
+				@apply bg-white p-6 rounded-lg shadow-sm border border-gray-200 mb-6;
+			}
+			.heading {
+				@apply block text-lg font-bold text-uva-blue mb-2;
+			}
+			.input-base {
+				@apply w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-uva-orange focus:border-transparent;
+			}
+			.btn-primary {
+				@apply bg-uva-blue text-white px-4 py-2 rounded hover:bg-blue-900 transition-colors cursor-pointer;
+			}
+			.btn-secondary {
+				@apply bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300 transition-colors cursor-pointer;
+			}
+			.required_marker {
+				@apply text-red-600 ml-1;
+			}
+			/* Legacy overrides */
+			.hidden { display: none; }
+		}
+	</style>
 </head>
 
+<body class="template template-theses template-corporate bg-gray-50 text-gray-900">
 	<script>document.documentElement.classList.add('has-js');</script>
-<body class="template template-theses">
-		<uv-top-navigation
-		current-version="theses"
-		version-label="Theses & Dissertations"
-	</uv-top-navigation>
-
+	<uv-top-navigation current-version="theses" version-label="Theses & Dissertations"></uv-top-navigation>
 	<div id="warning_system">
-		<noscript>WARNING: JavaScript is not enabled on this browser. This page requires JavaScript to function correctly.</noscript>
+		<noscript>WARNING: JavaScript is not enabled on this browser. This page requires JavaScript to function
+			correctly.</noscript>
 		<script src="../shared/checkServer.js"></script>
 	</div>
-	<div id="content">
-		<form id="marc-maker">
-			<standard-text-input
-				container-id="title-block"
-				heading="Title"
-				field-id="title"
-				required
-				required-marker="*"
-				input-class="required"
-				help-text="Record the title as it appears on the title page. If the title includes a subtitle, record only the main title here, and the subtitle in the next field."
-			></standard-text-input>
+	<div id="content" class="max-w-4xl mx-auto p-4">
+		<form id="marc-maker" class="space-y-6">
+			<standard-text-input container-id="title-block" heading="Title" field-id="title" required
+				required-marker="*" input-class="required"
+				help-text="Record the title as it appears on the title page. If the title includes a subtitle, record only the main title here, and the subtitle in the next field."></standard-text-input>
 
 			<div id="author-block" class="standard-block">
-				<label for="author" class="heading">Names<span class="required_marker">*</span></label><label for="family_name" class="insert insert_family_name" onClick='insertMenu("family_name");'>Insert Special Characters</label><label for="given_name" class="insert insert_given_name" onClick='insertMenu("given_name");'>Insert Special Characters</label><br>
-				<div id="insert-family_name"></div><div id="insert-given_name"></div>
+				<label for="author" class="heading font-semibold">Names<span
+						class="required_marker text-red-600">*</span></label>
+				<label for="family_name" class="insert insert_family_name text-blue-600 cursor-pointer"
+					onClick='insertMenu("family_name");'>Insert Special Characters</label>
+				<label for="given_name" class="insert insert_given_name text-blue-600 cursor-pointer"
+					onClick='insertMenu("given_name");'>Insert Special Characters</label><br />
+				<div id="insert-family_name"></div>
+				<div id="insert-given_name"></div>
 				<span class="author-entry">
-					<input type="text" class="author conditional" required id="family_name" placeholder="Family Name">,
-					<input type="text" class="author conditional" required id="given_name" placeholder="Given Name">
-					<select id="role">
+					<input type="text" class="author conditional border rounded px-2 py-1" required id="family_name"
+						placeholder="Family Name">,
+					<input type="text" class="author conditional border rounded px-2 py-1" required id="given_name"
+						placeholder="Given Name">
+					<select id="role" class="border rounded px-2 py-1">
 						<option value="dis" selected>dissertant</option>
 					</select>
 				</span>
-				<label title="Enter the dissertant first. Use the add button to list committee members, advisors, and other contributors."><span class="question-mark">?</span></label>
+				<label
+					title="Enter the dissertant first. Use the add button to list committee members, advisors, and other contributors."><span
+						class="question-mark">?</span></label>
 				<div class="author-actions">
-					<input type="button" value="+" id="add-author" onClick="addAuthor();">
+					<input type="button" value="+" id="add-author" onClick="addAuthor();"
+						class="bg-blue-500 text-white px-3 py-1 rounded">
 				</div>
 			</div>
 
-			<corporate-organization-input required="false"></corporate-organization-input>
+			<div class="standard-block">
+				<corporate-organization-input required="false"></corporate-organization-input>
+			</div>
+			<language-select required field-id="language" container-id="language-block"></language-select>
 
-															<language-select
-			required
-			field-id="language"
-			container-id="language-block"
-		></language-select>
-
-			<div id="publication-block">
-				<label for="date" class="heading">Date of publication<span class="required_marker">*</span></label><br>
-				<input type="number" class="date" required id="year" min="0">
-				<label title="Record the year of publication if it appears on the piece. Do not record a copyright date here. Copyright dates should be recorded in the next field."><span class="question-mark">?</span></label><br>
+			<div id="publication-block" class="standard-block">
+				<label for="date" class="heading font-semibold">Date of publication<span
+						class="required_marker text-red-600">*</span></label><br />
+				<input type="number" class="date border rounded px-2 py-1" required id="year" min="0">
+				<label
+					title="Record the year of publication if it appears on the piece. Do not record a copyright date here. Copyright dates should be recorded in the next field."><span
+						class="question-mark">?</span></label><br />
 			</div>
 
 			<div id="dissertation_type-block" class="standard-block">
-				<label for="dissertation_type" class="heading">Dissertation Type<span class="required_marker">*</span></label><br>
-				<select required id="dissertation_type">
+				<label for="dissertation_type" class="heading font-semibold">Dissertation Type<span
+						class="required_marker text-red-600">*</span></label><br />
+				<select required id="dissertation_type" class="border rounded px-2 py-1">
 					<option selected disabled hidden value=''></option>
 					<option value="BA">BA</option>
 					<option value="BS">BS</option>
@@ -84,43 +125,46 @@
 			</div>
 
 			<div id="major-block" class="standard-block">
-				<label for="major" class="heading">Major<span class="required_marker">*</span></label><br>
-				<input type="text" required id="major">
+				<label for="major" class="heading font-semibold">Major<span
+						class="required_marker text-red-600">*</span></label><br />
+				<input type="text" required id="major" class="border rounded px-2 py-1 w-full">
 			</div>
 
 			<div id="pages-block" class="standard-block">
-				<label for="number" class="heading">Number of<span class="required_marker">*</span></label>
-				<select name="lorp" id="lorp">
+				<label for="number" class="heading font-semibold">Number of<span
+						class="required_marker text-red-600">*</span></label>
+				<select name="lorp" id="lorp" class="border rounded px-2 py-1">
 					<option selected value="pages">pages</option>
 					<option value="leaves">leaves</option>
-				</select><br>
-				<input type="number" required id="pages" min="1">
+				</select><br />
+				<input type="number" required id="pages" min="1" class="border rounded px-2 py-1">
 			</div>
 
 			<div id="abstract-block" class="standard-block">
-				<label for="abstract" class="heading">Abstract/Summary</label><br>
-				<textarea id="abstract" rows="3"></textarea>
+				<label for="abstract" class="heading font-semibold">Abstract/Summary</label><br />
+				<textarea id="abstract" rows="3" class="input-base"></textarea>
 			</div>
 
 			<div id="contents-block" class="standard-block">
-				<label for="contents" class="heading">Contents</label><br>
-				<textarea id="contents"></textarea>
+				<label for="contents" class="heading font-semibold">Contents</label><br />
+				<textarea id="contents" class="input-base h-32"></textarea>
 			</div>
 
 			<div id="bibliographies-block" class="standard-block">
-				<label for="bib" class="heading">Bibliographic references page(s)</label><br>
-				<input type="text" id="bib">
+				<label for="bib" class="heading font-semibold">Bibliographic references page(s)</label><br />
+				<input type="text" id="bib" class="input-base">
 			</div>
 
 			<div id="illustrations-block" class="standard-block">
-				<label for="illustrations" class="heading">Does the item include illustrations?</label><br>
+				<label for="illustrations" class="heading font-semibold">Does the item include
+					illustrations?</label><br />
 				<input type="radio" name="illustrations" id="illustrations-yes" value="yes">Yes
 				<input type="radio" name="illustrations" id="illustrations-no" value="no">No
 			</div>
 
 			<div id="physical-form-block" class="standard-block">
-				<label for="physical-form" class="heading">Physical form</label><br>
-				<select id="physical-form">
+				<label for="physical-form" class="heading font-semibold">Physical form</label><br />
+				<select id="physical-form" class="border rounded px-2 py-1">
 					<option selected value="">Select a physical form</option>
 					<option value=" ">None of the following</option>
 					<option value="a">Microfilm</option>
@@ -135,38 +179,45 @@
 				</select>
 			</div>
 
-			<div id="save-as-block">
+			<div id="save-as-block" class="standard-block">
 				<label for="filename">Save as</label>
-				<input type="text" id="filename" placeholder="record">.[file type]
+				<input type="text" id="filename" placeholder="record" class="border rounded px-2 py-1">.[file type]
 			</div>
 
 			<div id="formats-block" class="standard-block">
-				<label for="filetype">Choose record formats:</label><br>
-				<input type="checkbox" id="MARC" class="filetype">MARC<br>
-				<input type="checkbox" id="MARCXML" class="filetype">MARCXML<br>
-				<input type="checkbox" id="MODS" class="filetype">MODS<br>
-				<input type="checkbox" id="HTML" class="filetype">HTML<br>
+				<label for="filetype">Choose record formats:</label><br />
+				<input type="checkbox" id="MARC" class="filetype">MARC<br />
+				<input type="checkbox" id="MARCXML" class="filetype">MARCXML<br />
+				<input type="checkbox" id="MODS" class="filetype">MODS<br />
+				<input type="checkbox" id="HTML" class="filetype">HTML<br />
 			</div>
 
-			<div id="buttons" class="standard-block">
-				<input type="submit" value="Make" id="make">
-				<input type="reset" value="Clear" id="Clear">
+			<div id="buttons" class="standard-block flex gap-4">
+				<input type="submit" value="Make" id="make" class="btn-primary" />
+				<input type="reset" value="Clear" id="Clear" class="btn-secondary" />
 			</div>
 		</form>
-		<div id="disclaimer">The Metadata Maker Project was funded by the University of Illinois at Urbana-Champaign Library's Innovation and Seed Funds.</div>
-		<div id="version">Version 1.1 – Updated on 11/10/2022. Metadata Maker for Theses & Dissertations created on 4/21/2015.</div>
-		<a id="code" href="https://github.com/UIUCLibrary/metadata-maker/tree/Theses-%26-Dissertations">GitHub</a></div>
-
-		<script type="module" src="../shared/components/corporate-organization-input.js"></script>
-		<script type="module" src="../shared/components/insert-diacritics.js"></script>
-		<script src="../shared/generalInteractionsBase.js"></script>
-		<script src="metadatamaker/generalInteractions.js"></script>
-		<script type="module" src="metadatamaker/downloadMARC.js"></script>
-		<script src="metadatamaker/downloadMODS.js"></script>
-		<script src="metadatamaker/downloadHTML.js"></script>
-		<script src="../shared/sharedUtils.js"></script>
-		<script src="metadatamaker/submitForm.js"></script>
+		<div id="disclaimer" class="mt-4 text-sm text-gray-600">The Metadata Maker Project was funded by the University
+			of Illinois at Urbana-Champaign Library's Innovation and Seed Funds.</div>
+		<div id="version" class="mt-2 text-xs text-gray-500">Version 1.1 – Updated on 11/10/2022. Metadata Maker for
+			Theses & Dissertations created on 4/21/2015.</div>
+		<a id="code" href="https://github.com/UIUCLibrary/metadata-maker/tree/Theses-%26-Dissertations"
+			class="text-blue-600 hover:underline">GitHub</a>
 	</div>
+	<script type="module" src="../shared/components/corporate-organization-input.js"></script>
+	<script type="module" src="../shared/components/insert-diacritics.js"></script>
+	<script src="../shared/generalInteractionsBase.js"></script>
+	<script src="metadatamaker/generalInteractions.js"></script>
+
+	<!-- Shared Builders (Must be loaded before download scripts) -->
+	<script src="../shared/modsBuilder.js"></script>
+	<script src="../shared/htmlBuilder.js"></script>
+
+	<script type="module" src="metadatamaker/downloadMARC.js"></script>
+	<script src="metadatamaker/downloadMODS.js"></script>
+	<script src="metadatamaker/downloadHTML.js"></script>
+	<script src="../shared/sharedUtils.js"></script>
+	<script src="metadatamaker/submitForm.js"></script>
 </body>
 
 </html>

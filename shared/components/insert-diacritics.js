@@ -86,9 +86,9 @@ function scheduleInsertLabelUpgrade(root) {
   upgradeInsertLabels(scope);
 
   if (typeof window !== 'undefined' && window.customElements && typeof window.customElements.whenDefined === 'function') {
-    window.customElements.whenDefined('insert-diacritics').then(function() {
+    window.customElements.whenDefined('insert-diacritics').then(function () {
       upgradeInsertLabels(scope);
-    }).catch(function(error) {
+    }).catch(function (error) {
       console.warn('[insert-diacritics] Failed waiting for component definition; applying upgrade immediately.', error);
       upgradeInsertLabels(scope);
     });
@@ -106,7 +106,7 @@ function startAutoUpgrade() {
   scheduleInsertLabelUpgrade(document);
 
   if (typeof MutationObserver === 'function' && document.body) {
-    const observer = new MutationObserver(function(mutations) {
+    const observer = new MutationObserver(function (mutations) {
       for (let i = 0; i < mutations.length; i++) {
         const mutation = mutations[i];
         for (let j = 0; j < mutation.addedNodes.length; j++) {
@@ -505,6 +505,7 @@ export class InsertDiacritics extends LitElement {
           position: fixed;
           inset: 0;
           background: rgba(0, 0, 0, 0.45);
+          z-index: -1;
         }
 
         .diacritics-modal-overlay {
@@ -522,6 +523,8 @@ export class InsertDiacritics extends LitElement {
           width: min(520px, calc(100vw - 32px));
           overflow-y: auto;
           overflow-x: hidden;
+          position: relative;
+          z-index: 10;
         }
 
         .diacritics-header {
@@ -704,7 +707,7 @@ if (typeof window !== 'undefined' && !window.insertMenu) {
     return value.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
   };
 
-  window.insertMenu = function(field) {
+  window.insertMenu = function (field) {
     if (typeof window.upgradeInsertLabels === 'function') {
       try {
         window.upgradeInsertLabels(document);

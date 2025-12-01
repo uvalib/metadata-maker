@@ -1,24 +1,19 @@
 /*
- * Language and country lookups now in shared modules
- * This reduces duplication across all modules
+ * HTML download for archives module
+ * Uses shared HtmlBuilder with default configuration
  */
+(function () {
+  'use strict';
 
-// Import lookup functions from shared modules
-// These will be loaded via script tags, making functions globally available
-// (See shared/languageLookups.js and shared/countryLookups.js)
+  if (typeof HtmlBuilder === 'undefined') {
+    console.error('HtmlBuilder not found. Make sure htmlBuilder.js is loaded first.');
+    return;
+  }
 
-	return countries[code];
-}
+  const builder = new HtmlBuilder({
+    itemType: 'http://schema.org/Collection',
+    moduleType: 'archives'
+  });
 
-/*
- * HTML generation now uses shared HtmlBuilder
- * Language and country lookup functions are defined above
- */
-import { HtmlBuilder } from '../../shared/htmlBuilder.js';
-
-const builder = new HtmlBuilder({
-  itemType: 'http://schema.org/Book',
-  moduleType: 'archives'
-});
-
-window.downloadHTML = builder.downloadHTML.bind(builder);
+  window.downloadHTML = builder.downloadHTML.bind(builder);
+})();

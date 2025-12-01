@@ -18,7 +18,7 @@
   }
 
   function buildDefaultKeywordMarkup(index) {
-    return '\t<br><input type="text" class="fastID hidden" id="fastID' + index + '\"><input type="text" class="fastType hidden" id="fastType' + index + '\"><input type="text" class="fastInd hidden" id="fastInd' + index + '\"><input type="text" class="keyword" id="keyword' + index + '\">';
+    return '\t<br><input type="text" class="fastID hidden" id="fastID' + index + '"><input type="text" class="fastType hidden" id="fastType' + index + '"><input type="text" class="fastInd hidden" id="fastInd' + index + '"><input type="text" class="keyword border rounded px-2 py-1 w-full mt-2" id="keyword' + index + '">';
   }
 
   function buildDefaultAuthorMarkup(index, options) {
@@ -39,19 +39,19 @@
     const givenPlaceholder = options.givenPlaceholder || 'Given Name';
 
     let markup = '';
-    markup += '<label for="' + familyId + '" class="insert insert_family_name additional_insert" onClick=\'insertMenu("' + familyId + '");\'>Insert other Characters</label>';
-    markup += '<label for="given_name' + index + '" class="insert insert_given_name additional_insert" onClick=\'insertMenu("given_name' + index + '");\'>Insert other Characters</label><br>';
+    markup += '<label for="' + familyId + '" class="insert insert_family_name additional_insert text-blue-600 cursor-pointer text-sm" onClick=\'insertMenu("' + familyId + '");\'>Ω</label>';
+    markup += '<label for="given_name' + index + '" class="insert insert_given_name additional_insert text-blue-600 cursor-pointer text-sm ml-2" onClick=\'insertMenu("given_name' + index + '");\'>Ω</label><br>';
     markup += '<div id="insert-' + familyId + '" class="additional_menu"></div><div id="insert-given_name' + index + '" class="insert-given_name additional_menu"></div>';
-    markup += '<span class="added-author"><input type="text" class="author translit-listen" id="' + familyId + '" placeholder="' + familyPlaceholder + '">, ';
-    markup += '<input type="text" class="author translit-listen" id="given_name' + index + '" placeholder="' + givenPlaceholder + '"> ';
-    markup += '<select name="role' + index + '" id="role' + index + '">' + roleOptions + '</select></span>';
+    markup += '<span class="added-author flex items-center gap-2 my-2"><input type="text" class="author translit-listen border rounded px-2 py-1 w-64" id="' + familyId + '" placeholder="' + familyPlaceholder + '">, ';
+    markup += '<input type="text" class="author translit-listen border rounded px-2 py-1 w-64" id="given_name' + index + '" placeholder="' + givenPlaceholder + '"> ';
+    markup += '<select name="role' + index + '" id="role' + index + '" class="border rounded px-2 py-1">' + roleOptions + '</select></span>';
 
     markup += '<div class="translit-' + familyId + '-block translit-block translit-author hidden" id="translit-' + familyId + '-block">';
-    markup += '<label for="translit_' + familyId + '" class="insert insert_family_name hidden translit translit-' + familyId + '" onClick=\'insertMenu("translit_' + familyId + '");\'>Insert other Characters</label>';
-    markup += '<label for="translit_given_name' + index + '" class="insert insert_given_name hidden translit translit-' + familyId + '" onClick=\'insertMenu("translit_given_name' + index + '");\'>Insert other Characters</label><br>';
+    markup += '<label for="translit_' + familyId + '" class="insert insert_family_name hidden translit translit-' + familyId + ' text-blue-600 cursor-pointer text-sm" onClick=\'insertMenu("translit_' + familyId + '");\'>Ω</label>';
+    markup += '<label for="translit_given_name' + index + '" class="insert insert_given_name hidden translit translit-' + familyId + ' text-blue-600 cursor-pointer text-sm ml-2" onClick=\'insertMenu("translit_given_name' + index + '");\'>Ω</label><br>';
     markup += '<div id="insert-translit_' + familyId + '"></div><div id="insert-translit_given_name' + index + '" class="insert-given_name"></div>';
-    markup += '<input type="text" id="translit_' + familyId + '" class="hidden translit translit-' + familyId + '" placeholder="Transliterated Family Name"><span class="hidden translit-' + familyId + '">, </span>';
-    markup += '<input type="text" id="translit_given_name' + index + '" class="hidden translit translit-' + familyId + '" placeholder="Transliterated Given Name">';
+    markup += '<input type="text" id="translit_' + familyId + '" class="hidden translit translit-' + familyId + ' border rounded px-2 py-1" placeholder="Transliterated Family Name"><span class="hidden translit-' + familyId + '">, </span>';
+    markup += '<input type="text" id="translit_given_name' + index + '" class="hidden translit translit-' + familyId + ' border rounded px-2 py-1" placeholder="Transliterated Given Name">';
     markup += '</div>';
 
     return markup;

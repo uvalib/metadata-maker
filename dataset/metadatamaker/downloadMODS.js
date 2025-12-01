@@ -1,18 +1,22 @@
 /*
  * MODS download for dataset module
- * Uses shared ModsBuilder with dataset-specific configuration
+ * Uses shared ModsBuilder with default configuration
  */
-import { ModsBuilder } from '../../shared/modsBuilder.js';
+(function () {
+	'use strict';
 
-const builder = new ModsBuilder({
-	moduleType: 'dataset',
-	includeTypeOfResource: false,  // Dataset doesn't include typeOfResource
-	includeGenre: true,
-	genreType: 'dct',
-	genreValue: 'dataset',
-	includeLiterature: true,
-	includeFAST: true,
-	includeISBN: true
-});
+	if (typeof ModsBuilder === 'undefined') {
+		console.error('ModsBuilder not found. Make sure modsBuilder.js is loaded first.');
+		return;
+	}
 
-window.downloadMODS = builder.downloadMODS.bind(builder);
+	const builder = new ModsBuilder({
+		moduleType: 'dataset',
+		includeTypeOfResource: true,
+		includeLiterature: false,
+		includeFAST: true,
+		includeISBN: false
+	});
+
+	window.downloadMODS = builder.downloadMODS.bind(builder);
+})();

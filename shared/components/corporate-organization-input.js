@@ -69,15 +69,15 @@ export class CorporateOrganizationInput extends RepeatableFieldBase {
     const translitClass = 'translit-corporate_name';
 
     const top = html`
-      <label for="${nameId}" class="heading">${this.heading}</label>
-      <label for="${nameId}" class="${this.insertClass}" @click=${() => this.handleInsertClick(nameId)}>${this.insertLabel}</label><br>
+      <label for="${nameId}" class="heading font-semibold">${this.heading}</label>
+      <label for="${nameId}" class="${this.insertClass} text-blue-600 cursor-pointer text-sm ml-2" @click=${() => this.handleInsertClick(nameId)}>Ω</label><br>
       <div id="${insertId}"></div>
-      <input type="text" class="corporate conditional translit-listen" id="${nameId}" ?required=${this.isRequired}>
-      <select name="role" id="${roleId}">
+      <input type="text" class="corporate conditional translit-listen border rounded px-2 py-1 w-64" id="${nameId}" ?required=${this.isRequired}>
+      <select name="role" id="${roleId}" class="border rounded px-2 py-1 ml-2">
         <option value="ctb" selected>contributor</option>
         <option value="cre">creator</option>
       </select>
-      <label title="${this.helpText}"><span class="question-mark">?</span></label>
+      <label title="${this.helpText}"><span class="question-mark text-gray-500 ml-2 cursor-help">?</span></label>
     `;
 
     const bottom = html`
@@ -96,12 +96,12 @@ export class CorporateOrganizationInput extends RepeatableFieldBase {
     const translitBlockId = `translit-corporate_name${key}-block`;
     const translitClass = `translit_corporate_name${key}`;
     return html`
-      <div class="added-corporate">
-        <label for="${nameId}" class="${this.insertClass}" @click=${() => this.handleInsertClick(nameId)}>${this.insertLabel}</label><br>
+      <div class="added-corporate my-2">
+        <label for="${nameId}" class="${this.insertClass} text-blue-600 cursor-pointer text-sm" @click=${() => this.handleInsertClick(nameId)}>Ω</label><br>
         <div id="${insertId}"></div>
-        <span class="added-corporate">
-          <input type="text" class="corporate translit-listen" id="${nameId}">
-          <select name="role${key}" id="${roleId}">
+        <span class="added-corporate flex items-center gap-2">
+          <input type="text" class="corporate translit-listen border rounded px-2 py-1 w-64" id="${nameId}">
+          <select name="role${key}" id="${roleId}" class="border rounded px-2 py-1">
             <option value="cre" selected>creator</option>
             <option value="ctb">contributor</option>
           </select>

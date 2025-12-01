@@ -1,794 +1,152 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-	<meta charset="utf-8">
+	<meta charset="utf-8" />
 	<title>Metadata Maker for Notated Music</title>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.14.0/jquery-ui.min.js"></script>
-	<script src="/assignFAST/assignFASTExample.js"></script>
-	<script src="/assignFAST/assignFASTGadget.js"></script>
-	<script src="/assignFAST/assignFASTComplete.js"></script>
+	<!-- Tailwind CSS CDN -->
+	<script src="https://cdn.tailwindcss.com"></script>
+	<script>
+		// Tailwind config for UVA branding
+		tailwind.config = {
+			theme: {
+				extend: {
+					colors: {
+						'uva-blue': '#00205b',
+						'uva-orange': '#ff8200',
+					},
+					fontFamily: {
+						sans: ['"Inter"', 'system-ui', 'sans-serif'],
+					},
+				},
+			},
+		};
+	</script>
+	<!-- Top navigation styles -->
+	<link href="/top_bar.css" rel="stylesheet" media="screen">
+	<!-- Component scripts (no jQuery) -->
 	<script type="module" src="/shared/components/top-navigation.js"></script>
 	<script type="module" src="/shared/components/standard-text-input.js"></script>
 	<script type="module" src="/shared/components/language-select.js"></script>
-
-	<link href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.14.0/themes/smoothness/jquery-ui.css" rel="stylesheet">
-	<link href="https://jqueryui.com/jquery-wp-content/themes/jqueryui.com/style.css" rel="stylesheet">
-	<link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
-	<link href='https://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
-	<link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
-	<link href="/marcmaker.css" rel="stylesheet" media="screen">
-	<link href="/top_bar.css" rel="stylesheet" media="screen">
-
+	<link href="https://fonts.googleapis.com/css?family=Inter" rel="stylesheet" />
+	<style type="text/tailwindcss">
+		@layer components {
+			.standard-block {
+				@apply bg-white p-6 rounded-lg shadow-sm border border-gray-200 mb-6;
+			}
+			.heading {
+				@apply block text-lg font-bold text-uva-blue mb-2;
+			}
+			.input-base {
+				@apply w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-uva-orange focus:border-transparent;
+			}
+			.btn-primary {
+				@apply bg-uva-blue text-white px-4 py-2 rounded hover:bg-blue-900 transition-colors cursor-pointer;
+			}
+			.btn-secondary {
+				@apply bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300 transition-colors cursor-pointer;
+			}
+			.required_marker {
+				@apply text-red-600 ml-1;
+			}
+			/* Legacy overrides */
+			.hidden { display: none; }
+		}
+	</style>
 </head>
 
+<body class="template template-scores template-corporate bg-gray-50 text-gray-900">
 	<script>document.documentElement.classList.add('has-js');</script>
-<body class="template template-scores">
-		<uv-top-navigation
-		current-version="scores"
-		version-label="Notated Music"
-	</uv-top-navigation>
-
+	<uv-top-navigation current-version="scores" version-label="Notated Music"></uv-top-navigation>
 	<div id="warning_system">
-		<noscript>WARNING: JavaScript is not enabled on this browser. This page requires JavaScript to function correctly.</noscript>
+		<noscript>WARNING: JavaScript is not enabled on this browser. This page requires JavaScript to function
+			correctly.</noscript>
 		<script src="../shared/checkServer.js"></script>
 	</div>
-	<div id="content">
-		<form id="marc-maker">
-			<standard-text-input
-				container-id="title-block"
-				heading="Title"
-				field-id="title"
-				required
-				required-marker="*"
-				input-class="required translit-listen"
-				help-text="Record the title as it appears on the title page. If the title includes a subtitle, record only the main title here, and the subtitle in the next field."
-			></standard-text-input>
-
-			<standard-text-input
-				container-id="subtitle-block"
-				heading="Subtitle"
-				field-id="subtitle"
-				input-class="conditional"
-				help-text="Record the subtitle if one exists"
-				unlisted
-			></standard-text-input>
-
-			<div id="translit-title-block" class="translit-title-block translit-block standard-translit-block translit-title hidden">
-				<label for="translit_title" class="hidden translit heading translit-title">Transliterated title</label><label for="translit_title" class="insert insert_normal hidden translit translit-title" style="left: -13px;" onClick='insertMenu("translit_title");'>Insert Special Characters</label><br>
+	<div id="content" class="max-w-4xl mx-auto p-4">
+		<form id="marc-maker" class="space-y-6">
+			<standard-text-input container-id="title-block" heading="Title" field-id="title" required
+				required-marker="*" input-class="required translit-listen"
+				help-text="Record the title as it appears on the title page. If the title includes a subtitle, record only the main title here, and the subtitle in the next field."></standard-text-input>
+			<standard-text-input container-id="subtitle-block" heading="Subtitle" field-id="subtitle"
+				input-class="conditional" help-text="Record the subtitle if one exists" unlisted></standard-text-input>
+			<div id="translit-title-block"
+				class="translit-title-block translit-block standard-translit-block translit-title hidden standard-block">
+				<label for="translit_title" class="hidden translit heading translit-title">Transliterated title</label>
+				<label for="translit_title" class="insert insert_normal hidden translit translit-title"
+					onClick='insertMenu("translit_title");'>Insert Special Characters</label><br />
 				<div id="insert-translit_title" class="hidden translit translit-title"></div>
-				<input type="text" id="translit_title" class="hidden translit translit-title">
+				<input type="text" id="translit_title" class="hidden translit translit-title" />
 			</div>
-
-			<div id="translit-subtitle-block" class="translit-title-block translit-block standard-translit-block translit-title hidden">
-				<label for="translit_subtitle" class="hidden translit heading translit-title">Transliterated subtitle</label><label for="translit_subtitle" class="insert insert_normal hidden translit translit-title" onClick='insertMenu("translit_subtitle");'>Insert Special Characters</label><br>
+			<div id="translit-subtitle-block"
+				class="translit-title-block translit-block standard-translit-block translit-title hidden standard-block">
+				<label for="translit_subtitle" class="hidden translit heading translit-title">Transliterated
+					subtitle</label>
+				<label for="translit_subtitle" class="insert insert_normal hidden translit translit-title"
+					onClick='insertMenu("translit_subtitle");'>Insert Special Characters</label><br />
 				<div id="insert-translit_subtitle" class="hidden translit translit-title"></div>
-				<input type="text" id="translit_subtitle" class="hidden translit translit-title">
+				<input type="text" id="translit_subtitle" class="hidden translit translit-title" />
 			</div>
-
-			<div id="uniform-title-block" class="standard-block">
-				<label for="uniform_title" class="heading">Uniform Title</label><br>
-				<input type="text" required id="uniform_title" class="conditional"><br>
-				<span class="unlisted">Unlisted</span><input type="checkbox" id="uniform_title_listed" class="listed">
-			</div>
-
-			<div id="isbn-block" class="standard-block">
-				<label for="isbn" class="heading">ISBN</label><br>
-				<input type="text" required id="isbn" class="conditional">
-				<label title="Record an ISBN, if present. Do not record hyphens. If multiple ISBNs are present, record only one. E.g., 9781234567890 or 1234567890"><span class="question-mark">?</span></label><br>
-				<span class="unlisted">Unlisted</span><input type="checkbox" id="isbn_listed" class="listed">
-			</div>
-
-			<div id="ismn-block" class="standard-block">
-				<label for="ismn" class="heading">International Standard Music Number</label><br>
-				<input type="text" required id="ismn" class="conditional"><br>
-				<span class="unlisted">Unlisted</span><input type="checkbox" id="ismn_listed" class="listed">
-			</div>
-
-			<div id="edition-block" class="standard-block">
-				<label for="edition" class="heading">Edition statement</label><label for="edition" class="insert insert_normal" onClick='insertMenu("edition");'>Insert Special Characters</label><br>
-				<div id="insert-edition"></div>
-				<input type="text" class="conditional translit-listen" required id="edition">
-				<label title="Record an edition statement if it appears on the piece. E.g., First edition, 1st ed., etc."><span class="question-mark">?</span></label><br>
-				<span class="unlisted">Unlisted</span><input type="checkbox" id="edition_listed" class="listed">
-			</div>
-
-			<div id="translit-edition-block" class="translit-edition-block translit-block hidden standard-translit-block">
-				<label for="translit_edition" class="hidden translit heading translit-edition">Transliterated edition</label><label for="translit_edition" class="insert insert_normal hidden translit translit-edition" onClick='insertMenu("translit_edition");'>Insert Special Characters</label><br>
-				<div id="insert-translit_edition" class="hidden translit translit-edition"></div>
-				<input type="text" id="translit_edition" class="hidden translit translit-edition">
-			</div>
-
-								<language-select
-			required
-			field-id="language"
-			container-id="language-block"
-			select-class="conditional"
-		></language-select>
-
-			<div id="author-block">
-				<label for="author" class="heading">Names</label><label for="family_name" class="insert insert_family_name" onClick='insertMenu("family_name");'>Insert Special Characters</label><label for="given_name" class="insert insert_given_name" onClick='insertMenu("given_name");'>Insert Special Characters</label><br>
-				<div id="insert-family_name"></div><div id="insert-given_name"></div>
-				<input type="text" class="author conditional translit-listen" required id="family_name" placeholder="Family Name">, 
-				<input type="text" class="author conditional translit-listen" required id="given_name" placeholder="Given Name">
-				<select name="role" id="role">
-					<option value="arr">arranger</option>
-					<option value="art">artist</option>
-					<option value="aut">author</option>
-					<option selected value="cmp">composer</option>
-					<option value="ctb">contributor</option>
-					<option value="edt">editor</option>
-					<option value="ill">illustrator</option>
-					<option value="lbt">librettist</option>
-					<option value="lyr">lyricist</option>
-					<option value="trl">translator</option>
-				</select>
-				<label title="Enter the name of authors, editors, illustrators, etc. listed on the piece and select the appropriate role from the drop down menu. Authors should be listed first."><span class="question-mark">?</span></label>
-				<input type="button" value="+" id="add-author" onClick="addAuthor();">
-				<br>
-				<span class="unlisted">Unlisted</span><input type="checkbox" id="author_listed" class="listed">
-
-				<div id="translit-family_name-block" class="translit-family_name-block translit-block translit-author hidden">
-					<label for="translit_family_name" class="hidden translit heading translit-family_name">Transliterated name</label><label for="translit_family_name" class="insert insert_family_name hidden translit translit-family_name" onClick='insertMenu("translit_family_name");'>Insert Special Characters</label><label for="translit_given_name" class="insert insert_given_name hidden translit translit-family_name" onClick='insertMenu("translit_given_name");'>Insert Special Characters</label><br>
-					<div id="insert-translit_family_name"></div><div id="insert-translit_given_name" class="insert-given_name"></div>
-					<input type="text" id="translit_family_name" class="hidden translit translit-family_name" placeholder="Transliterated Family Name"><span class="hidden translit-family_name">, </span>
-					<input type="text" id="translit_given_name" class="hidden translit translit-family_name" placeholder="Transliterated Given Name">
+			<standard-text-input heading="Uniform Title" field-id="uniform_title" required class="conditional"
+				help-text="Record uniform title."></standard-text-input>
+			<standard-text-input heading="ISBN" field-id="isbn" required class="conditional"
+				help-text="Record an ISBN, if present. Do not record hyphens."></standard-text-input>
+			<standard-text-input heading="International Standard Music Number" field-id="ismn" required
+				class="conditional" help-text="Record ISMN."></standard-text-input>
+			<standard-text-input heading="Edition statement" field-id="edition" class="conditional translit-listen"
+				help-text="Record an edition statement."></standard-text-input>
+			<language-select required field-id="language" container-id="language-block"></language-select>
+			<standard-text-input heading="Publisher" field-id="publisher" required class="conditional translit-listen"
+				help-text="Record publisher name."></standard-text-input>
+			<standard-text-input heading="Place of publication" field-id="place" required
+				class="conditional translit-listen" help-text="Record place of publication."></standard-text-input>
+			<standard-text-input heading="Date of publication" field-id="year" required type="number"
+				class="date conditional" help-text="Record year of publication."></standard-text-input>
+			<standard-text-input heading="Copyright date" field-id="cyear" type="number" class="date conditional"
+				help-text="Record copyright date."></standard-text-input>
+			<standard-text-input heading="Dimensions" field-id="dimensions" required class="required"
+				help-text="Record dimensions in cm."></standard-text-input>
+			<standard-text-input heading="Illustrations?" field-id="illustrations" type="text"
+				help-text="Yes/No"></standard-text-input>
+			<div id="keywords" class="standard-block">
+				<label for="keywords" class="heading">Keywords<span class="required_marker">*</span></label><br />
+				<input type="text" class="fastID hidden" id="fastID0" />
+				<input type="number" class="fastType hidden" id="fastType0" />
+				<input type="text" class="fastInd hidden" id="fastInd0" />
+				<div class="flex gap-2 items-center mb-2">
+					<input type="text" class="keyword required input-base" required id="keyword0" />
+					<label title="Enter keywords."><span
+							class="question-mark text-uva-orange cursor-help">?</span></label>
+					<input type="button" value="+" id="add-button" onClick="addKeyword();" class="btn-primary ml-2" />
 				</div>
 			</div>
-
-			<corporate-organization-input></corporate-organization-input>
-
-			<div id="publisher-block" class="standard-block">
-				<label for="publisher" class="heading">Name of publisher</label><label for="publisher" class="insert insert_normal" onClick='insertMenu("publisher");'>Insert Special Characters</label><br>
-				<div id="insert-publisher"></div>
-				<input type="text" required id="publisher" class="conditional translit-listen">
-				<label title="Record the name of the publisher as it appears on the piece. Prefer the name that appears on the title page."><span class="question-mark">?</span></label><br>
-				<span class="unlisted">Unlisted</span><input type="checkbox" id="publisher_listed" class="listed">
+			<div id="buttons" class="standard-block flex gap-4">
+				<input type="submit" value="Make" id="make" class="btn-primary" />
+				<input type="reset" value="Clear" id="Clear" class="btn-secondary" />
 			</div>
-
-			<div id="translit-publisher-block" class="translit-publisher-block translit-block hidden standard-translit-block">
-				<label for="translit_publisher" class="hidden translit heading translit-publisher">Transliterated publisher</label><label for="translit_publisher" class="insert insert_normal hidden translit translit-publisher" onClick='insertMenu("translit_publisher");'>Insert Special Characters</label><br>
-				<div id="insert-translit_publisher" class="hidden translit translit-publisher"></div>
-				<input type="text" id="translit_publisher" class="hidden translit translit-publisher">
-			</div>
-
-			<div id="place-block" class="standard-block">
-				<label for="place" class="heading">Place of publication</label><label for="place" class="insert insert_normal" onClick='insertMenu("place");'>Insert Special Characters</label><br>
-				<div id="insert-place"></div>
-				<input type="text" required id="place" class="conditional translit-listen">
-				<label title="Record the place of publication as it appears on the piece. Prefer the place that appears on the title page. If there is more than one place, record only one. E.g., Boston, Massachusetts"><span class="question-mark">?</span></label><br>
-				<span class="unlisted">Unlisted</span><input type="checkbox" id="place_listed" class="listed">
-			</div>
-
-			<div id="translit-place-block" class="translit-place-block translit-block hidden standard-translit-block">
-				<label for="translit_place" class="hidden translit heading translit-place">Transliterated place</label><label for="translit_place" class="insert insert_normal hidden translit translit-publisher" onClick='insertMenu("translit_place");'>Insert Special Characters</label><br>
-				<div id="insert-translit_place" class="hidden translit translit-publisher"></div>
-				<input type="text" id="translit_place" class="hidden translit translit-place">
-			</div>
-
-			<div id="country-block" class="standard-block">
-				<label for="country" class="heading">Country/State/Province of publication</label><br>
-				<select name="country" required id="country" class="conditional">
-					<option selected disabled hidden value=''></option>
-					<option value="af">Afghanistan</option>
-					<option value="alu">Alabama</option>
-					<option value="aku">Alaska</option>
-					<option value="aa">Albania</option>
-					<option value="abc">Alberta</option>
-					<option value="ae">Algeria</option>
-					<option value="as">American Samoa</option>
-					<option value="an">Andorra</option>
-					<option value="ao">Angola</option>
-					<option value="am">Anguilla</option>
-					<option value="ay">Antarctica</option>
-					<option value="aq">Antigua and Barbuda</option>
-					<option value="ag">Argentina</option>
-					<option value="azu">Arizona</option>
-					<option value="aru">Arkansas</option>
-					<option value="ai">Armenia (Republic)</option>
-					<option value="aw">Aruba</option>
-					<option value="at">Australia</option>
-					<option value="aca">Australian Capital Territory</option>
-					<option value="au">Austria</option>
-					<option value="aj">Azerbaijan</option>
-					<option value="bf">Bahamas</option>
-					<option value="ba">Bahrain</option>
-					<option value="bg">Bangladesh</option>
-					<option value="bb">Barbados</option>
-					<option value="bw">Belarus</option>
-					<option value="be">Belgium</option>
-					<option value="bh">Belize</option>
-					<option value="dm">Benin</option>
-					<option value="bm">Bermuda Islands</option>
-					<option value="bt">Bhutan</option>
-					<option value="bo">Bolivia</option>
-					<option value="bn">Bosnia and Hercegovina</option>
-					<option value="bs">Botswana</option>
-					<option value="bv">Bouvet Island</option>
-					<option value="bl">Brazil</option>
-					<option value="bcc">British Columbia</option>
-					<option value="bi">British Indian Ocean Territory</option>
-					<option value="vb">British Virgin Islands</option>
-					<option value="bx">Brunei</option>
-					<option value="bu">Bulgaria</option>
-					<option value="uv">Burkina Faso</option>
-					<option value="br">Burma</option>
-					<option value="bd">Burundi</option>
-					<option value="cv">Cabo Verde</option>
-					<option value="cau">California</option>
-					<option value="cb">Cambodia</option>
-					<option value="cm">Cameroon</option>
-					<option value="xxc">Canada</option>
-					<option value="ca">Caribbean Netherlands</option>
-					<option value="cj">Cayman Islands</option>
-					<option value="cx">Central African Republic</option>
-					<option value="cd">Chad</option>
-					<option value="cl">Chile</option>
-					<option value="cc">China</option>
-					<option value="ch">China (Republic : 1949- )</option>
-					<option value="xa">Christmas Island (Indian Ocean)</option>
-					<option value="xb">Cocos (Keeling) Islands</option>
-					<option value="ck">Colombia</option>
-					<option value="cou">Colorado</option>
-					<option value="cq">Comoros</option>
-					<option value="cf">Congo (Brazzaville)</option>
-					<option value="cg">Congo (Democratic Republic)</option>
-					<option value="ctu">Connecticut</option>
-					<option value="cw">Cook Islands</option>
-					<option value="xga">Coral Sea Islands Territory</option>
-					<option value="cr">Costa Rica</option>
-					<option value="iv">Côte d'Ivoire</option>
-					<option value="ci">Croatia</option>
-					<option value="cu">Cuba</option>
-					<option value="co">Curaçao</option>
-					<option value="cy">Cyprus</option>
-					<option value="xr">Czech Republic</option>
-					<option value="deu">Delaware</option>
-					<option value="dk">Denmark</option>
-					<option value="dcu">District of Columbia</option>
-					<option value="ft">Djibouti</option>
-					<option value="dq">Dominica</option>
-					<option value="dr">Dominican Republic</option>
-					<option value="ec">Ecuador</option>
-					<option value="ua">Egypt</option>
-					<option value="es">El Salvador</option>
-					<option value="enk">England</option>
-					<option value="eg">Equatorial Guinea</option>
-					<option value="ea">Eritrea</option>
-					<option value="er">Estonia</option>
-					<option value="et">Ethiopia</option>
-					<option value="fk">Falkland Islands</option>
-					<option value="fa">Faroe Islands</option>
-					<option value="fj">Fiji</option>
-					<option value="fi">Finland</option>
-					<option value="flu">Florida</option>
-					<option value="fr">France</option>
-					<option value="fg">French Guiana</option>
-					<option value="fp">French Polynesia</option>
-					<option value="go">Gabon</option>
-					<option value="gm">Gambia</option>
-					<option value="gz">Gaza Strip</option>
-					<option value="gau">Georgia</option>
-					<option value="gs">Georgia (Republic)</option>
-					<option value="gw">Germany</option>
-					<option value="gh">Ghana</option>
-					<option value="gi">Gibraltar</option>
-					<option value="gr">Greece</option>
-					<option value="gl">Greenland</option>
-					<option value="gd">Grenada</option>
-					<option value="gp">Guadeloupe</option>
-					<option value="gu">Guam</option>
-					<option value="gt">Guatemala</option>
-					<option value="gv">Guinea</option>
-					<option value="pg">Guinea-Bissau</option>
-					<option value="gy">Guyana</option>
-					<option value="ht">Haiti</option>
-					<option value="hiu">Hawaii</option>
-					<option value="hm">Heard and McDonald Islands</option>
-					<option value="ho">Honduras</option>
-					<option value="hu">Hungary</option>
-					<option value="ic">Iceland</option>
-					<option value="idu">Idaho</option>
-					<option value="ilu">Illinois</option>
-					<option value="ii">India</option>
-					<option value="inu">Indiana</option>
-					<option value="io">Indonesia</option>
-					<option value="iau">Iowa</option>
-					<option value="ir">Iran</option>
-					<option value="iq">Iraq</option>
-					<option value="iy">Iraq-Saudi Arabia Neutral Zone</option>
-					<option value="ie">Ireland</option>
-					<option value="is">Israel</option>
-					<option value="it">Italy</option>
-					<option value="jm">Jamaica</option>
-					<option value="ja">Japan</option>
-					<option value="ji">Johnston Atoll</option>
-					<option value="jo">Jordan</option>
-					<option value="ksu">Kansas</option>
-					<option value="kz">Kazakhstan</option>
-					<option value="kyu">Kentucky</option>
-					<option value="ke">Kenya</option>
-					<option value="gb">Kiribati</option>
-					<option value="kn">Korea (North)</option>
-					<option value="ko">Korea (South)</option>
-					<option value="kv">Kosovo</option>
-					<option value="ku">Kuwait</option>
-					<option value="kg">Kyrgyzstan</option>
-					<option value="ls">Laos</option>
-					<option value="lv">Latvia</option>
-					<option value="le">Lebanon</option>
-					<option value="lo">Lesotho</option>
-					<option value="lb">Liberia</option>
-					<option value="ly">Libya</option>
-					<option value="lh">Liechtenstein</option>
-					<option value="li">Lithuania</option>
-					<option value="lau">Louisiana</option>
-					<option value="lu">Luxembourg</option>
-					<option value="xn">Macedonia</option>
-					<option value="mg">Madagascar</option>
-					<option value="meu">Maine</option>
-					<option value="mw">Malawi</option>
-					<option value="my">Malaysia</option>
-					<option value="xc">Maldives</option>
-					<option value="ml">Mali</option>
-					<option value="mm">Malta</option>
-					<option value="mbc">Manitoba</option>
-					<option value="xe">Marshall Islands</option>
-					<option value="mq">Martinique</option>
-					<option value="mdu">Maryland</option>
-					<option value="mau">Massachusetts</option>
-					<option value="mu">Mauritania</option>
-					<option value="mf">Mauritius</option>
-					<option value="ot">Mayotte</option>
-					<option value="mx">Mexico</option>
-					<option value="miu">Michigan</option>
-					<option value="fm">Micronesia (Federated States)</option>
-					<option value="xf">Midway Islands</option>
-					<option value="mnu">Minnesota</option>
-					<option value="msu">Mississippi</option>
-					<option value="mou">Missouri</option>
-					<option value="mv">Moldova</option>
-					<option value="mc">Monaco</option>
-					<option value="mp">Mongolia</option>
-					<option value="mtu">Montana</option>
-					<option value="mo">Montenegro</option>
-					<option value="mj">Montserrat</option>
-					<option value="mr">Morocco</option>
-					<option value="mz">Mozambique</option>
-					<option value="sx">Namibia</option>
-					<option value="nu">Nauru</option>
-					<option value="nbu">Nebraska</option>
-					<option value="np">Nepal</option>
-					<option value="ne">Netherlands</option>
-					<option value="nvu">Nevada</option>
-					<option value="nkc">New Brunswick</option>
-					<option value="nl">New Caledonia</option>
-					<option value="nhu">New Hampshire</option>
-					<option value="nju">New Jersey</option>
-					<option value="nmu">New Mexico</option>
-					<option value="xna">New South Wales</option>
-					<option value="nyu">New York (State)</option>
-					<option value="nz">New Zealand</option>
-					<option value="nfc">Newfoundland and Labrador</option>
-					<option value="nq">Nicaragua</option>
-					<option value="ng">Niger</option>
-					<option value="nr">Nigeria</option>
-					<option value="xh">Niue</option>
-					<option value="xx">No place, unknown, or undetermined</option>
-					<option value="nx">Norfolk Island</option>
-					<option value="ncu">North Carolina</option>
-					<option value="ndu">North Dakota</option>
-					<option value="nik">Northern Ireland</option>
-					<option value="nw">Northern Mariana Islands</option>
-					<option value="xoa">Northern Territory</option>
-					<option value="ntc">Northwest Territories</option>
-					<option value="no">Norway</option>
-					<option value="nsc">Nova Scotia</option>
-					<option value="nuc">Nunavut</option>
-					<option value="ohu">Ohio</option>
-					<option value="oku">Oklahoma</option>
-					<option value="mk">Oman</option>
-					<option value="onc">Ontario</option>
-					<option value="oru">Oregon</option>
-					<option value="pk">Pakistan</option>
-					<option value="pw">Palau</option>
-					<option value="pn">Panama</option>
-					<option value="pp">Papua New Guinea</option>
-					<option value="pf">Paracel Islands</option>
-					<option value="py">Paraguay</option>
-					<option value="pau">Pennsylvania</option>
-					<option value="pe">Peru</option>
-					<option value="ph">Philippines</option>
-					<option value="pc">Pitcairn Island</option>
-					<option value="pl">Poland</option>
-					<option value="po">Portugal</option>
-					<option value="pic">Prince Edward Island</option>
-					<option value="pr">Puerto Rico</option>
-					<option value="qa">Qatar</option>
-					<option value="quc">Québec (Province)</option>
-					<option value="qea">Queensland</option>
-					<option value="re">Réunion</option>
-					<option value="riu">Rhode Island</option>
-					<option value="rm">Romania</option>
-					<option value="ru">Russia (Federation)</option>
-					<option value="rw">Rwanda</option>
-					<option value="xj">Saint Helena</option>
-					<option value="xd">Saint Kitts-Nevis</option>
-					<option value="xk">Saint Lucia</option>
-					<option value="xl">Saint Pierre and Miquelon</option>
-					<option value="xm">Saint Vincent and the Grenadines</option>
-					<option value="sc">Saint-Barthélemy</option>
-					<option value="st">Saint-Martin</option>
-					<option value="ws">Samoa</option>
-					<option value="sm">San Marino</option>
-					<option value="sf">Sao Tome and Principe</option>
-					<option value="snc">Saskatchewan</option>
-					<option value="su">Saudi Arabia</option>
-					<option value="stk">Scotland</option>
-					<option value="sg">Senegal</option>
-					<option value="rb">Serbia</option>
-					<option value="se">Seychelles</option>
-					<option value="sl">Sierra Leone</option>
-					<option value="si">Singapore</option>
-					<option value="sn">Sint Maarten</option>
-					<option value="xo">Slovakia</option>
-					<option value="xv">Slovenia</option>
-					<option value="bp">Solomon Islands</option>
-					<option value="so">Somalia</option>
-					<option value="sa">South Africa</option>
-					<option value="xra">South Australia</option>
-					<option value="scu">South Carolina</option>
-					<option value="sdu">South Dakota</option>
-					<option value="xs">South Georgia and the South Sandwich Islands</option>
-					<option value="sd">South Sudan</option>
-					<option value="sp">Spain</option>
-					<option value="sh">Spanish North Africa</option>
-					<option value="xp">Spratly Island</option>
-					<option value="ce">Sri Lanka</option>
-					<option value="sj">Sudan</option>
-					<option value="sr">Surinam</option>
-					<option value="sq">Swaziland</option>
-					<option value="sw">Sweden</option>
-					<option value="sz">Switzerland</option>
-					<option value="sy">Syria</option>
-					<option value="ta">Tajikistan</option>
-					<option value="tz">Tanzania</option>
-					<option value="tma">Tasmania</option>
-					<option value="tnu">Tennessee</option>
-					<option value="fs">Terres australes et antarctiques françaises</option>
-					<option value="txu">Texas</option>
-					<option value="th">Thailand</option>
-					<option value="em">Timor-Leste</option>
-					<option value="tg">Togo</option>
-					<option value="tl">Tokelau</option>
-					<option value="to">Tonga</option>
-					<option value="tr">Trinidad and Tobago</option>
-					<option value="ti">Tunisia</option>
-					<option value="tu">Turkey</option>
-					<option value="tk">Turkmenistan</option>
-					<option value="tc">Turks and Caicos Islands</option>
-					<option value="tv">Tuvalu</option>
-					<option value="ug">Uganda</option>
-					<option value="un">Ukraine</option>
-					<option value="ts">United Arab Emirates</option>
-					<option value="xxk">United Kingdom</option>
-					<option value="uik">United Kingdom Misc. Islands</option>
-					<option value="xxu">United States</option>
-					<option value="uc">United States Misc. Caribbean Islands</option>
-					<option value="up">United States Misc. Pacific Islands</option>
-					<option value="uy">Uruguay</option>
-					<option value="utu">Utah</option>
-					<option value="uz">Uzbekistan</option>
-					<option value="nn">Vanuatu</option>
-					<option value="vp">Various places</option>
-					<option value="vc">Vatican City</option>
-					<option value="ve">Venezuela</option>
-					<option value="vtu">Vermont</option>
-					<option value="vra">Victoria</option>
-					<option value="vm">Vietnam</option>
-					<option value="vi">Virgin Islands of the United States</option>
-					<option value="vau">Virginia</option>
-					<option value="wk">Wake Island</option>
-					<option value="wlk">Wales</option>
-					<option value="wf">Wallis and Futuna</option>
-					<option value="wau">Washington (State)</option>
-					<option value="wj">West Bank of the Jordan River</option>
-					<option value="wvu">West Virginia</option>
-					<option value="wea">Western Australia</option>
-					<option value="ss">Western Sahara</option>
-					<option value="wiu">Wisconsin</option>
-					<option value="wyu">Wyoming</option>
-					<option value="ye">Yemen</option>
-					<option value="ykc">Yukon Territory</option>
-					<option value="za">Zambia</option>
-					<option value="rh">Zimbabwe</option>
-				</select>
-				<label title="Select the country of publication from the drop-down menu. If published in the United States, Canada, Australia, or the United Kingdom, select the state, province, or geographic region"><span class="question-mark">?</span></label><br>
-				<span class="unlisted">Unlisted</span><input type="checkbox" id="country_listed" class="listed">
-			</div>
-
-			<div id="publication-block">
-				<label for="date" class="heading">Date of publication</label><br>
-				<input type="number" class="date conditional" required id="year" min="0">
-				<label title="Record the year of publication if it appears on the piece. Do not record a copyright date here. Copyright dates should be recorded in the next field."><span class="question-mark">?</span></label><br>
-				<span class="unlisted">Unlisted</span><input type="checkbox" id="year_listed" class="listed">
-			</div>
-
-			<div id="copyright-block">
-				<label for="cyear" class="heading">Copyright date</label><br>
-				<input type="number" class="date conditional" required id="cyear" min="0">
-				<label title="Record the year of copyright if it appears on the piece."><span class="question-mark">?</span></label><br>
-				<span class="unlisted">Unlisted</span><input type="checkbox" id="cyear_listed" class="listed">
-			</div>
-
-			<div id="pages-block" class="standard-block">
-				<label for="number" class="heading">Number of</label>
-				<select name="vorp" id="vorp">
-					<option selected value="pages">pages</option>
-					<option value="volumes">volumes</option>
-				</select><br>
-				<input type="text" required id="pages" class="conditional">
-				<label title="Record the number of pages in each numbered sequence. E.g., 356 or xii, 254. Record the number from the last numbered page, and do not include unnumbered pages. 
-	If a multi-volume set, do not record the number of pages, but instead record the number of physical volumes, E.g., 4"><span class="question-mark">?</span></label><br>
-				<span class="unlisted">Unpaged</span><input type="checkbox" id="pages_listed" class="listed">
-			</div>
-
-			<div id="dimensions-block" class="standard-block">
-				<label for="dimensions" class="heading">Dimensions<span class="required_marker">*</span></label><br>
-				<input type="text" required id="dimensions" class="required"> cm
-				<label title="Record the height of the piece in cm. Always round up, so that if a piece measures 25.1 cm, record 26 cm"><span class="question-mark">?</span></label>
-			</div>
-
-			<div id="literature-block" class="standard-block">
-				<label for="literature" class="heading">Is this item literature?</label><br>
-				<input type="radio" name="literature" id="literature-yes" value="yes">Yes
-				<input type="radio" name="literature" id="literature-no" value="no">No<br>
-				<select name="literature-dropdown" id="literature-dropdown" class="hidden">
-					<option selected disabled hidden value=''></option>
-					<option value="0">Not fiction (not further specified)</option>
-					<option value="1">Fiction (not further specified)</option>
-					<option value="d">Dramas</option>
-					<option value="e">Essays</option>
-					<option value="f">Novels</option>
-					<option value="h">Humor, satires, etc.</option>
-					<option value="i">Letters</option>
-					<option value="j">Short stories</option>
-					<option value="m">Mixed forms</option>
-					<option value="p">Poetry</option>
-					<option value="s">Speeches</option>
-					<option value="u">Unknown</option>
-				</select>
-			</div>
-
-			<div id="illustrations-block" class="standard-block">
-				<label for="illustrations" class="heading">Does the item include illustrations?</label><br>
-				<input type="radio" name="illustrations" id="illustrations-yes" value="yes">Yes
-				<input type="radio" name="illustrations" id="illustrations-no" value="no">No
-			</div>
-
-			<div id="physical-form-block" class="standard-block">
-				<label for="physical-form" class="heading">Physical form</label><br>
-				<select id="physical-form">
-					<option selected value="">Select a physical form</option>
-					<option value=" ">None of the following</option>
-					<option value="a">Microfilm</option>
-					<option value="b">Microfiche</option>
-					<option value="c">Microopaque</option>
-					<option value="d">Large print</option>
-					<option value="f">Braille</option>
-					<option value="o">Online</option>
-					<option value="q">Direct electronic</option>
-					<option value="r">Regular print reproduction</option>
-					<option value="s">Electronic</option>
-				</select>
-			</div>
-
-			<div id="composition-form" class="standard-block">
-				<label for="composition-form" class="heading">Form of composition<span class="required_marker">*</span></label><br>
-				<select required name="composition-form-dropdown" id="composition-form-dropdown" class="required">
-					<option selected disabled hidden value=''></option>
-					<option value="an">Anthems</option>
-					<option value="bd">Ballads</option>
-					<option value="bg">Bluegrass music</option>
-					<option value="bl">Blues</option>
-					<option value="bt">Ballets</option>
-					<option value="ca">Chaconnes</option>
-					<option value="cb">Chants, Other religions</option>
-					<option value="cc">Chant, Christian</option>
-					<option value="cg">Concerti grossi</option>
-					<option value="ch">Chorales</option>
-					<option value="cl">Chorale preludes</option>
-					<option value="cn">Canons and rounds</option>
-					<option value="co">Concertos</option>
-					<option value="cp">Chansons, polyphonic</option>
-					<option value="cr">Carols</option>
-					<option value="cs">Chance compositions</option>
-					<option value="ct">Cantatas</option>
-					<option value="cy">Country music</option>
-					<option value="cz">Canzonas</option>
-					<option value="df">Dance forms</option>
-					<option value="dv">Divertimentos, serenades, cassations, divertissements, and notturni</option>
-					<option value="fg">Fugues</option>
-					<option value="fl">Flamenco</option>
-					<option value="fm">Folk music</option>
-					<option value="ft">Fantasias</option>
-					<option value="gm">Gospel music</option>
-					<option value="hy">Hymns</option>
-					<option value="jz">Jazz</option>
-					<option value="mc">Musical revues and comedies</option>
-					<option value="md">Madrigals</option>
-					<option value="mi">Minuets</option>
-					<option value="mo">Motets</option>
-					<option value="mp">Motion picture music</option>
-					<option value="mr">Marches</option>
-					<option value="ms">Masses</option>
-					<option value="mu">Multiple forms</option>
-					<option value="mz">Mazurkas</option>
-					<option value="nc">Nocturnes</option>
-					<option value="nn">Not applicable</option>
-					<option value="op">Operas</option>
-					<option value="or">Oratorios</option>
-					<option value="ov">Overtures</option>
-					<option value="pg">Program music</option>
-					<option value="pm">Passion music</option>
-					<option value="po">Polonaises</option>
-					<option value="pp">Popular music</option>
-					<option value="pr">Preludes</option>
-					<option value="ps">Passacaglias</option>
-					<option value="pt">Part-songs</option>
-					<option value="pv">Pavans</option>
-					<option value="rc">Rock music</option>
-					<option value="rd">Rondos</option>
-					<option value="rg">Ragtime music</option>
-					<option value="ri">Ricercars</option>
-					<option value="rp">Rhapsodies</option>
-					<option value="rq">Requiems</option>
-					<option value="sd">Square dance music</option>
-					<option value="sg">Songs</option>
-					<option value="sn">Sonatas</option>
-					<option value="sp">Symphonic poems</option>
-					<option value="st">Studies and exercises</option>
-					<option value="su">Suites</option>
-					<option value="sy">Symphonies</option>
-					<option value="tc">Toccatas</option>
-					<option value="tl">Teatro lirico</option>
-					<option value="ts">Trio-sonatas</option>
-					<option value="uu">Unknown</option>
-					<option value="vi">Villancicos</option>
-					<option value="vr">Variations</option>
-					<option value="wz">Waltzes</option>
-					<option value="za">Zarzuelas</option>
-					<option value="zz">Other</option>
-					<option value="  ">No attempt to code</option>
-				</select>
-			</div>
-
-			<div id="score-format" class="standard-block">
-				<label for="score-format-dropdown" class="heading">Score format</label><br>
-				<select id="score-format-dropdown">
-					<option value="">Select an option (optional)</option>
-					<option value="a">Full score</option>
-					<option value="b">Miniature or study score</option>
-					<option value="c">Accompaniment reduced for keyboard</option>
-					<option value="d">Voice score with accompaniment omitted</option>
-					<option value="e">Condensed score or piano-conductor score</option>
-					<option value="g">Close score</option>
-					<option value="h">Chorus score</option>
-					<option value="i">Condensed score</option>
-					<option value="j">Performer-conductor part</option>
-					<option value="k">Vocal score</option>
-					<option value="l">Score</option>
-					<option value="m">Multiple score formats</option>
-					<option value="n">Not applicable</option>
-					<option value="p">Piano score</option>
-					<option value="u">Unknown</option>
-					<option value="z">Other</option>
-					<option value="|">No attempt to code</option>
-				</select>
-			</div>
-
-			<div id="music-parts" class="standard-block">
-				<label for="music-parts" class="heading">Music parts<span class="required_marker">*</span></label><br>
-				<select required name="music-parts-dropdown" id="music-parts-dropdown" class="required">
-					<option selected disabled hidden value=''></option>
-					<option value="#">No parts in hand or not specified</option>
-					<option value="d">Instrumental and vocal parts</option>
-					<option value="e">Instrumental parts</option>
-					<option value="f">Vocal parts</option>
-					<option value="n">Not applicable</option>
-					<option value="u">Unknown</option>
-					<option value=" ">No attempt to code</option>
-				</select>
-			</div>
-
-			<div id="accompanying-matter-block">
-				<label for="accompanying-matter-block" class="heading">Accompanying matter <span style="font-size: 10px;">(choose up to 6 values)</span></label><br>
-				<input type="checkbox" class="accompanying-matter" id="accompanying-matter0" value="#">No accompanying matter<br>
-				<input type="checkbox" class="accompanying-matter" id="accompanying-matter1" value="a">Discography<br>
-				<input type="checkbox" class="accompanying-matter" id="accompanying-matter2" value="b">Bibliography<br>
-				<input type="checkbox" class="accompanying-matter" id="accompanying-matter3" value="c">Thematic index<br>
-				<input type="checkbox" class="accompanying-matter" id="accompanying-matter4" value="d">Libretto or text<br>
-				<input type="checkbox" class="accompanying-matter" id="accompanying-matter5" value="e">Biography of composer or author<br>
-				<input type="checkbox" class="accompanying-matter" id="accompanying-matter6" value="f">Biography of performer or history of ensemble<br>
-				<input type="checkbox" class="accompanying-matter" id="accompanying-matter7" value="g">Technical and/or historical information on instruments<br>
-				<input type="checkbox" class="accompanying-matter" id="accompanying-matter8" value="h">Technical information on music<br>
-				<input type="checkbox" class="accompanying-matter" id="accompanying-matter9" value="i">Historical information<br>
-				<input type="checkbox" class="accompanying-matter" id="accompanying-matter10" value="k">Ethnological information<br>
-				<input type="checkbox" class="accompanying-matter" id="accompanying-matter11" value="r">Instructional materials<br>
-				<input type="checkbox" class="accompanying-matter" id="accompanying-matter12" value="s">Music<br>
-				<input type="checkbox" class="accompanying-matter" id="accompanying-matter13" value="z">Other<br>
-			</div>
-
-			<div id="transposition-arrangement" class="standard-block">
-				<label for="transposition-arrangement" class="heading">Transposition and arrangement<span class="required_marker">*</span></label><br>
-				<select required name="transposition-arrangement-dropdown" id="transposition-arrangement-dropdown" class="required">
-					<option selected disabled hidden value=''></option>
-					<option value="#">Not arrangement or transposition or not specified</option>
-					<option value="a">Transposition</option>
-					<option value="b">Arrangement</option>
-					<option value="c">Both transposed and arranged</option>
-					<option value="n">Not applicable</option>
-					<option value="u">Unknown</option>
-					<option value=" ">No attempt to code</option>
-				</select>
-			</div>
-
-			<div id="keywords" class="standard-block">
-				<label for="keywords" class="heading">Keywords<span class="required_marker">*</span></label><br>
-				<input type="text" class="fastID hidden" id="fastID0">
-				<input type="number" class="fastType hidden" id="fastType0">
-				<input type="text" class="fastInd hidden" id="fastInd0">
-				<input type="text" class="keyword required" required id="keyword0"> <label title="Record, in English, any descriptive terms that describe the content of this book. Record only one term or phrase in each box. E.g., Astronomy or Politics of Egypt"><span class="question-mark">?</span></label>
-				<input type="button" value="+" id="add-button" onClick="addKeyword();">
-			</div>
-
-			<div id="contents-block" class="standard-block">
-				<label for="contents" class="heading">Contents</label><br>
-				<textarea id="contents"></textarea>
-			</div>
-
-			<div id="formatted-contents-note-block">
-				<label for="formatted-contents-note">Formatted Contents Note</label><br>
-				<textarea id="formatted-contents-note"></textarea>
-			</div>
-
-			<div id="notes-block">
-				<label for="notes">Notes to the Cataloger</label><br>
-				<textarea id="notes"></textarea>
-			</div>
-
-			<div id="save-as-block">
-				<label for="filename">Save as</label>
-				<input type="text" id="filename" placeholder="record">.[file type]
-			</div>
-
-			<div id="formats-block" class="standard-block">
-				<label for="filetype">Choose record formats:</label><br>
-				<input type="checkbox" id="MARC" class="filetype">MARC<br>
-				<input type="checkbox" id="MARCXML" class="filetype">MARCXML
-			</div>
-
-			<div id="buttons" class="standard-block">
-				<input type="submit" value="Make" id="make">
-				<input type="reset" value="Clear" id="Clear">
-			</div>
-
-			<div id="star" class="required_marker standard-block">
-				* Required field
-			</div>
+			<div id="star" class="required_marker mt-2">* Required field</div>
 		</form>
-		<div id="disclaimer">The Metadata Maker Project was funded by the University of Illinois at Urbana-Champaign Library's Innovation and Seed Funds.</div>
-		<div id="version">Version 1.1 – Updated on 11/10/2022</div>
-		<a id="code" href="https://github.com/UIUCLibrary/metadata-maker/tree/score">GitHub</a></div>
-		
-		<script type="module" src="../shared/components/corporate-organization-input.js"></script>
-		<script type="module" src="../shared/components/insert-diacritics.js"></script>
-		<script src="../shared/generalInteractionsBase.js"></script>
-		<script src="metadatamaker/generalInteractions.js"></script>
-		<script type="module" src="metadatamaker/downloadMARC.js"></script>
-		<script src="../shared/sharedUtils.js"></script>
-		<script src="metadatamaker/submitForm.js"></script>
+		<div id="disclaimer" class="mt-4 text-sm text-gray-600">The Metadata Maker Project was funded by the University
+			of Illinois at Urbana-Champaign Library's Innovation and Seed Funds.</div>
+		<div id="version" class="mt-2 text-xs text-gray-500">Version 1.1 – Updated on 11/10/2022.</div>
+		<a id="code" href="https://github.com/UIUCLibrary/metadata-maker/tree/score"
+			class="text-blue-600 hover:underline">GitHub</a>
 	</div>
+	<script type="module" src="../shared/components/insert-diacritics.js"></script>
+	<script src="../shared/generalInteractionsBase.js"></script>
+	<script src="metadatamaker/generalInteractions.js"></script>
+
+	<!-- Shared Builders (Must be loaded before download scripts) -->
+	<script src="../shared/modsBuilder.js"></script>
+	<script src="../shared/htmlBuilder.js"></script>
+
+	<script type="module" src="metadatamaker/downloadMARC.js"></script>
+	<script src="metadatamaker/downloadMODS.js"></script>
+	<script src="/shared/languageLookups.js"></script>
+	<script src="/shared/countryLookups.js"></script>
+	<script src="metadatamaker/downloadHTML.js"></script>
+	<script src="../shared/sharedUtils.js"></script>
+	<script src="metadatamaker/submitForm.js"></script>
 </body>
 
 </html>

@@ -60,15 +60,25 @@ export class StandardTextInput extends LitElement {
     const containerId = this.containerId && this.containerId.trim().length > 0 ? this.containerId : nothing;
     const marker = this.isRequired && this.requiredMarker ? html`<span class="required_marker">${this.requiredMarker}</span>` : nothing;
     const help = this.helpText ? html`<label title="${this.helpText}"><span class="question-mark">?</span></label>` : nothing;
-    const insertLabel = html`<label for="${id}" class="${this.insertClass}" @click=${() => this.handleInsertClick(id)}>${this.insertLabel}</label>`;
     const inputClasses = this.inputClass || '';
-    const unlistedId = this.unlistedId && this.unlistedId.trim().length > 0 ? this.unlistedId : `${id}_listed`;
-    const unlistedMarkup = this.hasUnlisted ? html`<br><span class="unlisted">${this.unlistedLabel}</span><input type="checkbox" id="${unlistedId}" class="listed">` : nothing;
+    const insertLabel = this.insertLabel
+      ? html`<label for="${id}" class="${this.insertClass} text-uva-orange cursor-pointer text-sm font-semibold hover:underline ml-2" onClick='insertMenu("${id}");'>${this.insertLabel}</label>`
+      : nothing;
+
+    const unlistedMarkup = this.unlisted
+      ? html`<div class="mt-2"><label class="inline-flex items-center"><input type="checkbox" id="${this.unlistedId}" class="form-checkbox h-4 w-4 text-uva-orange rounded border-gray-300 focus:ring-uva-orange"><span class="ml-2 text-sm text-gray-600">${this.unlistedLabel}</span></label></div>`
+      : nothing;
 
     return html`<div id=${containerId} class=${containerClass}>
-      <label for="${id}" class="heading">${this.heading}${marker}</label>${insertLabel}<br>
+      <label for="${id}" class="heading">${this.heading}${marker}</label>
+      ${insertLabel}
       <div id="insert-${id}"></div>
-      <input type="text" id="${id}" class="${inputClasses}" ?required=${this.isRequired}>
+      <input
+        type="text"
+        id="${id}"
+        class="${inputClasses} input-base"
+        ?required=${this.isRequired}
+      >
       ${help}
       ${unlistedMarkup}
     </div>`;

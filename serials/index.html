@@ -1,67 +1,111 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Metadata Maker for Serials</title>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.14.0/jquery-ui.min.js"></script>
-	<script src="/assignFAST/assignFASTExample.js"></script>
-	<script src="/assignFAST/assignFASTGadget.js"></script>
-	<script src="/assignFAST/assignFASTComplete.js"></script>
+
+	<!-- Tailwind CSS CDN -->
+	<script src="https://cdn.tailwindcss.com"></script>
+	<script>
+		tailwind.config = {
+			theme: {
+				extend: {
+					colors: {
+						'uva-blue': '#232D4B',
+						'uva-orange': '#E57200'
+					},
+					fontFamily: {
+						'sans': ['Inter', 'system-ui', 'sans-serif']
+					}
+				}
+			}
+		}
+	</script>
+	<!-- Top navigation styles -->
+	<link href="/top_bar.css" rel="stylesheet" media="screen">
+	<!-- Google fonts -->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css?family=Inter" rel="stylesheet" />
+	<style type="text/tailwindcss">
+		.input-base {
+			@apply border border-gray-300 rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-uva-blue focus:border-transparent;
+		}
+		.btn-secondary {
+			@apply bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-1 px-3 rounded border border-gray-300;
+		}
+	</style>
+
+	<!-- Lit Components -->
 	<script type="module" src="/shared/components/top-navigation.js"></script>
 	<script type="module" src="/shared/components/standard-text-input.js"></script>
 	<script type="module" src="/shared/components/language-select.js"></script>
+	<script type="module" src="/shared/components/repeatable-text-input.js"></script>
+	<script type="module" src="/shared/components/insert-diacritics.js"></script>
+	<script type="module" src="../shared/components/corporate-organization-input.js"></script>
 
-	<link href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.14.0/themes/smoothness/jquery-ui.css" rel="stylesheet">
-	<link href="https://jqueryui.com/jquery-wp-content/themes/jqueryui.com/style.css" rel="stylesheet">
-	<link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
-	<link href='https://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
-	<link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
-	<link href="/marcmaker.css" rel="stylesheet" media="screen">
-	<link href="/top_bar.css" rel="stylesheet" media="screen">
-
+	<style type="text/tailwindcss">
+		@layer components {
+			.standard-block {
+				@apply bg-white p-6 rounded-lg shadow-sm border border-gray-200 mb-6;
+			}
+			.heading {
+				@apply block text-lg font-bold text-uva-blue mb-2;
+			}
+			.input-base {
+				@apply w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-uva-orange focus:border-transparent;
+			}
+			.btn-primary {
+				@apply bg-uva-blue text-white px-4 py-2 rounded hover:bg-blue-900 transition-colors cursor-pointer;
+			}
+			.btn-secondary {
+				@apply bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300 transition-colors cursor-pointer;
+			}
+			.required_marker {
+				@apply text-red-600 ml-1;
+			}
+			/* Legacy overrides */
+			.hidden { display: none; }
+		}
+	</style>
 </head>
 
-	<script>document.documentElement.classList.add('has-js');</script>
-<body class="template template-serials">
-		<uv-top-navigation
-		current-version="serials"
-		version-label="Serials"
-	</uv-top-navigation>
+<script>document.documentElement.classList.add('has-js');</script>
+
+<body class="template template-serials bg-gray-50 font-sans">
+	<uv-top-navigation current-version="serials" version-label="Serials"></uv-top-navigation>
 
 	<div id="warning_system">
-		<noscript>WARNING: JavaScript is not enabled on this browser. This page requires JavaScript to function correctly.</noscript>
+		<noscript>WARNING: JavaScript is not enabled on this browser. This page requires JavaScript to function
+			correctly.</noscript>
 		<script src="../shared/checkServer.js"></script>
 	</div>
-	<div id="content">
+	<div id="content" class="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg mt-6">
 		<form id="marc-maker">
-			<standard-text-input
-				container-id="title-block"
-				heading="Title"
-				field-id="title"
-				required
-				required-marker="*"
-				input-class="required translit-listen"
-				help-text="Record the title as it appears on the title page. If the title includes a subtitle, record only the main title here, and the subtitle in the next field."
-			></standard-text-input>
+			<standard-text-input container-id="title-block" heading="Title" field-id="title" required
+				required-marker="*" input-class="required translit-listen"
+				help-text="Record the title as it appears on the title page. If the title includes a subtitle, record only the main title here, and the subtitle in the next field."></standard-text-input>
 
-			<standard-text-input
-				container-id="subtitle-block"
-				heading="Subtitle"
-				field-id="subtitle"
-				input-class="conditional"
-				help-text="Record the subtitle if one exists"
-				unlisted
-			></standard-text-input>
+			<standard-text-input container-id="subtitle-block" heading="Subtitle" field-id="subtitle"
+				input-class="conditional" help-text="Record the subtitle if one exists" unlisted></standard-text-input>
 
-			<div id="translit-title-block" class="translit-title-block translit-block standard-translit-block translit-title hidden">
-				<label for="translit_title" class="hidden translit heading translit-title">Transliterated title</label><label for="translit_title" class="insert insert_normal hidden translit translit-title" style="left: -13px;" onClick='insertMenu("translit_title");'>Insert Special Characters</label><br>
+			<div id="translit-title-block"
+				class="translit-title-block translit-block standard-translit-block translit-title hidden standard-block">
+				<label for="translit_title" class="hidden translit heading translit-title">Transliterated
+					title</label><label for="translit_title" class="insert insert_normal hidden translit translit-title"
+					style="left: -13px;" onClick='insertMenu("translit_title");'>Insert Special Characters</label><br>
 				<div id="insert-translit_title" class="hidden translit translit-title"></div>
 				<input type="text" id="translit_title" class="hidden translit translit-title">
 			</div>
 
-			<div id="translit-subtitle-block" class="translit-title-block translit-block standard-translit-block translit-title hidden">
-				<label for="translit_subtitle" class="hidden translit heading translit-title">Transliterated subtitle</label><label for="translit_subtitle" class="insert insert_normal hidden translit translit-title" onClick='insertMenu("translit_subtitle");'>Insert Special Characters</label><br>
+			<div id="translit-subtitle-block"
+				class="translit-title-block translit-block standard-translit-block translit-title hidden standard-block">
+				<label for="translit_subtitle" class="hidden translit heading translit-title">Transliterated
+					subtitle</label><label for="translit_subtitle"
+					class="insert insert_normal hidden translit translit-title"
+					onClick='insertMenu("translit_subtitle");'>Insert Special Characters</label><br>
 				<div id="insert-translit_subtitle" class="hidden translit translit-title"></div>
 				<input type="text" id="translit_subtitle" class="hidden translit translit-title">
 			</div>
@@ -73,7 +117,8 @@
 					<option value="other">Other title</option>
 					<option value="parallel">Parallel title (title in another language)</option>
 				</select><br>
-				<span class="unlisted">Unlisted</span><input type="checkbox" id="varying-title-dropdown_listed" class="listed">
+				<span class="unlisted">Unlisted</span><input type="checkbox" id="varying-title-dropdown_listed"
+					class="listed">
 			</div>
 
 			<div id="varying-title-block" class="standard-block hidden">
@@ -83,43 +128,59 @@
 			<div id="issn-block" class="standard-block">
 				<label for="issn" class="heading">ISSN</label><br>
 				<input type="text" required id="issn" class="conditional">
-				<label title="Record an ISSN, if present. Do not record hyphens. If multiple ISSNs are present, record only one. E.g., 9781234567890 or 1234567890"><span class="question-mark">?</span></label><br>
+				<label
+					title="Record an ISSN, if present. Do not record hyphens. If multiple ISSNs are present, record only one. E.g., 9781234567890 or 1234567890"><span
+						class="question-mark">?</span></label><br>
 				<span class="unlisted">Unlisted</span><input type="checkbox" id="issn_listed" class="listed">
 			</div>
 
-															<language-select
-			required
-			field-id="language"
-			container-id="language-block"
-		></language-select>
+			<language-select required field-id="language" container-id="language-block"></language-select>
 
 			<div id="names_title" class="heading">Names<br></div>
-			<corporate-organization-input></corporate-organization-input>
+			<div class="standard-block">
+				<corporate-organization-input></corporate-organization-input>
+			</div>
 
 			<div id="publisher-block" class="standard-block">
-				<label for="publisher" class="heading">Name of publisher</label><label for="publisher" class="insert insert_normal" onClick='insertMenu("publisher");'>Insert Special Characters</label><br>
+				<label for="publisher" class="heading">Name of publisher</label><label for="publisher"
+					class="insert insert_normal" onClick='insertMenu("publisher");'>Insert Special
+					Characters</label><br>
 				<div id="insert-publisher"></div>
 				<input type="text" required id="publisher" class="conditional translit-listen">
-				<label title="Record the name of the publisher as it appears on the piece. Prefer the name that appears on the title page."><span class="question-mark">?</span></label><br>
+				<label
+					title="Record the name of the publisher as it appears on the piece. Prefer the name that appears on the title page."><span
+						class="question-mark">?</span></label><br>
 				<span class="unlisted">Unlisted</span><input type="checkbox" id="publisher_listed" class="listed">
 			</div>
 
-			<div id="translit-publisher-block" class="translit-publisher-block translit-block hidden standard-translit-block">
-				<label for="translit_publisher" class="hidden translit heading translit-publisher">Transliterated publisher</label><label for="translit_publisher" class="insert insert_normal hidden translit translit-publisher" onClick='insertMenu("translit_publisher");'>Insert Special Characters</label><br>
+			<div id="translit-publisher-block"
+				class="translit-publisher-block translit-block hidden standard-translit-block standard-block">
+				<label for="translit_publisher" class="hidden translit heading translit-publisher">Transliterated
+					publisher</label><label for="translit_publisher"
+					class="insert insert_normal hidden translit translit-publisher"
+					onClick='insertMenu("translit_publisher");'>Insert Special Characters</label><br>
 				<div id="insert-translit_publisher" class="hidden translit translit-publisher"></div>
 				<input type="text" id="translit_publisher" class="hidden translit translit-publisher">
 			</div>
 
 			<div id="place-block" class="standard-block">
-				<label for="place" class="heading">Place of publication</label><label for="place" class="insert insert_normal" onClick='insertMenu("place");'>Insert Special Characters</label><br>
+				<label for="place" class="heading">Place of publication</label><label for="place"
+					class="insert insert_normal" onClick='insertMenu("place");'>Insert Special
+					Characters</label><br>
 				<div id="insert-place"></div>
 				<input type="text" required id="place" class="conditional translit-listen">
-				<label title="Record the place of publication as it appears on the piece. Prefer the place that appears on the title page. If there is more than one place, record only one. E.g., Boston, Massachusetts"><span class="question-mark">?</span></label><br>
+				<label
+					title="Record the place of publication as it appears on the piece. Prefer the place that appears on the title page. If there is more than one place, record only one. E.g., Boston, Massachusetts"><span
+						class="question-mark">?</span></label><br>
 				<span class="unlisted">Unlisted</span><input type="checkbox" id="place_listed" class="listed">
 			</div>
 
-			<div id="translit-place-block" class="translit-place-block translit-block hidden standard-translit-block">
-				<label for="translit_place" class="hidden translit heading translit-place">Transliterated place</label><label for="translit_place" class="insert insert_normal hidden translit translit-publisher" onClick='insertMenu("translit_place");'>Insert Special Characters</label><br>
+			<div id="translit-place-block"
+				class="translit-place-block translit-block hidden standard-translit-block standard-block">
+				<label for="translit_place" class="hidden translit heading translit-place">Transliterated
+					place</label><label for="translit_place"
+					class="insert insert_normal hidden translit translit-publisher"
+					onClick='insertMenu("translit_place");'>Insert Special Characters</label><br>
 				<div id="insert-translit_place" class="hidden translit translit-publisher"></div>
 				<input type="text" id="translit_place" class="hidden translit translit-place">
 			</div>
@@ -461,13 +522,15 @@
 					<option value="za">Zambia</option>
 					<option value="rh">Zimbabwe</option>
 				</select>
-				<label title="Select the country of publication from the drop-down menu. If published in the United States, Canada, Australia, or the United Kingdom, select the state, province, or geographic region"><span class="question-mark">?</span></label><br>
+				<label
+					title="Select the country of publication from the drop-down menu. If published in the United States, Canada, Australia, or the United Kingdom, select the state, province, or geographic region"><span
+						class="question-mark">?</span></label><br>
 				<span class="unlisted">Unlisted</span><input type="checkbox" id="country_listed" class="listed">
 			</div>
 
 			<div id="publication-year-block" class="standard-block">
 				<label for="publication_year" class="heading">Publication year</label><br>
-				<input type="number" class="date" id="publication_year" min="0">			
+				<input type="number" class="date" id="publication_year" min="0">
 			</div>
 
 			<div id="publication-status-block" class="standard-block">
@@ -483,21 +546,26 @@
 			<div id="volumes-block" class="standard-block hidden">
 				<label for="number" class="heading">Number of Volumes</label>
 				<input type="text" id="volumes">
-				<label title="Record the number of volumes in each numbered sequence. E.g., 4"><span class="question-mark">?</span></label>
+				<label title="Record the number of volumes in each numbered sequence. E.g., 4"><span
+						class="question-mark">?</span></label>
 			</div>
 
 			<div class="standard-block">
 				<div id="starting-block">
 					<label for="year" class="heading">Starting date</label><br>
-					<input type="text" class="date conditional" required id="year" pattern="[0-9u]{1,4}" title="4 digit dates with 'u' filling in unknowns.">
-					<label title="Record the starting year of publication if it appears on the piece."><span class="question-mark">?</span></label><br>
+					<input type="text" class="date conditional" required id="year" pattern="[0-9u]{1,4}"
+						title="4 digit dates with 'u' filling in unknowns.">
+					<label title="Record the starting year of publication if it appears on the piece."><span
+							class="question-mark">?</span></label><br>
 					<span class="unlisted">Unlisted</span><input type="checkbox" id="year_listed" class="listed">
 				</div>
 
 				<div id="ending-block" class="hidden">
 					<label for="edate" class="heading">Ending date</label><br>
-					<input type="text" class="date conditional" id="edate" pattern="[0-9u]{1,4}"  title="4 digit dates with 'u' filling in unknowns.">
-					<label title="Record the ending year of publication if it appears on the piece."><span class="question-mark">?</span></label><br>
+					<input type="text" class="date conditional" id="edate" pattern="[0-9u]{1,4}"
+						title="4 digit dates with 'u' filling in unknowns.">
+					<label title="Record the ending year of publication if it appears on the piece."><span
+							class="question-mark">?</span></label><br>
 					<span class="unlisted">Unlisted</span><input type="checkbox" id="edate_listed" class="listed">
 				</div>
 			</div>
@@ -505,7 +573,9 @@
 			<div id="dimensions-block" class="standard-block">
 				<label for="dimensions" class="heading">Dimensions<span class="required_marker">*</span></label><br>
 				<input type="text" required id="dimensions" class="required"> cm
-				<label title="Record the height of the piece in cm. Always round up, so that if a piece measures 25.1 cm, record 26 cm"><span class="question-mark">?</span></label>
+				<label
+					title="Record the height of the piece in cm. Always round up, so that if a piece measures 25.1 cm, record 26 cm"><span
+						class="question-mark">?</span></label>
 			</div>
 
 			<div id="literature-block" class="standard-block">
@@ -597,7 +667,8 @@
 			</div>
 
 			<div id="regularity-block" class="standard-block">
-				<label for="regularity_dropdown" class="heading">Regularity<span class="required_marker">*</span></label><br>
+				<label for="regularity_dropdown" class="heading">Regularity<span
+						class="required_marker">*</span></label><br>
 				<select name="regularity_dropdown" required id="regularity_dropdown" class="required">
 					<option selected disabled hidden value=''></option>
 					<option value="r">Regular</option>
@@ -607,7 +678,7 @@
 				</select>
 			</div>
 
-			<div id="description-block">
+			<div id="description-block" class="standard-block">
 				<label for="description">Description about the resource</label><br>
 				<textarea id="description"></textarea>
 			</div>
@@ -619,7 +690,9 @@
 			</div>
 
 			<div id="web-url-block" class="standard-block hidden">
-				<label for="web-url" class="heading">Web URL</label><label for="web-url" class="insert insert_normal" onClick='insertMenu("web-url");'>Insert Special Characters</label><br>
+				<label for="web-url" class="heading">Web URL</label><label for="web-url" class="insert insert_normal"
+					onClick='insertMenu("web-url");'>Insert Special
+					Characters</label><br>
 				<div id="insert-web-url"></div>
 				http://<input type="text" id="web-url"><br>
 			</div>
@@ -631,8 +704,10 @@
 			</div>
 
 			<div id="relationship_with_preceding_title-block" class="standard-block">
-				<label for="relationship_with_preceding_title" class="heading">Relationship with preceding title</label><br>
-				<select name="relationship_with_preceding_title-dropdown" required id="relationship_with_preceding_title" class="conditional">
+				<label for="relationship_with_preceding_title" class="heading">Relationship with preceding
+					title</label><br>
+				<select name="relationship_with_preceding_title-dropdown" required
+					id="relationship_with_preceding_title" class="conditional">
 					<option selected disabled hidden value=''></option>
 					<option value="0">Continues</option>
 					<option value="1">Continues in part</option>
@@ -643,18 +718,22 @@
 					<option value="6">Absorbed in part</option>
 					<option value="7">Separated from</option>
 				</select><br>
-				<span class="unlisted">Unlisted</span><input type="checkbox" id="relationship_with_preceding_title_listed" class="listed">
+				<span class="unlisted">Unlisted</span><input type="checkbox"
+					id="relationship_with_preceding_title_listed" class="listed">
 			</div>
 
 			<div id="succeeding_title-block" class="standard-block">
 				<label for="succeeding_title" class="heading">Succeeding title</label><br>
 				<input type="text" required id="succeeding_title" class="conditional"><br>
-				<span class="unlisted">Unlisted</span><input type="checkbox" id="succeeding_title_listed" class="listed">
+				<span class="unlisted">Unlisted</span><input type="checkbox" id="succeeding_title_listed"
+					class="listed">
 			</div>
 
 			<div id="relationship_with_succeeding_title-block" class="standard-block">
-				<label for="relationship_with_succeeding_title" class="heading">Relationship with succeeding title</label><br>
-				<select name="relationship_with_succeeding_title-dropdown" required id="relationship_with_succeeding_title" class="conditional">
+				<label for="relationship_with_succeeding_title" class="heading">Relationship with succeeding
+					title</label><br>
+				<select name="relationship_with_succeeding_title-dropdown" required
+					id="relationship_with_succeeding_title" class="conditional">
 					<option selected disabled hidden value=''></option>
 					<option value="0">Continued by</option>
 					<option value="1">Continued in part by</option>
@@ -666,24 +745,30 @@
 					<option value="7">Merged with ... to form ...</option>
 					<option value="8">Changed back to</option>
 				</select><br>
-				<span class="unlisted">Unlisted</span><input type="checkbox" id="relationship_with_succeeding_title_listed" class="listed">
+				<span class="unlisted">Unlisted</span><input type="checkbox"
+					id="relationship_with_succeeding_title_listed" class="listed">
 			</div>
 
 			<div id="keywords" class="standard-block">
-				<label for="keywords" class="heading">Keywords<span class="required_marker">*</span></label><br>
-				<input type="text" class="fastID hidden" id="fastID0">
-				<input type="number" class="fastType hidden" id="fastType0">
-				<input type="text" class="fastInd hidden" id="fastInd0">
-				<input type="text" class="keyword required" required id="keyword0"> <label title="Record, in English, any descriptive terms that describe the content of this book. Record only one term or phrase in each box. E.g., Astronomy or Politics of Egypt"><span class="question-mark">?</span></label>
-				<input type="button" value="+" id="add-button" onClick="addKeyword();">
+				<label for="keywords" class="heading">Keywords<span class="required_marker">*</span></label><br />
+				<input type="text" class="fastID hidden" id="fastID0" />
+				<input type="number" class="fastType hidden" id="fastType0" />
+				<input type="text" class="fastInd hidden" id="fastInd0" />
+				<div class="flex gap-2 items-center mb-2">
+					<input type="text" class="keyword required input-base" required id="keyword0" />
+					<label
+						title="Record, in English, any descriptive terms that describe the content of this book. Record only one term or phrase in each box. E.g., Astronomy or Politics of Egypt"><span
+							class="question-mark text-uva-orange cursor-help">?</span></label>
+					<input type="button" value="+" id="add-button" onClick="addKeyword();" class="btn-primary ml-2" />
+				</div>
 			</div>
 
-			<div id="notes-block">
-				<label for="notes">Notes to the Cataloger</label><br>
-				<textarea id="notes"></textarea>
+			<div id="notes-block" class="standard-block">
+				<label for="notes" class="heading">Notes to the Cataloger</label><br />
+				<textarea id="notes" class="input-base h-32"></textarea>
 			</div>
 
-			<div id="save-as-block">
+			<div id="save-as-block" class="standard-block">
 				<label for="filename">Save as</label>
 				<input type="text" id="filename" placeholder="record">.[file type]
 			</div>
@@ -696,30 +781,37 @@
 				<input type="checkbox" id="HTML" class="filetype">HTML
 			</div>
 
-			<div id="buttons" class="standard-block">
-				<input type="submit" value="Make" id="make">
-				<input type="reset" value="Clear" id="Clear">
+			<div id="buttons" class="standard-block flex gap-4">
+				<input type="submit" value="Make" id="make" class="btn-primary">
+				<input type="reset" value="Clear" id="Clear" class="btn-secondary">
 			</div>
 
 			<div id="star" class="required_marker standard-block">
 				* Required field
 			</div>
 		</form>
-		<div id="disclaimer">The Metadata Maker Project was funded by the University of Illinois at Urbana-Champaign Library's Innovation and Seed Funds.</div>
+		<div id="disclaimer">The Metadata Maker Project was funded by the University of Illinois at Urbana-Champaign
+			Library's Innovation and Seed Funds.</div>
 		<div id="version">Version 1.1 – Updated on 11/10/2022</div>
-		<a id="code" href="https://github.com/UIUCLibrary/metadata-maker/tree/Serials">GitHub</a></div>
-		
-		<script type="module" src="../shared/components/corporate-organization-input.js"></script>
-		<script type="module" src="../shared/components/insert-diacritics.js"></script>
-		<script src="../shared/generalInteractionsBase.js"></script>
-		<script src="metadatamaker/generalInteractions.js"></script>
-		<script type="module" src="metadatamaker/downloadMARC.js"></script>
-		<script src="metadatamaker/downloadMODS.js"></script>
+		<a id="code" href="https://github.com/UIUCLibrary/metadata-maker/tree/Serials">GitHub</a>
+	</div>
+
+	<script type="module" src="../shared/components/corporate-organization-input.js"></script>
+	<script type="module" src="../shared/components/insert-diacritics.js"></script>
+	<script src="../shared/generalInteractionsBase.js"></script>
+	<script src="metadatamaker/generalInteractions.js"></script>
+
+	<!-- Shared Builders (Must be loaded before download scripts) -->
+	<script src="../shared/modsBuilder.js"></script>
+	<script src="../shared/htmlBuilder.js"></script>
+
+	<script type="module" src="metadatamaker/downloadMARC.js"></script>
+	<script src="metadatamaker/downloadMODS.js"></script>
 	<script src="/shared/languageLookups.js"></script>
 	<script src="/shared/countryLookups.js"></script>
-		<script src="metadatamaker/downloadHTML.js"></script>
-		<script src="../shared/sharedUtils.js"></script>
-		<script src="metadatamaker/submitForm.js"></script>
+	<script src="metadatamaker/downloadHTML.js"></script>
+	<script src="../shared/sharedUtils.js"></script>
+	<script src="metadatamaker/submitForm.js"></script>
 	</div>
 </body>
 
