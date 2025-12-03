@@ -61,6 +61,7 @@
 	<script type="module" src="/shared/components/standard-text-input.js"></script>
 	<script type="module" src="/shared/components/insert-diacritics.js"></script>
 	<script type="module" src="../shared/components/corporate-organization-input.js"></script>
+	<script type="module" src="/shared/components/meta-input.js"></script>
 
 
 </head>
@@ -78,19 +79,18 @@
 	</div>
 	<div id="content" class="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg mt-6">
 		<form id="marc-maker">
-			<standard-text-input container-id="title-block" heading="Title" field-id="title" required
-				required-marker="*" input-class="required translit-listen"
-				help-text="Record the title as it appears on the title page. If the title includes a subtitle, record only the main title here, and the subtitle in the next field."></standard-text-input>
+			<meta-input label="Title" field-id="title" input-class="required translit-listen"
+				help-text="Record the title as it appears on the title page. If the title includes a subtitle, record only the main title here, and the subtitle in the next field."
+				required sp-chars></meta-input>
 
 			<!--
-			<standard-text-input
+			<meta-input
 				container-id="subtitle-block"
-				heading="Subtitle"
+				label="Subtitle"
 				field-id="subtitle"
 				input-class="conditional"
-				help-text="Record the subtitle if one exists"
-				unlisted
-			></standard-text-input>
+				help-text="Record the subtitle if one exists" unlisted-option sp-chars
+			></meta-input>
 
 --!>
 
@@ -106,20 +106,20 @@
 				<input type="text" id="translit_subtitle" class="hidden translit translit-title">
 			</div>
 
-			<div id="isbn-block" class="standard-block">
-				<label for="isbn" class="heading">ISBN</label><br>
-				<input type="text" required id="isbn" class="conditional">
-				<label title="Record an ISBN, if present. Do not record hyphens. If multiple ISBNs are present, record only one. E.g., 9781234567890 or 1234567890"><span class="question-mark">?</span></label><br>
-				<span class="unlisted">Unlisted</span><input type="checkbox" id="isbn_listed" class="listed">
-			</div>
+			<meta-input
+				container-id="isbn-block"
+				label="ISBN"
+				field-id="isbn"
+				required
+				input-class="conditional"
+				help-text="Record an ISBN, if present. Do not record hyphens. If multiple ISBNs are present, record only one. E.g., 9781234567890 or 1234567890"
+				unlisted-option
+			></meta-input>
 
-			<div id="edition-block" class="standard-block">
-				<label for="edition" class="heading">Edition statement</label><label for="edition" class="insert insert_normal" onClick='insertMenu("edition");'>Insert Special Characters</label><br>
-				<div id="insert-edition"></div>
-				<input type="text" class="conditional translit-listen" required id="edition">
-				<label title="Record an edition statement if it appears on the piece. E.g., First edition, 1st ed., etc."><span class="question-mark">?</span></label><br>
-				<span class="unlisted">Unlisted</span><input type="checkbox" id="edition_listed" class="listed">
-			</div>
+			<meta-input container-id="edition-block" label="Edition statement" field-id="edition"
+				input-class="conditional translit-listen" required
+				help-text="Record an edition statement if it appears on the piece. E.g., First edition, 1st ed., etc." sp-chars
+				unlisted-option></meta-input>
 			
 			<div id="translit-edition-block" class="translit-edition-block translit-block hidden standard-translit-block standard-block">
 				<label for="translit_edition" class="hidden translit heading translit-edition">Transliterated edition</label><label for="translit_edition" class="insert insert_normal hidden translit translit-edition" onClick='insertMenu("translit_edition");'>Insert Special Characters</label><br>
@@ -179,17 +179,9 @@
 				</div>
 			</div>-->
 
-			<div id="publisher-block" class="standard-block">
-				<label for="publisher" class="heading">Name of publisher</label><label for="publisher"
-					class="insert insert_normal" onClick='insertMenu("publisher");'>Insert Special
-					Characters</label><br>
-				<div id="insert-publisher"></div>
-				<input type="text" required id="publisher" class="conditional translit-listen">
-				<label
-					title="Record the name of the publisher as it appears on the piece. Prefer the name that appears on the title page."><span
-						class="question-mark">?</span></label><br>
-				<span class="unlisted">Unlisted</span><input type="checkbox" id="publisher_listed" class="listed">
-			</div>
+			<meta-input label="Name of publisher" field-id="publisher" input-class="conditional translit-listen"
+				help-text="Record the name of the publisher as it appears on the piece. Prefer the name that appears on the title page."
+				sp-chars unlisted-option required></meta-input>
 
 			<div id="translit-publisher-block"
 				class="translit-publisher-block translit-block hidden standard-translit-block standard-block">
@@ -201,17 +193,10 @@
 				<input type="text" id="translit_publisher" class="hidden translit translit-publisher">
 			</div>
 
-			<div id="place-block" class="standard-block">
-				<label for="place" class="heading">Place of publication</label><label for="place"
-					class="insert insert_normal" onClick='insertMenu("place");'>Insert Special
-					Characters</label><br>
-				<div id="insert-place"></div>
-				<input type="text" required id="place" class="conditional translit-listen">
-				<label
-					title="Record the place of publication as it appears on the piece. Prefer the place that appears on the title page. If there is more than one place, record only one. E.g., Boston, Massachusetts"><span
-						class="question-mark">?</span></label><br>
-				<span class="unlisted">Unlisted</span><input type="checkbox" id="place_listed" class="listed">
-			</div>
+			<meta-input container-id="place-block" label="Place of publication" field-id="place" required
+				input-class="conditional translit-listen"
+				help-text="Record the place of publication as it appears on the piece. Prefer the place that appears on the title page. If there is more than one place, record only one. E.g., Boston, Massachusetts"
+				sp-chars unlisted-option></meta-input>
 
 			<div id="translit-place-block"
 				class="translit-place-block translit-block hidden standard-translit-block standard-block">
@@ -285,22 +270,12 @@
 				<span class="unlisted">Unlisted</span><input type="checkbox" id="country_listed" class="listed">
 			</div>
 
-			<div id="publication-block" class="standard-block">
-				<label for="date" class="heading">Date of publication</label><br>
-				<input type="number" class="date conditional" required id="year" min="0">
-				<label
-					title="Record the year of publication if it appears on the piece. Do not record a copyright date here. Copyright dates should be recorded in the next field."><span
-						class="question-mark">?</span></label><br>
-				<span class="unlisted">Unlisted</span><input type="checkbox" id="year_listed" class="listed">
-			</div>
+			<meta-input container-id="publication-block" label="Date of publication" field-id="year" required date
+				help-text="Record the year of publication if it appears on the piece. Do not record a copyright date here. Copyright dates should be recorded in the next field."
+				unlisted-option></meta-input>
 
-			<div id="copyright-block" class="standard-block">
-				<label for="cyear" class="heading">Copyright date</label><br>
-				<input type="number" class="date conditional" required id="cyear" min="0">
-				<label title="Record the year of copyright if it appears on the piece."><span
-						class="question-mark">?</span></label><br>
-				<span class="unlisted">Unlisted</span><input type="checkbox" id="cyear_listed" class="listed">
-			</div>
+			<meta-input container-id="copyright-block" label="Copyright date" field-id="cyear" date
+				help-text="Record the year of copyright if it appears on the piece." unlisted-option></meta-input>
 
 			<div id="pages-block" class="standard-block">
 				<label for="number" class="heading">Number of</label>

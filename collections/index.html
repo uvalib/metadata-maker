@@ -18,6 +18,7 @@
 	<script src="/assignFAST/assignFASTComplete.js"></script> -->
 	<script type="module" src="/shared/components/top-navigation.js"></script>
 	<script type="module" src="/shared/components/standard-text-input.js"></script>
+	<script type="module" src="/shared/components/meta-input.js"></script>
 	<script type="module" src="/shared/components/edtf-date-input.js"></script>
 	<script type="module" src="/shared/components/repeatable-text-input.js"></script>
 	<script type="module" src="/shared/components/language-select.js"></script>
@@ -87,9 +88,8 @@
 		<form id="marc-maker">
 
 
-			<standard-text-input container-id="title-block" heading="Title" field-id="title" required
-				required-marker="*" input-class="required translit-listen"
-				help-text="Record the title as it appears on the title page."></standard-text-input>
+			<meta-input label="Title" field-id="title" input-class="required translit-listen"
+				help-text="Record the title as it appears on the title page." required sp-chars></meta-input>
 
 			<div id="translit-title-block"
 				class="translit-title-block translit-block standard-translit-block translit-title hidden standard-block">
@@ -122,21 +122,20 @@
 
 
 
-			<standard-text-input container-id="identifier-block" heading="Identifier" field-id="identifier" required
-				required-marker="*" input-class="required"></standard-text-input>
+			<meta-input container-id="identifier-block" label="Identifier" field-id="identifier" required
+				required-marker="*" input-class="required"></meta-input>
 
-			<standard-text-input container-id="parent-identifier-block" heading="Parent identifier"
-				field-id="parent_identifier" input-class="conditional"></standard-text-input>
+			<meta-input container-id="parent-identifier-block" label="Parent identifier" field-id="parent_identifier"
+				input-class="conditional"></meta-input>
 
-			<standard-text-input container-id="collection-title-block" heading="Collection Title"
-				field-id="collection_title" required required-marker="*" input-class="required"></standard-text-input>
+			<meta-input container-id="collection-title-block" label="Collection Title" field-id="collection_title"
+				required required-marker="*" input-class="required"></meta-input>
 
-			<standard-text-input container-id="collection-identifier-block" heading="Collection Identifier"
-				field-id="collection_identifier" required required-marker="*"
-				input-class="required"></standard-text-input>
+			<meta-input container-id="collection-identifier-block" label="Collection Identifier"
+				field-id="collection_identifier" required required-marker="*" input-class="required"></meta-input>
 
-			<standard-text-input container-id="location-within-collection-block" heading="Location within collection"
-				field-id="location_within_collection" input-class="conditional"></standard-text-input>
+			<meta-input container-id="location-within-collection-block" label="Location within collection"
+				field-id="location_within_collection" input-class="conditional"></meta-input>
 
 			<originator-input heading="Originator (if different from that of collection)"></originator-input>
 
@@ -167,8 +166,8 @@
 
 			<div class="standard-block" id="dimensions-block">
 				<label class="heading">Dimensions</label>
-				<standard-text-input container-class="extent-field" field-id="dimensions_text" heading="Value"
-					input-class="dimensions-text" required required-marker="*"></standard-text-input>
+				<meta-input container-class="extent-field" field-id="dimensions_text" label="Value"
+					input-class="dimensions-text" required required-marker="*"></meta-input>
 				<div class="extent-field">
 					<label for="dimensions_units" class="heading">Units</label><br>
 					<select id="dimensions_units" class="dimensions-units" required>

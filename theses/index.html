@@ -27,6 +27,8 @@
 	<!-- Component scripts (no jQuery) -->
 	<script type="module" src="/shared/components/top-navigation.js"></script>
 	<script type="module" src="/shared/components/standard-text-input.js"></script>
+	<script type="module" src="/shared/components/meta-input.js"></script>
+	<script type="module" src="/shared/components/author-input.js"></script>
 	<script type="module" src="/shared/components/language-select.js"></script>
 	<link href="https://fonts.googleapis.com/css?family=Inter" rel="stylesheet" />
 	<style type="text/tailwindcss">
@@ -65,36 +67,16 @@
 	</div>
 	<div id="content" class="max-w-4xl mx-auto p-4">
 		<form id="marc-maker" class="space-y-6">
-			<standard-text-input container-id="title-block" heading="Title" field-id="title" required
-				required-marker="*" input-class="required"
-				help-text="Record the title as it appears on the title page. If the title includes a subtitle, record only the main title here, and the subtitle in the next field."></standard-text-input>
+			<meta-input label="Title" field-id="title" input-class="required"
+				help-text="Record the title as it appears on the title page. If the title includes a subtitle, record only the main title here, and the subtitle in the next field."
+				required sp-chars></meta-input>
 
-			<div id="author-block" class="standard-block">
-				<label for="author" class="heading font-semibold">Names<span
-						class="required_marker text-red-600">*</span></label>
-				<label for="family_name" class="insert insert_family_name text-blue-600 cursor-pointer"
-					onClick='insertMenu("family_name");'>Insert Special Characters</label>
-				<label for="given_name" class="insert insert_given_name text-blue-600 cursor-pointer"
-					onClick='insertMenu("given_name");'>Insert Special Characters</label><br />
-				<div id="insert-family_name"></div>
-				<div id="insert-given_name"></div>
-				<span class="author-entry">
-					<input type="text" class="author conditional border rounded px-2 py-1" required id="family_name"
-						placeholder="Family Name">,
-					<input type="text" class="author conditional border rounded px-2 py-1" required id="given_name"
-						placeholder="Given Name">
-					<select id="role" class="border rounded px-2 py-1">
-						<option value="dis" selected>dissertant</option>
-					</select>
-				</span>
-				<label
-					title="Enter the dissertant first. Use the add button to list committee members, advisors, and other contributors."><span
-						class="question-mark">?</span></label>
-				<div class="author-actions">
-					<input type="button" value="+" id="add-author" onClick="addAuthor();"
-						class="bg-blue-500 text-white px-3 py-1 rounded">
-				</div>
-			</div>
+			<meta-input label="Publisher" field-id="publisher" input-class="conditional translit-listen"
+				help-text="Record the name of the publisher." sp-chars unlisted-option></meta-input>
+
+			<author-input label="Names" required primary-roles='[{"value":"dis","label":"dissertant","selected":true}]'
+				roles='[{"value":"csp","label":"consultant to a project"},{"value":"ctb","label":"contributor","selected":true},{"value":"dtc","label":"data contributor"},{"value":"dte","label":"dedicatee"},{"value":"dgc","label":"degree committee member"},{"value":"dgs","label":"degree supervisor"},{"value":"fnd","label":"funder"},{"value":"rtm","label":"research team member"},{"value":"spn","label":"sponsor"},{"value":"tad","label":"technical advisor"}]'
+				help-text="Enter the dissertant first. Use the add button to list committee members, advisors, and other contributors."></author-input>
 
 			<div class="standard-block">
 				<corporate-organization-input required="false"></corporate-organization-input>

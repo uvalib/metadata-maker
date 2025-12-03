@@ -593,6 +593,40 @@
         downloadLink.dispatchEvent(clickReplacement);
       }
       container.removeChild(downloadLink);
+
+      this.showToast(`${filename}.${extension} created successfully!`, 'success');
+    }
+
+    showToast(message, type = 'success') {
+      let container = document.getElementById('toast-container');
+      if (!container) {
+        container = document.createElement('div');
+        container.id = 'toast-container';
+        container.className = 'fixed bottom-4 right-4 z-50 flex flex-col gap-2';
+        document.body.appendChild(container);
+      }
+
+      const toast = document.createElement('div');
+      const bgColor = type === 'error' ? 'bg-red-600' : 'bg-green-600';
+      toast.className = `${bgColor} text-white px-4 py-2 rounded shadow-lg transition-opacity duration-300 opacity-0 transform translate-y-2`;
+      toast.textContent = message;
+
+      container.appendChild(toast);
+
+      // Trigger animation
+      requestAnimationFrame(() => {
+        toast.classList.remove('opacity-0', 'translate-y-2');
+      });
+
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-2');
+        toast.addEventListener('transitionend', () => {
+          toast.remove();
+          if (container.children.length === 0) {
+            container.remove();
+          }
+        });
+      }, 3000);
     }
 
     getTimestamp() {

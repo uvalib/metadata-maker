@@ -27,6 +27,8 @@
 	<!-- Component scripts (no jQuery) -->
 	<script type="module" src="/shared/components/top-navigation.js"></script>
 	<script type="module" src="/shared/components/standard-text-input.js"></script>
+	<script type="module" src="/shared/components/meta-input.js"></script>
+	<script type="module" src="/shared/components/author-input.js"></script>
 	<script type="module" src="/shared/components/language-select.js"></script>
 	<link href="https://fonts.googleapis.com/css?family=Inter" rel="stylesheet" />
 	<style type="text/tailwindcss">
@@ -65,11 +67,11 @@
 	</div>
 	<div id="content" class="max-w-4xl mx-auto p-4">
 		<form id="marc-maker" class="space-y-6">
-			<standard-text-input container-id="title-block" heading="Title" field-id="title" required
-				required-marker="*" input-class="required translit-listen"
-				help-text="Record the title as it appears on the title page. If the title includes a subtitle, record only the main title here, and the subtitle in the next field."></standard-text-input>
-			<standard-text-input container-id="subtitle-block" heading="Subtitle" field-id="subtitle"
-				input-class="conditional" help-text="Record the subtitle if one exists" unlisted></standard-text-input>
+			<meta-input label="Title" field-id="title" input-class="required translit-listen"
+				help-text="Record the title as it appears on the title page. If the title includes a subtitle, record only the main title here, and the subtitle in the next field."
+				required sp-chars></meta-input>
+			<meta-input container-id="subtitle-block" label="Subtitle" field-id="subtitle" input-class="conditional"
+				help-text="Record the subtitle if one exists" unlisted-option sp-chars></meta-input>
 			<div id="translit-title-block"
 				class="translit-title-block translit-block standard-translit-block translit-title hidden standard-block">
 				<label for="translit_title" class="hidden translit heading translit-title">Transliterated title</label>
@@ -89,72 +91,15 @@
 			</div>
 			<language-select required field-id="language" container-id="language-block"></language-select>
 			<div id="names_title" class="heading mb-2">Names<br /></div>
-			<div id="author-block" class="space-y-2 standard-block">
-				<label for="author" class="heading">Personal<span class="required_marker">*</span></label>
-				<label for="family_name"
-					class="insert insert_family_name text-uva-orange hover:underline cursor-pointer ml-2 text-sm"
-					onClick='insertMenu("family_name");'>Insert Special Characters</label>
-				<label for="given_name"
-					class="insert insert_given_name text-uva-orange hover:underline cursor-pointer ml-2 text-sm"
-					onClick='insertMenu("given_name");'>Insert Special Characters</label><br />
-				<div id="insert-family_name"></div>
-				<div id="insert-given_name"></div>
-				<div class="flex flex-wrap gap-2">
-					<input type="text"
-						class="author conditional translit-listen border border-gray-300 rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-uva-blue focus:border-transparent flex-1"
-						required id="family_name" placeholder="Family Name" />
-					<input type="text"
-						class="author conditional translit-listen border border-gray-300 rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-uva-blue focus:border-transparent flex-1"
-						required id="given_name" placeholder="Given Name" />
-					<select name="role" id="role"
-						class="border border-gray-300 rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-uva-blue focus:border-transparent w-auto">
-						<option value="art">artist</option>
-						<option selected value="aut">author</option>
-						<option value="ctb">contributor</option>
-						<option value="edt">editor</option>
-						<option value="ill">illustrator</option>
-						<option value="trl">translator</option>
-					</select>
-				</div>
-				<label
-					title="Enter the name of authors, editors, illustrators, etc. listed on the piece and select the appropriate role from the drop down menu. Authors should be listed first."><span
-						class="question-mark text-uva-orange cursor-help">?</span></label>
-				<input type="button" value="+" id="add-author" onClick="addAuthor();" class="btn-secondary ml-2" />
-				<br />
-				<span class="unlisted text-sm text-gray-600">Unlisted</span><input type="checkbox" id="author_listed"
-					class="listed ml-1" />
+			<author-input label="Personal" required unlisted-option></author-input>
 
-				<div id="translit-family_name-block"
-					class="translit-family_name-block translit-block translit-author hidden mt-2 p-2 bg-gray-50 rounded border border-gray-200">
-					<label for="translit_family_name"
-						class="hidden translit heading translit-family_name block text-sm font-bold text-gray-700">Transliterated
-						name</label>
-					<label for="translit_family_name"
-						class="insert insert_family_name hidden translit translit-family_name text-uva-orange hover:underline cursor-pointer text-xs"
-						onClick='insertMenu("translit_family_name");'>Insert Special Characters</label>
-					<label for="translit_given_name"
-						class="insert insert_given_name hidden translit translit-family_name text-uva-orange hover:underline cursor-pointer text-xs ml-2"
-						onClick='insertMenu("translit_given_name");'>Insert Special Characters</label><br />
-					<div id="insert-translit_family_name"></div>
-					<div id="insert-translit_given_name" class="insert-given_name"></div>
-					<div class="flex gap-2">
-						<input type="text" id="translit_family_name"
-							class="hidden translit translit-family_name border border-gray-300 rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-uva-blue focus:border-transparent flex-1"
-							placeholder="Transliterated Family Name" />
-						<input type="text" id="translit_given_name"
-							class="hidden translit translit-family_name border border-gray-300 rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-uva-blue focus:border-transparent flex-1"
-							placeholder="Transliterated Given Name" />
-					</div>
-				</div>
-			</div>
-
-			<div class="standard-block">
+			<div class="standard-block mb-6">
 				<corporate-organization-input></corporate-organization-input>
 			</div>
 
-			<standard-text-input container-id="publisher-block" heading="Publisher" field-id="publisher"
-				input-class="translit-listen"
-				help-text="Record the name of the publisher as it appears on the piece."></standard-text-input>
+			<meta-input label="Publisher" field-id="publisher" input-class="translit-listen"
+				help-text="Record the name of the publisher as it appears on the piece." sp-chars
+				unlisted-option></meta-input>
 
 			<div id="translit-publisher-block"
 				class="translit-publisher-block translit-block standard-translit-block translit-publisher hidden standard-block">
@@ -167,9 +112,9 @@
 				<input type="text" id="translit_publisher" class="hidden translit translit-publisher input-base" />
 			</div>
 
-			<standard-text-input container-id="place-block" heading="Place of publication" field-id="place"
+			<meta-input container-id="place-block" label="Place of publication" field-id="place"
 				input-class="translit-listen"
-				help-text="Record the place of publication (city) as it appears on the piece."></standard-text-input>
+				help-text="Record the place of publication (city) as it appears on the piece."></meta-input>
 
 			<div id="translit-place-block"
 				class="translit-place-block translit-block standard-translit-block translit-place hidden standard-block">
@@ -181,50 +126,32 @@
 				<input type="text" id="translit_place" class="hidden translit translit-place input-base" />
 			</div>
 
-			<div id="country-block" class="standard-block">
-				<label for="country" class="heading">Country of publication</label><br />
-				<input type="text" id="country" class="input-base"
-					placeholder="e.g. United States, United Kingdom, etc." />
-				<label title="Record the country of publication."><span
-						class="question-mark text-uva-orange cursor-help">?</span></label>
-			</div>
+			<meta-input container-id="country-block" label="Country of publication" field-id="country" country
+				input-class="conditional"
+				help-text="Select the country of publication from the drop-down menu. If published in the United States, Canada, Australia, or the United Kingdom, select the state, province, or geographic region"
+				unlisted-option></meta-input>
 
-			<div id="publication-block" class="standard-block">
-				<label for="year" class="heading">Date of publication<span
-						class="required_marker">*</span></label><br />
-				<input type="number" class="date conditional input-base w-32" required id="year" min="0" />
-				<label
-					title="Record the year of publication if it appears on the piece. Do not record a copyright date here. Copyright dates should be recorded in the next field."><span
-						class="question-mark text-uva-orange cursor-help">?</span></label><br />
-				<span class="unlisted text-sm text-gray-600">Unlisted</span><input type="checkbox" id="year_listed"
-					class="listed ml-1" />
-			</div>
+			<meta-input container-id="publication-block" label="Date of publication" field-id="year" required date
+				input-class="w-32"
+				help-text="Record the year of publication if it appears on the piece. Do not record a copyright date here. Copyright dates should be recorded in the next field."
+				unlisted-option></meta-input>
 
-			<div id="copyright-block" class="standard-block">
-				<label for="cyear" class="heading">Copyright date<span class="required_marker">*</span></label><br />
-				<input type="number" class="date conditional input-base w-32" required id="cyear" min="0" />
-				<label title="Record the year of copyright if it appears on the piece."><span
-						class="question-mark text-uva-orange cursor-help">?</span></label><br />
-				<span class="unlisted text-sm text-gray-600">Unlisted</span><input type="checkbox" id="cyear_listed"
-					class="listed ml-1" />
-			</div>
+			<meta-input container-id="copyright-block" label="Copyright date" field-id="cyear" required date
+				input-class="w-32" help-text="Record the year of copyright if it appears on the piece."
+				unlisted-option></meta-input>
 
-			<standard-text-input container-id="web-url-block" heading="Web URL" field-id="web-url"
-				help-text="Record the URL of the website if applicable."></standard-text-input>
+			<meta-input container-id="web-url-block" label="Web URL" field-id="web-url" url
+				help-text="Record the URL of the website if applicable."></meta-input>
 
-			<standard-text-input container-id="format-block" heading="File format"
-				field-id="format"></standard-text-input>
-			<standard-text-input container-id="size-block" heading="File size" field-id="size"></standard-text-input>
-			<standard-text-input container-id="daterange-block" heading="Date range of content"
-				field-id="daterange"></standard-text-input>
-			<standard-text-input container-id="datecollected-block" heading="Date the data was collected"
-				field-id="datecollected"></standard-text-input>
-			<standard-text-input container-id="gcoverage-block" heading="Geographic coverage"
-				field-id="gcoverage"></standard-text-input>
-			<standard-text-input container-id="access_terms-block" heading="Access restrictions"
-				field-id="access_terms"></standard-text-input>
-			<standard-text-input container-id="use_terms-block" heading="Use restrictions"
-				field-id="use_terms"></standard-text-input>
+			<meta-input container-id="format-block" label="File format" field-id="format"></meta-input>
+			<meta-input container-id="size-block" label="File size" field-id="size"></meta-input>
+			<meta-input container-id="daterange-block" label="Date range of content" field-id="daterange"></meta-input>
+			<meta-input container-id="datecollected-block" label="Date the data was collected"
+				field-id="datecollected"></meta-input>
+			<meta-input container-id="gcoverage-block" label="Geographic coverage" field-id="gcoverage"></meta-input>
+			<meta-input container-id="access_terms-block" label="Access restrictions"
+				field-id="access_terms"></meta-input>
+			<meta-input container-id="use_terms-block" label="Use restrictions" field-id="use_terms"></meta-input>
 
 			<div id="keywords" class="standard-block">
 				<label for="keywords" class="heading">Keywords<span class="required_marker">*</span></label><br />

@@ -45,6 +45,7 @@
 	<script type="module" src="/shared/components/repeatable-text-input.js"></script>
 	<script type="module" src="/shared/components/insert-diacritics.js"></script>
 	<script type="module" src="../shared/components/corporate-organization-input.js"></script>
+	<script type="module" src="/shared/components/meta-input.js"></script>
 
 	<style type="text/tailwindcss">
 		@layer components {
@@ -84,12 +85,12 @@
 	</div>
 	<div id="content" class="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg mt-6">
 		<form id="marc-maker">
-			<standard-text-input container-id="title-block" heading="Title" field-id="title" required
-				required-marker="*" input-class="required translit-listen"
-				help-text="Record the title as it appears on the title page. If the title includes a subtitle, record only the main title here, and the subtitle in the next field."></standard-text-input>
+			<meta-input label="Title" field-id="title" input-class="required translit-listen"
+				help-text="Record the title as it appears on the title page. If the title includes a subtitle, record only the main title here, and the subtitle in the next field."
+				required sp-chars></meta-input>
 
-			<standard-text-input container-id="subtitle-block" heading="Subtitle" field-id="subtitle"
-				input-class="conditional" help-text="Record the subtitle if one exists" unlisted></standard-text-input>
+			<meta-input container-id="subtitle-block" label="Subtitle" field-id="subtitle" input-class="conditional"
+				help-text="Record the subtitle if one exists" unlisted-option sp-chars></meta-input>
 
 			<div id="translit-title-block"
 				class="translit-title-block translit-block standard-translit-block translit-title hidden standard-block">
@@ -141,17 +142,9 @@
 				<corporate-organization-input></corporate-organization-input>
 			</div>
 
-			<div id="publisher-block" class="standard-block">
-				<label for="publisher" class="heading">Name of publisher</label><label for="publisher"
-					class="insert insert_normal" onClick='insertMenu("publisher");'>Insert Special
-					Characters</label><br>
-				<div id="insert-publisher"></div>
-				<input type="text" required id="publisher" class="conditional translit-listen">
-				<label
-					title="Record the name of the publisher as it appears on the piece. Prefer the name that appears on the title page."><span
-						class="question-mark">?</span></label><br>
-				<span class="unlisted">Unlisted</span><input type="checkbox" id="publisher_listed" class="listed">
-			</div>
+			<meta-input label="Name of publisher" field-id="publisher" input-class="conditional translit-listen"
+				help-text="Record the name of the publisher as it appears on the piece. Prefer the name that appears on the title page."
+				sp-chars unlisted-option required></meta-input>
 
 			<div id="translit-publisher-block"
 				class="translit-publisher-block translit-block hidden standard-translit-block standard-block">
@@ -163,17 +156,10 @@
 				<input type="text" id="translit_publisher" class="hidden translit translit-publisher">
 			</div>
 
-			<div id="place-block" class="standard-block">
-				<label for="place" class="heading">Place of publication</label><label for="place"
-					class="insert insert_normal" onClick='insertMenu("place");'>Insert Special
-					Characters</label><br>
-				<div id="insert-place"></div>
-				<input type="text" required id="place" class="conditional translit-listen">
-				<label
-					title="Record the place of publication as it appears on the piece. Prefer the place that appears on the title page. If there is more than one place, record only one. E.g., Boston, Massachusetts"><span
-						class="question-mark">?</span></label><br>
-				<span class="unlisted">Unlisted</span><input type="checkbox" id="place_listed" class="listed">
-			</div>
+			<meta-input container-id="place-block" label="Place of publication" field-id="place" required
+				input-class="conditional translit-listen"
+				help-text="Record the place of publication as it appears on the piece. Prefer the place that appears on the title page. If there is more than one place, record only one. E.g., Boston, Massachusetts"
+				sp-chars unlisted-option></meta-input>
 
 			<div id="translit-place-block"
 				class="translit-place-block translit-block hidden standard-translit-block standard-block">
@@ -185,348 +171,10 @@
 				<input type="text" id="translit_place" class="hidden translit translit-place">
 			</div>
 
-			<div id="country-block" class="standard-block">
-				<label for="country" class="heading">Country/State/Province of publication</label><br>
-				<select name="country" required id="country" class="conditional">
-					<option selected disabled hidden value=''></option>
-					<option value="af">Afghanistan</option>
-					<option value="alu">Alabama</option>
-					<option value="aku">Alaska</option>
-					<option value="aa">Albania</option>
-					<option value="abc">Alberta</option>
-					<option value="ae">Algeria</option>
-					<option value="as">American Samoa</option>
-					<option value="an">Andorra</option>
-					<option value="ao">Angola</option>
-					<option value="am">Anguilla</option>
-					<option value="ay">Antarctica</option>
-					<option value="aq">Antigua and Barbuda</option>
-					<option value="ag">Argentina</option>
-					<option value="azu">Arizona</option>
-					<option value="aru">Arkansas</option>
-					<option value="ai">Armenia (Republic)</option>
-					<option value="aw">Aruba</option>
-					<option value="at">Australia</option>
-					<option value="aca">Australian Capital Territory</option>
-					<option value="au">Austria</option>
-					<option value="aj">Azerbaijan</option>
-					<option value="bf">Bahamas</option>
-					<option value="ba">Bahrain</option>
-					<option value="bg">Bangladesh</option>
-					<option value="bb">Barbados</option>
-					<option value="bw">Belarus</option>
-					<option value="be">Belgium</option>
-					<option value="bh">Belize</option>
-					<option value="dm">Benin</option>
-					<option value="bm">Bermuda Islands</option>
-					<option value="bt">Bhutan</option>
-					<option value="bo">Bolivia</option>
-					<option value="bn">Bosnia and Hercegovina</option>
-					<option value="bs">Botswana</option>
-					<option value="bv">Bouvet Island</option>
-					<option value="bl">Brazil</option>
-					<option value="bcc">British Columbia</option>
-					<option value="bi">British Indian Ocean Territory</option>
-					<option value="vb">British Virgin Islands</option>
-					<option value="bx">Brunei</option>
-					<option value="bu">Bulgaria</option>
-					<option value="uv">Burkina Faso</option>
-					<option value="br">Burma</option>
-					<option value="bd">Burundi</option>
-					<option value="cv">Cabo Verde</option>
-					<option value="cau">California</option>
-					<option value="cb">Cambodia</option>
-					<option value="cm">Cameroon</option>
-					<option value="xxc">Canada</option>
-					<option value="ca">Caribbean Netherlands</option>
-					<option value="cj">Cayman Islands</option>
-					<option value="cx">Central African Republic</option>
-					<option value="cd">Chad</option>
-					<option value="cl">Chile</option>
-					<option value="cc">China</option>
-					<option value="ch">China (Republic : 1949- )</option>
-					<option value="xa">Christmas Island (Indian Ocean)</option>
-					<option value="xb">Cocos (Keeling) Islands</option>
-					<option value="ck">Colombia</option>
-					<option value="cou">Colorado</option>
-					<option value="cq">Comoros</option>
-					<option value="cf">Congo (Brazzaville)</option>
-					<option value="cg">Congo (Democratic Republic)</option>
-					<option value="ctu">Connecticut</option>
-					<option value="cw">Cook Islands</option>
-					<option value="xga">Coral Sea Islands Territory</option>
-					<option value="cr">Costa Rica</option>
-					<option value="iv">Côte d'Ivoire</option>
-					<option value="ci">Croatia</option>
-					<option value="cu">Cuba</option>
-					<option value="co">Curaçao</option>
-					<option value="cy">Cyprus</option>
-					<option value="xr">Czech Republic</option>
-					<option value="deu">Delaware</option>
-					<option value="dk">Denmark</option>
-					<option value="dcu">District of Columbia</option>
-					<option value="ft">Djibouti</option>
-					<option value="dq">Dominica</option>
-					<option value="dr">Dominican Republic</option>
-					<option value="ec">Ecuador</option>
-					<option value="ua">Egypt</option>
-					<option value="es">El Salvador</option>
-					<option value="enk">England</option>
-					<option value="eg">Equatorial Guinea</option>
-					<option value="ea">Eritrea</option>
-					<option value="er">Estonia</option>
-					<option value="et">Ethiopia</option>
-					<option value="fk">Falkland Islands</option>
-					<option value="fa">Faroe Islands</option>
-					<option value="fj">Fiji</option>
-					<option value="fi">Finland</option>
-					<option value="flu">Florida</option>
-					<option value="fr">France</option>
-					<option value="fg">French Guiana</option>
-					<option value="fp">French Polynesia</option>
-					<option value="go">Gabon</option>
-					<option value="gm">Gambia</option>
-					<option value="gz">Gaza Strip</option>
-					<option value="gau">Georgia</option>
-					<option value="gs">Georgia (Republic)</option>
-					<option value="gw">Germany</option>
-					<option value="gh">Ghana</option>
-					<option value="gi">Gibraltar</option>
-					<option value="gr">Greece</option>
-					<option value="gl">Greenland</option>
-					<option value="gd">Grenada</option>
-					<option value="gp">Guadeloupe</option>
-					<option value="gu">Guam</option>
-					<option value="gt">Guatemala</option>
-					<option value="gv">Guinea</option>
-					<option value="pg">Guinea-Bissau</option>
-					<option value="gy">Guyana</option>
-					<option value="ht">Haiti</option>
-					<option value="hiu">Hawaii</option>
-					<option value="hm">Heard and McDonald Islands</option>
-					<option value="ho">Honduras</option>
-					<option value="hu">Hungary</option>
-					<option value="ic">Iceland</option>
-					<option value="idu">Idaho</option>
-					<option value="ilu">Illinois</option>
-					<option value="ii">India</option>
-					<option value="inu">Indiana</option>
-					<option value="io">Indonesia</option>
-					<option value="iau">Iowa</option>
-					<option value="ir">Iran</option>
-					<option value="iq">Iraq</option>
-					<option value="iy">Iraq-Saudi Arabia Neutral Zone</option>
-					<option value="ie">Ireland</option>
-					<option value="is">Israel</option>
-					<option value="it">Italy</option>
-					<option value="jm">Jamaica</option>
-					<option value="ja">Japan</option>
-					<option value="ji">Johnston Atoll</option>
-					<option value="jo">Jordan</option>
-					<option value="ksu">Kansas</option>
-					<option value="kz">Kazakhstan</option>
-					<option value="kyu">Kentucky</option>
-					<option value="ke">Kenya</option>
-					<option value="gb">Kiribati</option>
-					<option value="kn">Korea (North)</option>
-					<option value="ko">Korea (South)</option>
-					<option value="kv">Kosovo</option>
-					<option value="ku">Kuwait</option>
-					<option value="kg">Kyrgyzstan</option>
-					<option value="ls">Laos</option>
-					<option value="lv">Latvia</option>
-					<option value="le">Lebanon</option>
-					<option value="lo">Lesotho</option>
-					<option value="lb">Liberia</option>
-					<option value="ly">Libya</option>
-					<option value="lh">Liechtenstein</option>
-					<option value="li">Lithuania</option>
-					<option value="lau">Louisiana</option>
-					<option value="lu">Luxembourg</option>
-					<option value="xn">Macedonia</option>
-					<option value="mg">Madagascar</option>
-					<option value="meu">Maine</option>
-					<option value="mw">Malawi</option>
-					<option value="my">Malaysia</option>
-					<option value="xc">Maldives</option>
-					<option value="ml">Mali</option>
-					<option value="mm">Malta</option>
-					<option value="mbc">Manitoba</option>
-					<option value="xe">Marshall Islands</option>
-					<option value="mq">Martinique</option>
-					<option value="mdu">Maryland</option>
-					<option value="mau">Massachusetts</option>
-					<option value="mu">Mauritania</option>
-					<option value="mf">Mauritius</option>
-					<option value="ot">Mayotte</option>
-					<option value="mx">Mexico</option>
-					<option value="miu">Michigan</option>
-					<option value="fm">Micronesia (Federated States)</option>
-					<option value="xf">Midway Islands</option>
-					<option value="mnu">Minnesota</option>
-					<option value="msu">Mississippi</option>
-					<option value="mou">Missouri</option>
-					<option value="mv">Moldova</option>
-					<option value="mc">Monaco</option>
-					<option value="mp">Mongolia</option>
-					<option value="mtu">Montana</option>
-					<option value="mo">Montenegro</option>
-					<option value="mj">Montserrat</option>
-					<option value="mr">Morocco</option>
-					<option value="mz">Mozambique</option>
-					<option value="sx">Namibia</option>
-					<option value="nu">Nauru</option>
-					<option value="nbu">Nebraska</option>
-					<option value="np">Nepal</option>
-					<option value="ne">Netherlands</option>
-					<option value="nvu">Nevada</option>
-					<option value="nkc">New Brunswick</option>
-					<option value="nl">New Caledonia</option>
-					<option value="nhu">New Hampshire</option>
-					<option value="nju">New Jersey</option>
-					<option value="nmu">New Mexico</option>
-					<option value="xna">New South Wales</option>
-					<option value="nyu">New York (State)</option>
-					<option value="nz">New Zealand</option>
-					<option value="nfc">Newfoundland and Labrador</option>
-					<option value="nq">Nicaragua</option>
-					<option value="ng">Niger</option>
-					<option value="nr">Nigeria</option>
-					<option value="xh">Niue</option>
-					<option value="xx">No place, unknown, or undetermined</option>
-					<option value="nx">Norfolk Island</option>
-					<option value="ncu">North Carolina</option>
-					<option value="ndu">North Dakota</option>
-					<option value="nik">Northern Ireland</option>
-					<option value="nw">Northern Mariana Islands</option>
-					<option value="xoa">Northern Territory</option>
-					<option value="ntc">Northwest Territories</option>
-					<option value="no">Norway</option>
-					<option value="nsc">Nova Scotia</option>
-					<option value="nuc">Nunavut</option>
-					<option value="ohu">Ohio</option>
-					<option value="oku">Oklahoma</option>
-					<option value="mk">Oman</option>
-					<option value="onc">Ontario</option>
-					<option value="oru">Oregon</option>
-					<option value="pk">Pakistan</option>
-					<option value="pw">Palau</option>
-					<option value="pn">Panama</option>
-					<option value="pp">Papua New Guinea</option>
-					<option value="pf">Paracel Islands</option>
-					<option value="py">Paraguay</option>
-					<option value="pau">Pennsylvania</option>
-					<option value="pe">Peru</option>
-					<option value="ph">Philippines</option>
-					<option value="pc">Pitcairn Island</option>
-					<option value="pl">Poland</option>
-					<option value="po">Portugal</option>
-					<option value="pic">Prince Edward Island</option>
-					<option value="pr">Puerto Rico</option>
-					<option value="qa">Qatar</option>
-					<option value="quc">Québec (Province)</option>
-					<option value="qea">Queensland</option>
-					<option value="re">Réunion</option>
-					<option value="riu">Rhode Island</option>
-					<option value="rm">Romania</option>
-					<option value="ru">Russia (Federation)</option>
-					<option value="rw">Rwanda</option>
-					<option value="xj">Saint Helena</option>
-					<option value="xd">Saint Kitts-Nevis</option>
-					<option value="xk">Saint Lucia</option>
-					<option value="xl">Saint Pierre and Miquelon</option>
-					<option value="xm">Saint Vincent and the Grenadines</option>
-					<option value="sc">Saint-Barthélemy</option>
-					<option value="st">Saint-Martin</option>
-					<option value="ws">Samoa</option>
-					<option value="sm">San Marino</option>
-					<option value="sf">Sao Tome and Principe</option>
-					<option value="snc">Saskatchewan</option>
-					<option value="su">Saudi Arabia</option>
-					<option value="stk">Scotland</option>
-					<option value="sg">Senegal</option>
-					<option value="rb">Serbia</option>
-					<option value="se">Seychelles</option>
-					<option value="sl">Sierra Leone</option>
-					<option value="si">Singapore</option>
-					<option value="sn">Sint Maarten</option>
-					<option value="xo">Slovakia</option>
-					<option value="xv">Slovenia</option>
-					<option value="bp">Solomon Islands</option>
-					<option value="so">Somalia</option>
-					<option value="sa">South Africa</option>
-					<option value="xra">South Australia</option>
-					<option value="scu">South Carolina</option>
-					<option value="sdu">South Dakota</option>
-					<option value="xs">South Georgia and the South Sandwich Islands</option>
-					<option value="sd">South Sudan</option>
-					<option value="sp">Spain</option>
-					<option value="sh">Spanish North Africa</option>
-					<option value="xp">Spratly Island</option>
-					<option value="ce">Sri Lanka</option>
-					<option value="sj">Sudan</option>
-					<option value="sr">Surinam</option>
-					<option value="sq">Swaziland</option>
-					<option value="sw">Sweden</option>
-					<option value="sz">Switzerland</option>
-					<option value="sy">Syria</option>
-					<option value="ta">Tajikistan</option>
-					<option value="tz">Tanzania</option>
-					<option value="tma">Tasmania</option>
-					<option value="tnu">Tennessee</option>
-					<option value="fs">Terres australes et antarctiques françaises</option>
-					<option value="txu">Texas</option>
-					<option value="th">Thailand</option>
-					<option value="em">Timor-Leste</option>
-					<option value="tg">Togo</option>
-					<option value="tl">Tokelau</option>
-					<option value="to">Tonga</option>
-					<option value="tr">Trinidad and Tobago</option>
-					<option value="ti">Tunisia</option>
-					<option value="tu">Turkey</option>
-					<option value="tk">Turkmenistan</option>
-					<option value="tc">Turks and Caicos Islands</option>
-					<option value="tv">Tuvalu</option>
-					<option value="ug">Uganda</option>
-					<option value="un">Ukraine</option>
-					<option value="ts">United Arab Emirates</option>
-					<option value="xxk">United Kingdom</option>
-					<option value="uik">United Kingdom Misc. Islands</option>
-					<option value="xxu">United States</option>
-					<option value="uc">United States Misc. Caribbean Islands</option>
-					<option value="up">United States Misc. Pacific Islands</option>
-					<option value="uy">Uruguay</option>
-					<option value="utu">Utah</option>
-					<option value="uz">Uzbekistan</option>
-					<option value="nn">Vanuatu</option>
-					<option value="vp">Various places</option>
-					<option value="vc">Vatican City</option>
-					<option value="ve">Venezuela</option>
-					<option value="vtu">Vermont</option>
-					<option value="vra">Victoria</option>
-					<option value="vm">Vietnam</option>
-					<option value="vi">Virgin Islands of the United States</option>
-					<option value="vau">Virginia</option>
-					<option value="wk">Wake Island</option>
-					<option value="wlk">Wales</option>
-					<option value="wf">Wallis and Futuna</option>
-					<option value="wau">Washington (State)</option>
-					<option value="wj">West Bank of the Jordan River</option>
-					<option value="wvu">West Virginia</option>
-					<option value="wea">Western Australia</option>
-					<option value="ss">Western Sahara</option>
-					<option value="wiu">Wisconsin</option>
-					<option value="wyu">Wyoming</option>
-					<option value="ye">Yemen</option>
-					<option value="ykc">Yukon Territory</option>
-					<option value="za">Zambia</option>
-					<option value="rh">Zimbabwe</option>
-				</select>
-				<label
-					title="Select the country of publication from the drop-down menu. If published in the United States, Canada, Australia, or the United Kingdom, select the state, province, or geographic region"><span
-						class="question-mark">?</span></label><br>
-				<span class="unlisted">Unlisted</span><input type="checkbox" id="country_listed" class="listed">
-			</div>
+			<meta-input container-id="country-block" label="Country/State/Province of publication" field-id="country"
+				required country input-class="conditional"
+				help-text="Select the country of publication from the drop-down menu. If published in the United States, Canada, Australia, or the United Kingdom, select the state, province, or geographic region"
+				unlisted-option></meta-input>
 
 			<div id="publication-year-block" class="standard-block">
 				<label for="publication_year" class="heading">Publication year</label><br>
@@ -689,13 +337,8 @@
 				<input type="radio" name="e-resource" id="e-resource-no" value="no">No
 			</div>
 
-			<div id="web-url-block" class="standard-block hidden">
-				<label for="web-url" class="heading">Web URL</label><label for="web-url" class="insert insert_normal"
-					onClick='insertMenu("web-url");'>Insert Special
-					Characters</label><br>
-				<div id="insert-web-url"></div>
-				http://<input type="text" id="web-url"><br>
-			</div>
+			<meta-input container-id="web-url-block" label="Web URL" field-id="web-url"
+				container-class="standard-block hidden" url sp-chars></meta-input>
 
 			<div id="preceding_title-block" class="standard-block">
 				<label for="preceding_title" class="heading">Preceding title</label><br>

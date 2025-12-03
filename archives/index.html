@@ -29,6 +29,7 @@
 	<script type="module" src="/shared/components/standard-text-input.js"></script>
 	<script type="module" src="/shared/components/edtf-date-input.js"></script>
 	<script type="module" src="/shared/components/repeatable-text-input.js"></script>
+	<script type="module" src="/shared/components/meta-input.js"></script>
 	<script type="module" src="/shared/components/language-select.js"></script>
 	<script type="module" src="/shared/components/repeatable-language-select.js"></script>
 	<script type="module" src="/shared/components/repeatable-subject-input.js"></script>
@@ -71,18 +72,18 @@
 	</div>
 	<div id="content" class="max-w-4xl mx-auto p-4">
 		<form id="marc-maker" class="space-y-6">
-			<standard-text-input heading="Repository name" field-id="repository_name" required required-marker="*"
-				input-class="required translit-listen"></standard-text-input>
+			<meta-input label="Repository name" field-id="repository_name" required required-marker="*"
+				input-class="required translit-listen"></meta-input>
 			<repeatable-text-input heading="Repository address" field-prefix="repository_address"
 				input-class="repository-address-input translit-listen" add-button-id="add-repository-address"
 				add-button-aria-label="Add repository address line"></repeatable-text-input>
-			<standard-text-input heading="Location in repository" field-id="repository_location"
-				input-class="translit-listen"></standard-text-input>
-			<standard-text-input container-id="title-block" heading="Title" field-id="title" required
-				required-marker="*" input-class="required translit-listen"
-				help-text="Record the title as it appears on the title page. If the title includes a subtitle, record only the main title here, and the subtitle in the next field."></standard-text-input>
-			<standard-text-input container-id="subtitle-block" heading="Subtitle" field-id="subtitle"
-				input-class="conditional" help-text="Record the subtitle if one exists" unlisted></standard-text-input>
+			<meta-input label="Location in repository" field-id="repository_location"
+				input-class="translit-listen"></meta-input>
+			<meta-input label="Title" field-id="title" input-class="required translit-listen"
+				help-text="Record the title as it appears on the title page. If the title includes a subtitle, record only the main title here, and the subtitle in the next field."
+				required sp-chars></meta-input>
+			<meta-input container-id="subtitle-block" label="Subtitle" field-id="subtitle" input-class="conditional"
+				help-text="Record the subtitle if one exists" unlisted-option sp-chars></meta-input>
 			<div id="translit-title-block"
 				class="translit-title-block translit-block standard-translit-block translit-title hidden standard-block">
 				<label for="translit_title" class="hidden translit heading translit-title">Transliterated title</label>
@@ -100,8 +101,29 @@
 				<div id="insert-translit_subtitle" class="hidden translit translit-title"></div>
 				<input type="text" id="translit_subtitle" class="hidden translit translit-title" />
 			</div>
+			<meta-input label="Identifier" field-id="identifier" required input-class="conditional"
+				help-text="Record the identifier/call number." sp-chars></meta-input>
+			<div class="standard-block mb-6">
+				<originator-input></originator-input>
+			</div>
+			<div class="standard-block mb-6">
+				<corporate-organization-input></corporate-organization-input>
+			</div>
+			<meta-input label="Coverage dates" field-id="date" required input-class="date conditional"
+				help-text="Record the coverage dates." date></meta-input>
+			<repeatable-extent-input></repeatable-extent-input>
+			<dimensions-input label="Dimensions" required
+				help-text="Record dimensions and select unit."></dimensions-input>
 			<language-select required field-id="language" container-id="language-block"></language-select>
-			<!-- Additional fields (coverage, description, etc.) would be similarly styled with Tailwind utilities -->
+			<div id="description-block" class="standard-block">
+				<label for="description" class="heading">Description</label><br />
+				<textarea id="description" class="input-base h-32"></textarea>
+			</div>
+			<div id="bibliography-block" class="standard-block">
+				<label for="bibliography" class="heading">Bibliography</label><br />
+				<textarea id="bibliography" class="input-base h-32"></textarea>
+			</div>
+			<repeatable-subject-input></repeatable-subject-input>
 			<div id="buttons" class="standard-block flex gap-4">
 				<input type="submit" value="Make" id="make" class="btn-primary" />
 				<input type="reset" value="Clear" id="Clear" class="btn-secondary" />
@@ -115,6 +137,8 @@
 		<a id="code" href="https://github.com/UIUCLibrary/metadata-maker/tree/Archives"
 			class="text-blue-600 hover:underline">GitHub</a>
 	</div>
+	<script type="module" src="../shared/components/corporate-organization-input.js"></script>
+	<script type="module" src="../shared/components/dimensions-input.js"></script>
 	<script type="module" src="../shared/components/insert-diacritics.js"></script>
 	<script src="../shared/generalInteractionsBase.js"></script>
 	<script src="metadatamaker/generalInteractions.js"></script>

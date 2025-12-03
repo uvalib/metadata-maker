@@ -27,6 +27,7 @@
 	<!-- Component scripts (no jQuery) -->
 	<script type="module" src="/shared/components/top-navigation.js"></script>
 	<script type="module" src="/shared/components/standard-text-input.js"></script>
+	<script type="module" src="/shared/components/meta-input.js"></script>
 	<script type="module" src="/shared/components/language-select.js"></script>
 	<link href="https://fonts.googleapis.com/css?family=Inter" rel="stylesheet" />
 	<style type="text/tailwindcss">
@@ -65,11 +66,11 @@
 	</div>
 	<div id="content" class="max-w-4xl mx-auto p-4">
 		<form id="marc-maker" class="space-y-6">
-			<standard-text-input container-id="title-block" heading="Title" field-id="title" required
-				required-marker="*" input-class="required translit-listen"
-				help-text="Record the title as it appears on the title page. If the title includes a subtitle, record only the main title here, and the subtitle in the next field."></standard-text-input>
-			<standard-text-input container-id="subtitle-block" heading="Subtitle" field-id="subtitle"
-				input-class="conditional" help-text="Record the subtitle if one exists" unlisted></standard-text-input>
+			<meta-input label="Title" field-id="title" input-class="required translit-listen"
+				help-text="Record the title as it appears on the title page. If the title includes a subtitle, record only the main title here, and the subtitle in the next field."
+				required sp-chars></meta-input>
+			<meta-input container-id="subtitle-block" label="Subtitle" field-id="subtitle" input-class="conditional"
+				help-text="Record the subtitle if one exists" unlisted-option sp-chars></meta-input>
 			<div id="translit-title-block"
 				class="translit-title-block translit-block standard-translit-block translit-title hidden standard-block">
 				<label for="translit_title" class="hidden translit heading translit-title">Transliterated title</label>
@@ -87,29 +88,45 @@
 				<div id="insert-translit_subtitle" class="hidden translit translit-title"></div>
 				<input type="text" id="translit_subtitle" class="hidden translit translit-title" />
 			</div>
-			<standard-text-input heading="ISBN" field-id="isbn" required class="conditional"
-				help-text="Record an ISBN, if present. Do not record hyphens."></standard-text-input>
-			<standard-text-input heading="Edition statement" field-id="edition" class="conditional translit-listen"
-				help-text="Record an edition statement if it appears on the piece."></standard-text-input>
-			<standard-text-input heading="Item number" field-id="item-number" required class="conditional"
-				help-text="Record the item number."></standard-text-input>
-			<standard-text-input heading="SuDoc classification" field-id="sudoc" class="conditional"
-				help-text="Record SuDoc classification."></standard-text-input>
-			<standard-text-input heading="Report number" field-id="report-number" class="conditional"
-				help-text="Record report number."></standard-text-input>
+			<meta-input label="ISBN" field-id="isbn" required input-class="conditional"
+				help-text="Record an ISBN, if present. Do not record hyphens."></meta-input>
+			<meta-input label="Edition statement" field-id="edition" input-class="conditional translit-listen"
+				help-text="Record an edition statement if it appears on the piece."></meta-input>
+			<meta-input label="Item number" field-id="item-number" required input-class="conditional"
+				help-text="Record the item number."></meta-input>
+			<meta-input label="SuDoc classification" field-id="sudoc" input-class="conditional"
+				help-text="Record SuDoc classification."></meta-input>
+			<meta-input label="Report number" field-id="report-number" input-class="conditional"
+				help-text="Record report number."></meta-input>
 			<language-select required field-id="language" container-id="language-block"></language-select>
-			<standard-text-input heading="Publisher" field-id="publisher" required class="conditional translit-listen"
-				help-text="Record the name of the publisher."></standard-text-input>
-			<standard-text-input heading="Place of publication" field-id="place" required
-				class="conditional translit-listen" help-text="Record place of publication."></standard-text-input>
-			<standard-text-input heading="Date of publication" field-id="year" required type="number"
-				class="date conditional" help-text="Record the year of publication."></standard-text-input>
-			<standard-text-input heading="Copyright date" field-id="cyear" type="number" class="date conditional"
-				help-text="Record the copyright date."></standard-text-input>
-			<standard-text-input heading="Dimensions" field-id="dimensions" required class="required"
-				help-text="Record dimensions in cm."></standard-text-input>
-			<standard-text-input heading="Illustrations?" field-id="illustrations" type="text"
-				help-text="Yes/No"></standard-text-input>
+			<div id="names_title" class="heading mb-2">Names<br /></div>
+			<div class="standard-block mb-6">
+				<corporate-organization-input></corporate-organization-input>
+			</div>
+
+			<meta-input label="Publisher" field-id="publisher" input-class="conditional translit-listen"
+				help-text="Record the name of the publisher." sp-chars unlisted-option></meta-input>
+			<meta-input label="Place of publication" field-id="place" required input-class="conditional translit-listen"
+				help-text="Record place of publication."></meta-input>
+			<meta-input label="State of publication" field-id="state" state-select input-class="conditional"
+				help-text="Record state of publication."></meta-input>
+			<meta-input label="Date of publication" field-id="year" required input-class="date conditional"
+				help-text="Record the year of publication." date></meta-input>
+			<meta-input label="Copyright date" field-id="cyear" input-class="date conditional"
+				help-text="Record the copyright date." date></meta-input>
+			<meta-input label="Dimensions" field-id="dimensions" required input-class="required"
+				help-text="Record dimensions in cm."></meta-input>
+
+			<div id="illustrations-block" class="standard-block">
+				<label for="illustrations" class="heading">Does the item include illustrations?</label><br>
+				<div class="flex gap-4 my-2">
+					<label class="flex items-center gap-2"><input type="radio" name="illustrations"
+							id="illustrations-yes" value="yes">Yes</label>
+					<label class="flex items-center gap-2"><input type="radio" name="illustrations"
+							id="illustrations-no" value="no">No</label>
+				</div>
+			</div>
+
 			<div id="keywords" class="standard-block">
 				<label for="keywords" class="heading">Keywords<span class="required_marker">*</span></label><br />
 				<input type="text" class="fastID hidden" id="fastID0" />
@@ -121,6 +138,16 @@
 							class="question-mark text-uva-orange cursor-help">?</span></label>
 					<input type="button" value="+" id="add-button" onClick="addKeyword();" class="btn-primary ml-2" />
 				</div>
+			</div>
+
+			<div id="contents-block" class="standard-block">
+				<label for="contents" class="heading">Contents</label><br />
+				<textarea id="contents" class="input-base h-32"></textarea>
+			</div>
+
+			<div id="notes-block" class="standard-block">
+				<label for="notes" class="heading">Notes to the Cataloger</label><br />
+				<textarea id="notes" class="input-base h-32"></textarea>
 			</div>
 			<div id="buttons" class="standard-block flex gap-4">
 				<input type="submit" value="Make" id="make" class="btn-primary" />
@@ -135,6 +162,7 @@
 		<a id="code" href="https://github.com/UIUCLibrary/metadata-maker/tree/GovDocs"
 			class="text-blue-600 hover:underline">GitHub</a>
 	</div>
+	<script type="module" src="../shared/components/corporate-organization-input.js"></script>
 	<script type="module" src="../shared/components/insert-diacritics.js"></script>
 	<script src="../shared/generalInteractionsBase.js"></script>
 	<script src="metadatamaker/generalInteractions.js"></script>

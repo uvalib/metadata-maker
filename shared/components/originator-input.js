@@ -1,6 +1,6 @@
 import { LitElement, html, nothing } from 'https://cdn.jsdelivr.net/npm/lit@3.2.1/+esm';
 import './originator-personal-input.js';
-import './originator-corporate-input.js';
+import './corporate-organization-input.js';
 
 const FALSE_VALUES = new Set(['false', '0', 'off', 'no']);
 
@@ -50,14 +50,20 @@ export class OriginatorInput extends LitElement {
         <label class="heading">Originator${marker}</label>
         <input type="text" class="originator-required-flag" aria-hidden="true" tabindex="-1" style="position:absolute;opacity:0;width:1px;height:1px;border:0;padding:0;margin:0;">
         <originator-personal-input></originator-personal-input>
-        <originator-corporate-input></originator-corporate-input>
+        <corporate-organization-input 
+          base-id="originator_corporate_name" 
+          include-dates="true" 
+          include-role="false"
+          heading="Corporate name"
+          insert-class="insert insert_corporate_name"
+        ></corporate-organization-input>
       </div>
     `;
   }
 
   getValue() {
     const personalComponent = this.querySelector('originator-personal-input');
-    const corporateComponent = this.querySelector('originator-corporate-input');
+    const corporateComponent = this.querySelector('corporate-organization-input');
     const personalOriginators = personalComponent && typeof personalComponent.getEntries === 'function'
       ? personalComponent.getEntries()
       : [];
