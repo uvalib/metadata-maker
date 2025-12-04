@@ -226,56 +226,11 @@ document.getElementById("marc-maker").addEventListener("submit", function (event
 		var institution_info = generateInstitutionInfo();
 		console.log('Institution info generated:', institution_info);
 
-		console.log('Checking download options:');
-		console.log('MARC checked:', isChecked("MARC"));
-		console.log('MARCXML checked:', isChecked("MARCXML"));
-		console.log('MODS checked:', isChecked("MODS"));
-		console.log('HTML checked:', isChecked("HTML"));
-		console.log('EAD checked:', isChecked("EAD"));
-
-		if (isChecked("MARC")) {
-			console.log('Attempting MARC download...');
-			if (typeof downloadMARC === 'function') {
-				downloadMARC(recordObject, institution_info);
-			} else {
-				console.error('downloadMARC function not found!');
-			}
-		}
-
-		if (isChecked("MARCXML")) {
-			console.log('Attempting MARCXML download...');
-			if (typeof downloadXML === 'function') {
-				downloadXML(recordObject, institution_info);
-			} else {
-				console.error('downloadXML function not found!');
-			}
-		}
-
-		if (isChecked("MODS")) {
-			console.log('Attempting MODS download...');
-			if (typeof downloadMODS === 'function') {
-				downloadMODS(recordObject, institution_info);
-			} else {
-				console.error('downloadMODS function not found!');
-			}
-		}
-
-		if (isChecked("HTML")) {
-			console.log('Attempting HTML download...');
-			if (typeof downloadHTML === 'function') {
-				downloadHTML(recordObject, institution_info);
-			} else {
-				console.error('downloadHTML function not found!');
-			}
-		}
-
-		if (isChecked("EAD")) {
-			console.log('Attempting EAD download...');
-			if (typeof downloadEAD === 'function') {
-				downloadEAD(recordObject, institution_info);
-			} else {
-				console.error('downloadEAD function not found!');
-			}
+		console.log('Attempting EAD download...');
+		if (typeof downloadEAD === 'function') {
+			downloadEAD(recordObject, institution_info);
+		} else {
+			console.error('downloadEAD function not found!');
 		}
 
 		console.log('Collection Components form submission completed successfully');
