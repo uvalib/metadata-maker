@@ -108,25 +108,14 @@
 			<meta-input container-id="subtitle-block" label="Subtitle" field-id="subtitle" input-class="conditional"
 				help-text="Record the subtitle if one exists" unlisted-option sp-chars></meta-input>
 
-			<div id="translit-title-block"
-				class="translit-title-block translit-block standard-translit-block hidden standard-block">
-				<label for="translit_title" class="hidden translit heading translit-title">Transliterated
-					title</label><br><label for="translit_title"
-					class="insert insert_normal hidden translit translit-title"
-					onClick='insertMenu("translit_title");'>Insert Special Characters</label><br>
-				<div id="insert-translit_title" class="hidden translit translit-title"></div>
-				<input type="text" id="translit_title" class="hidden translit translit-title">
-			</div>
+			<meta-input container-id="translit-title-block" container-class="standard-block hidden"
+				label="Transliterated title" field-id="translit_title" input-class="translit translit-title" sp-chars>
+			</meta-input>
 
-			<div id="translit-subtitle-block"
-				class="translit-title-block translit-block standard-translit-block translit-title hidden standard-block">
-				<label for="translit_subtitle" class="hidden translit heading translit-title">Transliterated
-					subtitle</label><label for="translit_subtitle"
-					class="insert insert_normal hidden translit translit-title"
-					onClick='insertMenu("translit_subtitle");'>Insert Special Characters</label><br>
-				<div id="insert-translit_subtitle" class="hidden translit translit-title"></div>
-				<input type="text" id="translit_subtitle" class="hidden translit translit-title">
-			</div>
+			<meta-input container-id="translit-subtitle-block" container-class="standard-block hidden"
+				label="Transliterated subtitle" field-id="translit_subtitle" input-class="translit translit-title"
+				sp-chars>
+			</meta-input>
 
 			<meta-input container-id="isbn-block" label="ISBN" field-id="isbn" required input-class="conditional"
 				help-text="Record an ISBN, if present. Do not record hyphens. If multiple ISBNs are present, record only one. E.g., 9781234567890 or 1234567890"
@@ -144,16 +133,18 @@
 					class="insert insert_family_name" onClick='insertMenu("family_name");'>Insert Special
 					Characters</label><br>
 				<div id="insert-family_name"></div>
-				<input type="text" class="author conditional translit-listen" required id="family_name"
-					placeholder="Family Name, Given Name">
-				<select name="role" id="role">
-					<option value="art">artist</option>
-					<option selected value="aut">author</option>
-					<option value="ctb">contributor</option>
-					<option value="edt">editor</option>
-					<option value="ill">illustrator</option>
-					<option value="trl">translator</option>
-				</select>
+				<div class="flex gap-2 items-center mb-2">
+					<input type="text" class="author conditional translit-listen input-base flex-grow" required
+						id="family_name" placeholder="Family Name, Given Name">
+					<select name="role" id="role" class="input-base w-auto">
+						<option value="art">artist</option>
+						<option selected value="aut">author</option>
+						<option value="ctb">contributor</option>
+						<option value="edt">editor</option>
+						<option value="ill">illustrator</option>
+						<option value="trl">translator</option>
+					</select>
+				</div>
 
 				<!-- 			<input type='hidden' id= 'hiddenviafdiv' value='none'>
 				<input type='hidden' id= 'hiddenlcdiv' value='none'> -->
@@ -186,30 +177,19 @@
 				help-text="Record the name of the publisher as it appears on the piece. Prefer the name that appears on the title page."
 				sp-chars unlisted-option required></meta-input>
 
-			<div id="translit-publisher-block"
-				class="translit-publisher-block translit-block hidden standard-translit-block standard-block">
-				<label for="translit_publisher" class="hidden translit heading translit-publisher">Transliterated
-					publisher</label><label for="translit_publisher"
-					class="insert insert_normal hidden translit translit-publisher"
-					onClick='insertMenu("translit_publisher");'>Insert Special Characters</label><br>
-				<div id="insert-translit_publisher" class="hidden translit translit-publisher"></div>
-				<input type="text" id="translit_publisher" class="hidden translit translit-publisher">
-			</div>
+			<meta-input container-id="translit-publisher-block" container-class="standard-block hidden"
+				label="Transliterated publisher" field-id="translit_publisher" input-class="translit translit-publisher"
+				sp-chars>
+			</meta-input>
 
 			<meta-input container-id="place-block" label="Place of publication" field-id="place" required
 				input-class="conditional translit-listen"
 				help-text="Record the place of publication as it appears on the piece. Prefer the place that appears on the title page. If there is more than one place, record only one. E.g., Boston, Massachusetts"
 				sp-chars unlisted-option></meta-input>
 
-			<div id="translit-place-block"
-				class="translit-place-block translit-block hidden standard-translit-block standard-block">
-				<label for="translit_place" class="hidden translit heading translit-place">Transliterated
-					place</label><label for="translit_place"
-					class="insert insert_normal hidden translit translit-publisher"
-					onClick='insertMenu("translit_place");'>Insert Special Characters</label><br>
-				<div id="insert-translit_place" class="hidden translit translit-publisher"></div>
-				<input type="text" id="translit_place" class="hidden translit translit-place">
-			</div>
+			<meta-input container-id="translit-place-block" container-class="standard-block hidden"
+				label="Transliterated place" field-id="translit_place" input-class="translit translit-place" sp-chars>
+			</meta-input>
 
 			<meta-input container-id="country-block" label="Country/State/Province of publication" field-id="country"
 				required country input-class="conditional"
@@ -225,11 +205,11 @@
 
 			<div id="pages-block" class="standard-block">
 				<label for="number" class="heading">Number of</label>
-				<select name="vorp" id="vorp">
+				<select name="vorp" id="vorp" class="input-base w-auto mb-2">
 					<option selected value="pages">pages</option>
 					<option value="volumes">volumes</option>
 				</select><br>
-				<input type="text" required id="pages" class="conditional">
+				<input type="text" required id="pages" class="conditional input-base w-32">
 				<label
 					title="Record the number of pages in each numbered sequence. E.g., 356 or xii, 254. Record the number from the last numbered page, and do not include unnumbered pages. 
 	If a multi-volume set, do not record the number of pages, but instead record the number of physical volumes, E.g., 4"><span
@@ -239,10 +219,12 @@
 
 			<div id="dimensions-block" class="standard-block">
 				<label for="dimensions" class="heading">Dimensions<span class="required_marker">*</span></label><br>
-				<input type="text" required id="dimensions" class="required"> cm
-				<label
-					title="Record the height of the piece in cm. Always round up, so that if a piece measures 25.1 cm, record 26 cm"><span
-						class="question-mark">?</span></label>
+				<div class="flex items-center gap-2">
+					<input type="text" required id="dimensions" class="required input-base w-32"> <span>cm</span>
+					<label
+						title="Record the height of the piece in cm. Always round up, so that if a piece measures 25.1 cm, record 26 cm"><span
+							class="question-mark text-uva-orange cursor-help">?</span></label>
+				</div>
 			</div>
 
 			<div id="literature-block" class="standard-block">
@@ -284,17 +266,17 @@
 							href="https://annif.org/">Annif</a>.</label></br>
 					<textarea name="paragraph_text" cols="80" rows="10"
 						placeholder="*Please type or copy and paste the text about the resource (summary or description) here, and then click the 'Suggest' button below."
-						id="summary"></textarea>
+						id="summary" class="input-base"></textarea>
 					<br>
-					<input type="button" name="design1" id="LCSHSuggest" value="Suggest" ;></input>
+					<input type="button" name="design1" id="LCSHSuggest" value="Suggest" class="btn-primary mt-2">
 					<div id="LCSHresponse"></div>
 				</div>
 				<div id="keywords" class="standard-block flex-child green">
 					<label for="keywords" class="heading"><strong>Keywords Search (Faceted Application of Subject
 							Terminology)</strong></label><br>
 					<div class="flex gap-2 items-center mb-2">
-						<input type="text" class="keyword required input-base" required id="keyword0" link="test"
-							valuetype="test">
+						<input type="text" class="keyword required input-base flex-grow" required id="keyword0"
+							link="test" valuetype="test">
 						<label
 							title="Record, in English, any descriptive terms that describe the content of this book. Record only one term or phrase in each box. E.g., Astronomy or Politics of Egypt"><span
 								class="question-mark text-uva-orange cursor-help">?</span></label>

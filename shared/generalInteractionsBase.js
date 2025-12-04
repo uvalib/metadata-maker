@@ -18,7 +18,9 @@
   }
 
   function buildDefaultKeywordMarkup(index) {
-    return '\t<br><input type="text" class="fastID hidden" id="fastID' + index + '"><input type="text" class="fastType hidden" id="fastType' + index + '"><input type="text" class="fastInd hidden" id="fastInd' + index + '"><input type="text" class="keyword border rounded px-2 py-1 w-full mt-2" id="keyword' + index + '">';
+    let markup = '';
+    markup += '<div class="flex gap-2 items-center mb-2"><input type="text" class="keyword input-base flex-grow" id="keyword' + index + '" link="test" valuetype="test"></div>';
+    return markup;
   }
 
   function buildDefaultAuthorMarkup(index, options) {

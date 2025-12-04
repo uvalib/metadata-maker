@@ -71,8 +71,7 @@
 				help-text="Record the title as it appears on the title page. If the title includes a subtitle, record only the main title here, and the subtitle in the next field."
 				required sp-chars></meta-input>
 
-			<meta-input label="Publisher" field-id="publisher" input-class="conditional translit-listen"
-				help-text="Record the name of the publisher." sp-chars unlisted-option></meta-input>
+
 
 			<author-input label="Names" required primary-roles='[{"value":"dis","label":"dissertant","selected":true}]'
 				roles='[{"value":"csp","label":"consultant to a project"},{"value":"ctb","label":"contributor","selected":true},{"value":"dtc","label":"data contributor"},{"value":"dte","label":"dedicatee"},{"value":"dgc","label":"degree committee member"},{"value":"dgs","label":"degree supervisor"},{"value":"fnd","label":"funder"},{"value":"rtm","label":"research team member"},{"value":"spn","label":"sponsor"},{"value":"tad","label":"technical advisor"}]'
@@ -83,14 +82,8 @@
 			</div>
 			<language-select required field-id="language" container-id="language-block"></language-select>
 
-			<div id="publication-block" class="standard-block">
-				<label for="date" class="heading font-semibold">Date of publication<span
-						class="required_marker text-red-600">*</span></label><br />
-				<input type="number" class="date border rounded px-2 py-1" required id="year" min="0">
-				<label
-					title="Record the year of publication if it appears on the piece. Do not record a copyright date here. Copyright dates should be recorded in the next field."><span
-						class="question-mark">?</span></label><br />
-			</div>
+			<meta-input label="Date of publication" field-id="year" date required
+				help-text="Record the year of publication if it appears on the piece. Do not record a copyright date here. Copyright dates should be recorded in the next field."></meta-input>
 
 			<div id="dissertation_type-block" class="standard-block">
 				<label for="dissertation_type" class="heading font-semibold">Dissertation Type<span

@@ -43,14 +43,14 @@ export class RepeatableNoteInput extends RepeatableFieldBase {
 
     renderPrimaryEntry(_key) {
         const fieldId = this.fieldPrefix;
-        return html`<textarea id="${fieldId}" class="${this.fieldPrefix}-input"></textarea>`;
+        return html`<textarea id="${fieldId}" class="${this.fieldPrefix}-input border rounded px-2 py-1 w-full"></textarea>`;
     }
 
     renderAdditionalEntry(key) {
         const fieldId = `${this.fieldPrefix}${key}`;
         return html`
       <div class="added-${this.fieldPrefix}">
-        <textarea id="${fieldId}" class="${this.fieldPrefix}-input"></textarea>
+        <textarea id="${fieldId}" class="${this.fieldPrefix}-input border rounded px-2 py-1 w-full"></textarea>
       </div>
     `;
     }

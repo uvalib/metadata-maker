@@ -2,6 +2,18 @@ import { LitElement, html, nothing } from 'https://cdn.jsdelivr.net/npm/lit@3.2.
 import './edtf-date-input.js';
 import { countryList } from '../country-list.js';
 import { stateList } from '../state-list.js';
+import { governmentPublicationList } from '../government-publication-list.js';
+import { physicalFormList } from '../physical-form-list.js';
+import { formOfCompositionList } from '../form-of-composition-list.js';
+import { scoreFormatList } from '../score-format-list.js';
+import { musicPartsList } from '../music-parts-list.js';
+import { transpositionArrangementList } from '../transposition-arrangement-list.js';
+import { publicationStatusList } from '../publication-status-list.js';
+import { varyingTitleList } from '../varying-title-list.js';
+import { resourceTypeList } from '../resource-type-list.js';
+import { frequencyList } from '../frequency-list.js';
+import { regularityList } from '../regularity-list.js';
+import { relationshipPrecedingList, relationshipSucceedingList } from '../relationship-list.js';
 
 const FALSE_VALUES = new Set(['false', '0', 'off', 'no']);
 
@@ -32,6 +44,21 @@ export class MetaInput extends LitElement {
         url: { type: Boolean },
         country: { type: Boolean },
         stateSelect: { type: Boolean, attribute: 'state-select' },
+        governmentPublication: { type: Boolean, attribute: 'government-publication' },
+        physicalForm: { type: Boolean, attribute: 'physical-form' },
+        formOfComposition: { type: Boolean, attribute: 'form-of-composition' },
+        scoreFormat: { type: Boolean, attribute: 'score-format' },
+        musicParts: { type: Boolean, attribute: 'music-parts' },
+        transpositionArrangement: { type: Boolean, attribute: 'transposition-arrangement' },
+        publicationStatus: { type: Boolean, attribute: 'publication-status' },
+        varyingTitle: { type: Boolean, attribute: 'varying-title' },
+        resourceType: { type: Boolean, attribute: 'resource-type' },
+        frequency: { type: Boolean, attribute: 'frequency' },
+        regularity: { type: Boolean, attribute: 'regularity' },
+        relationshipPreceding: { type: Boolean, attribute: 'relationship-preceding' },
+        relationshipSucceeding: { type: Boolean, attribute: 'relationship-succeeding' },
+        suffix: { type: String },
+        textarea: { type: Boolean },
         placeholder: { type: String }
     };
 
@@ -52,6 +79,21 @@ export class MetaInput extends LitElement {
         this.url = false;
         this.country = false;
         this.stateSelect = false;
+        this.governmentPublication = false;
+        this.physicalForm = false;
+        this.formOfComposition = false;
+        this.scoreFormat = false;
+        this.musicParts = false;
+        this.transpositionArrangement = false;
+        this.publicationStatus = false;
+        this.varyingTitle = false;
+        this.resourceType = false;
+        this.frequency = false;
+        this.regularity = false;
+        this.relationshipPreceding = false;
+        this.relationshipSucceeding = false;
+        this.suffix = '';
+        this.textarea = false;
         this.placeholder = '';
         this.style.display = 'block';
     }
@@ -124,6 +166,175 @@ export class MetaInput extends LitElement {
                 ${stateList.map(s => html`<option value="${s.value}">${s.label}</option>`)}
             </select>
             `;
+        } else if (this.governmentPublication) {
+            inputContent = html`
+            <select
+                id="${id}"
+                class="${this.inputClass} input-base"
+                ?required=${this.required}
+                .value=${this.value}
+                @change=${this.handleInput}
+            >
+                <option value="">Select an option (optional)</option>
+                ${governmentPublicationList.map(item => html`<option value="${item.value}">${item.label}</option>`)}
+            </select>
+            `;
+        } else if (this.physicalForm) {
+            inputContent = html`
+            <select
+                id="${id}"
+                class="${this.inputClass} input-base"
+                ?required=${this.required}
+                .value=${this.value}
+                @change=${this.handleInput}
+            >
+                <option value="">Select a physical form</option>
+                ${physicalFormList.map(item => html`<option value="${item.value}">${item.label}</option>`)}
+            </select>
+            `;
+        } else if (this.formOfComposition) {
+            inputContent = html`
+            <select
+                id="${id}"
+                class="${this.inputClass} input-base"
+                ?required=${this.required}
+                .value=${this.value}
+                @change=${this.handleInput}
+            >
+                <option value="" disabled selected hidden></option>
+                ${formOfCompositionList.map(item => html`<option value="${item.value}">${item.label}</option>`)}
+            </select>
+            `;
+        } else if (this.scoreFormat) {
+            inputContent = html`
+            <select
+                id="${id}"
+                class="${this.inputClass} input-base"
+                ?required=${this.required}
+                .value=${this.value}
+                @change=${this.handleInput}
+            >
+                <option value="">Select an option (optional)</option>
+                ${scoreFormatList.map(item => html`<option value="${item.value}">${item.label}</option>`)}
+            </select>
+            `;
+        } else if (this.musicParts) {
+            inputContent = html`
+            <select
+                id="${id}"
+                class="${this.inputClass} input-base"
+                ?required=${this.required}
+                .value=${this.value}
+                @change=${this.handleInput}
+            >
+                <option value="" disabled selected hidden></option>
+                ${musicPartsList.map(item => html`<option value="${item.value}">${item.label}</option>`)}
+            </select>
+            `;
+        } else if (this.transpositionArrangement) {
+            inputContent = html`
+            <select
+                id="${id}"
+                class="${this.inputClass} input-base"
+                ?required=${this.required}
+                .value=${this.value}
+                @change=${this.handleInput}
+            >
+                <option value="" disabled selected hidden></option>
+                ${transpositionArrangementList.map(item => html`<option value="${item.value}">${item.label}</option>`)}
+            </select>
+            `;
+        } else if (this.publicationStatus) {
+            inputContent = html`
+            <select
+                id="${id}"
+                class="${this.inputClass} input-base"
+                ?required=${this.required}
+                .value=${this.value}
+                @change=${this.handleInput}
+            >
+                <option value="" disabled selected hidden></option>
+                ${publicationStatusList.map(item => html`<option value="${item.value}">${item.label}</option>`)}
+            </select>
+            `;
+        } else if (this.varyingTitle) {
+            inputContent = html`
+            <select
+                id="${id}"
+                class="${this.inputClass} input-base"
+                ?required=${this.required}
+                .value=${this.value}
+                @change=${this.handleInput}
+            >
+                <option value="" disabled selected hidden></option>
+                ${varyingTitleList.map(item => html`<option value="${item.value}">${item.label}</option>`)}
+            </select>
+            `;
+        } else if (this.resourceType) {
+            inputContent = html`
+            <select
+                id="${id}"
+                class="${this.inputClass} input-base"
+                ?required=${this.required}
+                .value=${this.value}
+                @change=${this.handleInput}
+            >
+                <option value="" disabled selected hidden></option>
+                ${resourceTypeList.map(item => html`<option value="${item.value}">${item.label}</option>`)}
+            </select>
+            `;
+        } else if (this.frequency) {
+            inputContent = html`
+            <select
+                id="${id}"
+                class="${this.inputClass} input-base"
+                ?required=${this.required}
+                .value=${this.value}
+                @change=${this.handleInput}
+            >
+                <option value="" disabled selected hidden></option>
+                ${frequencyList.map(item => html`<option value="${item.value}">${item.label}</option>`)}
+            </select>
+            `;
+        } else if (this.regularity) {
+            inputContent = html`
+            <select
+                id="${id}"
+                class="${this.inputClass} input-base"
+                ?required=${this.required}
+                .value=${this.value}
+                @change=${this.handleInput}
+            >
+                <option value="" disabled selected hidden></option>
+                ${regularityList.map(item => html`<option value="${item.value}">${item.label}</option>`)}
+            </select>
+            `;
+        } else if (this.relationshipPreceding) {
+            inputContent = html`
+            <select
+                id="${id}"
+                class="${this.inputClass} input-base"
+                ?required=${this.required}
+                .value=${this.value}
+                @change=${this.handleInput}
+            >
+                <option value="" disabled selected hidden></option>
+                ${relationshipPrecedingList.map(item => html`<option value="${item.value}">${item.label}</option>`)}
+            </select>
+            `;
+        } else if (this.relationshipSucceeding) {
+            inputContent = html`
+            <select
+                id="${id}"
+                class="${this.inputClass} input-base"
+                ?required=${this.required}
+                .value=${this.value}
+                @change=${this.handleInput}
+            >
+                <option value="" disabled selected hidden></option>
+                ${relationshipSucceedingList.map(item => html`<option value="${item.value}">${item.label}</option>`)}
+            </select>
+            `;
         } else if (this.date) {
             inputContent = html`
             <edtf-date-input
@@ -133,6 +344,17 @@ export class MetaInput extends LitElement {
                 .value=${this.value}
                 @input=${this.handleInput}
             ></edtf-date-input>
+            `;
+        } else if (this.textarea) {
+            inputContent = html`
+            <textarea
+                id="${id}"
+                class="${this.inputClass} input-base h-32"
+                ?required=${this.required}
+                .value=${this.value}
+                placeholder="${this.placeholder}"
+                @input=${this.handleInput}
+            ></textarea>
             `;
         } else {
             const inputElement = html`
@@ -150,6 +372,10 @@ export class MetaInput extends LitElement {
             inputContent = this.url
                 ? html`<div class="flex items-center gap-2"><span>http://</span>${inputElement}</div>`
                 : inputElement;
+        }
+
+        if (this.suffix) {
+            inputContent = html`<div class="flex items-center gap-2">${inputContent}<span>${this.suffix}</span></div>`;
         }
 
         return html`

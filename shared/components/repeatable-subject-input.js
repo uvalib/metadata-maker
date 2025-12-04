@@ -30,7 +30,7 @@ export class RepeatableSubjectInput extends RepeatableFieldBase {
   }
 
   renderContainer(entriesContent, addControl) {
-    return html`<div class="subject-container">
+    return html`<div class="subject-container standard-block">
       <label class="heading">Subject</label>
       ${entriesContent}
       <div class="repeatable-add-control">${addControl}</div>

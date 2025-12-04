@@ -14,6 +14,7 @@
 	<script type="module" src="/shared/components/standard-text-input.js"></script>
 	<script type="module" src="/shared/components/meta-input.js"></script>
 	<script type="module" src="/shared/components/language-select.js"></script>
+	<script type="module" src="/shared/components/author-input.js"></script>
 
 	<link href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.14.0/themes/smoothness/jquery-ui.css" rel="stylesheet">
 	<link href="https://jqueryui.com/jquery-wp-content/themes/jqueryui.com/style.css" rel="stylesheet">
@@ -193,38 +194,20 @@
 				help-text="Select the country of publication from the drop-down menu. If published in the United States, Canada, Australia, or the United Kingdom, select the state, province, or geographic region"
 				unlisted-option></meta-input>
 
-			<div id="publication-block" class="standard-block">
-				<label for="date" class="heading">Date of publication<span
-						class="required_marker text-red-600">*</span></label><br>
-				<input type="number" class="date conditional input-base" required id="year" min="0">
-				<label
-					title="Record the year of publication if it appears on the piece. Do not record a copyright date here. Copyright dates should be recorded in the next field."><span
-						class="question-mark text-gray-500 ml-2 cursor-help">?</span></label><br>
-				<div class="mt-2">
-					<span class="unlisted text-sm text-gray-600">Unlisted</span><input type="checkbox" id="year_listed"
-						class="listed ml-2">
-				</div>
-			</div>
+			<meta-input container-id="publication-block" label="Date of publication" field-id="year" required date
+				help-text="Record the year of publication if it appears on the piece. Do not record a copyright date here. Copyright dates should be recorded in the next field."
+				unlisted-option></meta-input>
 
-			<div id="copyright-block" class="standard-block">
-				<label for="cyear" class="heading">Copyright date<span
-						class="required_marker text-red-600">*</span></label><br>
-				<input type="number" class="date conditional input-base" required id="cyear" min="0">
-				<label title="Record the year of copyright if it appears on the piece."><span
-						class="question-mark text-gray-500 ml-2 cursor-help">?</span></label><br>
-				<div class="mt-2">
-					<span class="unlisted text-sm text-gray-600">Unlisted</span><input type="checkbox" id="cyear_listed"
-						class="listed ml-2">
-				</div>
-			</div>
+			<meta-input container-id="copyright-block" label="Copyright date" field-id="cyear" date
+				help-text="Record the year of copyright if it appears on the piece." unlisted-option></meta-input>
 
 			<div id="pages-block" class="standard-block">
 				<label for="number" class="heading">Number of<span class="required_marker text-red-600">*</span></label>
-				<select name="vorp" id="vorp" class="input-base mb-2">
+				<select name="vorp" id="vorp" class="input-base mb-2 w-auto">
 					<option selected value="pages">pages</option>
 					<option value="volumes">volumes</option>
 				</select><br>
-				<input type="text" required id="pages" class="conditional input-base">
+				<input type="text" required id="pages" class="conditional input-base w-32">
 				<label
 					title="Record the number of pages in each numbered sequence. E.g., 356 or xii, 254. Record the number from the last numbered page, and do not include unnumbered pages. 
 	If a multi-volume set, do not record the number of pages, but instead record the number of physical volumes, E.g., 4"><span

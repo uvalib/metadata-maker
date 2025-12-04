@@ -29,6 +29,9 @@
 	<script type="module" src="/shared/components/standard-text-input.js"></script>
 	<script type="module" src="/shared/components/meta-input.js"></script>
 	<script type="module" src="/shared/components/language-select.js"></script>
+	<script type="module" src="/shared/components/author-input.js"></script>
+	<script type="module" src="/shared/components/corporate-organization-input.js"></script>
+	<script type="module" src="../shared/components/accompanying-matter.js"></script>
 	<link href="https://fonts.googleapis.com/css?family=Inter" rel="stylesheet" />
 	<style type="text/tailwindcss">
 		@layer components {
@@ -97,6 +100,8 @@
 			<meta-input label="Edition statement" field-id="edition" input-class="conditional translit-listen"
 				help-text="Record an edition statement."></meta-input>
 			<language-select required field-id="language" container-id="language-block"></language-select>
+			<author-input label="Names" required unlisted-option></author-input>
+			<corporate-organization-input></corporate-organization-input>
 			<meta-input label="Publisher" field-id="publisher" input-class="conditional translit-listen"
 				help-text="Record publisher name." sp-chars unlisted-option></meta-input>
 			<meta-input label="Place of publication" field-id="place" required input-class="conditional translit-listen"
@@ -105,8 +110,40 @@
 				help-text="Record year of publication." date></meta-input>
 			<meta-input label="Copyright date" field-id="cyear" input-class="date conditional"
 				help-text="Record copyright date." date></meta-input>
+			<div id="pages-block" class="standard-block">
+				<label for="number" class="heading">Number of</label>
+				<select name="vorp" id="vorp" class="input-base w-auto mb-2">
+					<option selected value="pages">pages</option>
+					<option value="volumes">volumes</option>
+				</select><br>
+				<input type="text" required id="pages" class="conditional input-base w-32">
+				<label
+					title="Record the number of pages in each numbered sequence. E.g., 356 or xii, 254. Record the number from the last numbered page, and do not include unnumbered pages. 
+	If a multi-volume set, do not record the number of pages, but instead record the number of physical volumes, E.g., 4"><span
+						class="question-mark text-uva-orange cursor-help">?</span></label><br>
+				<span class="unlisted">Unpaged</span><input type="checkbox" id="pages_listed" class="listed">
+			</div>
+			<meta-input label="Form of composition" field-id="composition-form-dropdown" required
+				form-of-composition></meta-input>
+			<meta-input label="Score format" field-id="score-format-dropdown" score-format></meta-input>
+			<meta-input label="Music parts" field-id="music-parts-dropdown" required music-parts></meta-input>
+			<meta-input label="Transposition and arrangement" field-id="transposition-arrangement-dropdown" required
+				transposition-arrangement></meta-input>
+			<accompanying-matter></accompanying-matter>
 			<meta-input label="Dimensions" field-id="dimensions" required input-class="required"
 				help-text="Record dimensions in cm."></meta-input>
+			<meta-input label="Contents" field-id="contents" textarea></meta-input>
+			<meta-input label="Formatted Contents Note" field-id="formatted-contents-note" textarea></meta-input>
+			<meta-input label="Notes to the Cataloger" field-id="notes" textarea></meta-input>
+			<div id="save-as-block" class="standard-block">
+				<label for="filename" class="heading">Save as</label>
+				<input type="text" id="filename" placeholder="record" class="input-base">.[file type]
+			</div>
+			<div id="formats-block" class="standard-block">
+				<label for="filetype" class="heading">Choose record formats:</label><br>
+				<input type="checkbox" id="MARC" class="filetype">MARC<br>
+				<input type="checkbox" id="MARCXML" class="filetype">MARCXML
+			</div>
 			<meta-input label="Illustrations?" field-id="illustrations" help-text="Yes/No"></meta-input>
 			<div id="keywords" class="standard-block">
 				<label for="keywords" class="heading">Keywords<span class="required_marker">*</span></label><br />

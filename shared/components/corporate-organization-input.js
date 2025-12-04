@@ -185,7 +185,7 @@ export class CorporateOrganizationInput extends RepeatableFieldBase {
     const requiredMarker = this.isRequired && this.requiredMarker ? html`<span class="required_marker">${this.requiredMarker}</span>` : nothing;
 
     const roleSelect = this.includeRole ? html`
-      <select name="${roleId}" id="${roleId}" class="border rounded px-2 py-1 ml-2">
+      <select name="${roleId}" id="${roleId}" class="input-base w-auto ml-2">
         <option value="ctb" selected>contributor</option>
         <option value="cre">creator</option>
       </select>
@@ -196,13 +196,13 @@ export class CorporateOrganizationInput extends RepeatableFieldBase {
         container-class="inline-block ml-2"
         field-id="${this.baseId}_start"
         heading="Start date"
-        input-class="originator-corporate-start border rounded px-2 py-1 w-32"
+        input-class="originator-corporate-start input-base w-32"
       ></edtf-date-input>
       <edtf-date-input
         container-class="inline-block ml-2"
         field-id="${this.baseId}_end"
         heading="End date"
-        input-class="originator-corporate-end border rounded px-2 py-1 w-32"
+        input-class="originator-corporate-end input-base w-32"
       ></edtf-date-input>
     ` : nothing;
 
@@ -211,7 +211,7 @@ export class CorporateOrganizationInput extends RepeatableFieldBase {
       <label for="${nameId}" class="${this.insertClass} text-blue-600 cursor-pointer text-sm ml-2" @click=${() => this.handleInsertClick(nameId)}>Ω</label><br>
       <div id="${insertId}"></div>
       <div class="flex flex-wrap items-end gap-2">
-        <input type="text" class="corporate conditional translit-listen border rounded px-2 py-1 w-64 originator-corporate-name" id="${nameId}" ?required=${this.isRequired}>
+        <input type="text" class="corporate conditional translit-listen input-base flex-grow w-auto originator-corporate-name" id="${nameId}" ?required=${this.isRequired}>
         ${roleSelect}
         ${dateInputs}
         <label title="${this.helpText}"><span class="question-mark text-gray-500 ml-2 cursor-help">?</span></label>
@@ -236,7 +236,7 @@ export class CorporateOrganizationInput extends RepeatableFieldBase {
     const translitClass = `translit_${nameId}`;
 
     const roleSelect = this.includeRole ? html`
-      <select name="role${key}" id="${roleId}" class="border rounded px-2 py-1">
+      <select name="role${key}" id="${roleId}" class="input-base w-auto">
         <option value="cre" selected>creator</option>
         <option value="ctb">contributor</option>
       </select>
@@ -247,13 +247,13 @@ export class CorporateOrganizationInput extends RepeatableFieldBase {
         container-class="inline-block"
         field-id="${nameId}_start"
         heading="Start date"
-        input-class="originator-corporate-start border rounded px-2 py-1 w-32"
+        input-class="originator-corporate-start input-base w-32"
       ></edtf-date-input>
       <edtf-date-input
         container-class="inline-block"
         field-id="${nameId}_end"
         heading="End date"
-        input-class="originator-corporate-end border rounded px-2 py-1 w-32"
+        input-class="originator-corporate-end input-base w-32"
       ></edtf-date-input>
     ` : nothing;
 
@@ -262,7 +262,7 @@ export class CorporateOrganizationInput extends RepeatableFieldBase {
         <label for="${nameId}" class="${this.insertClass} text-blue-600 cursor-pointer text-sm" @click=${() => this.handleInsertClick(nameId)}>Ω</label><br>
         <div id="${insertId}"></div>
         <span class="added-corporate flex items-center gap-2 flex-wrap">
-          <input type="text" class="corporate translit-listen border rounded px-2 py-1 w-64 originator-corporate-name" id="${nameId}">
+          <input type="text" class="corporate translit-listen input-base flex-grow w-auto originator-corporate-name" id="${nameId}">
           ${roleSelect}
           ${dateInputs}
         </span>

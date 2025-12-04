@@ -22,7 +22,8 @@ export class EdtfDateInput extends LitElement {
     inputClass: { type: String, attribute: 'input-class' },
     required: { attribute: 'required' },
     requiredMarker: { type: String, attribute: 'required-marker' },
-    helpText: { type: String, attribute: 'help-text' }
+    helpText: { type: String, attribute: 'help-text' },
+    disabled: { type: Boolean, reflect: true }
   };
 
   constructor() {
@@ -35,6 +36,7 @@ export class EdtfDateInput extends LitElement {
     this.required = null;
     this.requiredMarker = '*';
     this.helpText = '';
+    this.disabled = false;
     this.invalidMessage = 'Enter a valid EDTF date (examples: 2024, 2024-11, 2024-11-21, -0500 for BC, 2024? uncertain, 2024~ approximate, 2024% both)';
   }
 
@@ -67,6 +69,7 @@ export class EdtfDateInput extends LitElement {
         @input=${this._handleInput}
         @blur=${this._handleBlur}
         placeholder="YYYY or YYYY-MM or YYYY-MM-DD"
+        ?disabled=${this.disabled}
       >
       ${help}
     </div>`;
