@@ -33,7 +33,7 @@ export class RepeatableExtentInput extends RepeatableFieldBase {
   }
 
   renderContainer(entriesContent, addControl) {
-    return html`<div class="extent-container">
+    return html`<div class="extent-container standard-block">
       <label class="heading">${this.heading}<span class="required_marker">${this.requiredMarker}</span></label>
       ${entriesContent}
       <div class="repeatable-add-control">${addControl}</div>
@@ -43,12 +43,12 @@ export class RepeatableExtentInput extends RepeatableFieldBase {
   renderEntry(key) {
     const textId = `${this.fieldPrefix}_text_${key}`;
     const unitsId = `${this.fieldPrefix}_units_${key}`;
-    const wrapperClass = key === '0' ? 'extent-entry' : 'extent-entry added';
+    const wrapperClass = key === '0' ? 'extent-entry flex gap-4' : 'extent-entry added flex gap-4 mt-2';
 
     return html`
       <div class="${wrapperClass}" data-extent-index="${key}">
         <standard-text-input
-          container-class="extent-field"
+          container-class="extent-field flex-1"
           field-id="${textId}"
           heading="${this.textHeading}"
           input-class="extent-text translit-listen"
@@ -56,7 +56,7 @@ export class RepeatableExtentInput extends RepeatableFieldBase {
           required-marker="${this.requiredMarker}"
         ></standard-text-input>
         <standard-text-input
-          container-class="extent-field"
+          container-class="extent-field flex-1"
           field-id="${unitsId}"
           heading="${this.unitsHeading}"
           input-class="extent-units translit-listen"

@@ -61,33 +61,37 @@ export class OriginatorPersonalInput extends RepeatableFieldBase {
 
     return html`
       <div class="originator-personal-entry" data-originator-index="${key}">
-        <standard-text-input
-          container-class="originator-field"
-          field-id="${familyId}"
-          heading="Family name"
-          input-class="originator-personal-family translit-listen"
-        ></standard-text-input>
+        <div class="flex gap-4">
+          <standard-text-input
+            container-class="originator-field flex-1"
+            field-id="${familyId}"
+            heading="Family name"
+            input-class="originator-personal-family translit-listen"
+          ></standard-text-input>
 
-        <standard-text-input
-          container-class="originator-field"
-          field-id="${givenId}"
-          heading="Given name"
-          input-class="originator-personal-given translit-listen"
-        ></standard-text-input>
+          <standard-text-input
+            container-class="originator-field flex-1"
+            field-id="${givenId}"
+            heading="Given name"
+            input-class="originator-personal-given translit-listen"
+          ></standard-text-input>
+        </div>
 
-        <edtf-date-input
-          container-class="originator-field"
-          field-id="${birthId}"
-          heading="Birth date"
-          input-class="originator-personal-birth"
-        ></edtf-date-input>
+        <div class="flex gap-4 mt-2">
+          <edtf-date-input
+            container-class="originator-field flex-1"
+            field-id="${birthId}"
+            heading="Birth date"
+            input-class="originator-personal-birth"
+          ></edtf-date-input>
 
-        <edtf-date-input
-          container-class="originator-field"
-          field-id="${deathId}"
-          heading="Death date"
-          input-class="originator-personal-death"
-        ></edtf-date-input>
+          <edtf-date-input
+            container-class="originator-field flex-1"
+            field-id="${deathId}"
+            heading="Death date"
+            input-class="originator-personal-death"
+          ></edtf-date-input>
+        </div>
       </div>
     `;
   }

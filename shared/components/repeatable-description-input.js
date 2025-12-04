@@ -32,7 +32,7 @@ export class RepeatableDescriptionInput extends RepeatableFieldBase {
     }
 
     renderContainer(entriesContent, addControl) {
-        return html`<div class="description-container">
+        return html`<div class="description-container standard-block">
       <label class="heading">${this.heading}<span class="required_marker">${this.requiredMarker}</span></label>
       ${entriesContent}
       <div class="repeatable-add-control">${addControl}</div>
@@ -42,13 +42,13 @@ export class RepeatableDescriptionInput extends RepeatableFieldBase {
     renderEntry(key) {
         const typeId = `${this.fieldPrefix}_type_${key}`;
         const textId = `${this.fieldPrefix}_text_${key}`;
-        const wrapperClass = key === '0' ? 'description-entry' : 'description-entry added';
+        const wrapperClass = key === '0' ? 'description-entry flex gap-4' : 'description-entry added flex gap-4 mt-2';
 
         return html`
       <div class="${wrapperClass}" data-description-index="${key}">
-        <div class="description-field">
-          <label for="${typeId}" class="heading">Type</label><br>
-          <select id="${typeId}" class="description-type" required>
+        <div class="description-field w-1/3">
+          <label for="${typeId}" class="heading">Type</label>
+          <select id="${typeId}" class="description-type input-base" required>
             <option value="" selected disabled hidden></option>
             <option value="accessrestrict">accessrestrict</option>
             <option value="accruals">accruals</option>
@@ -69,11 +69,11 @@ export class RepeatableDescriptionInput extends RepeatableFieldBase {
             <option value="userestrict">userestrict</option>
           </select>
         </div>
-        <div class="description-field">
-          <label for="${textId}" class="heading">Text</label><br>
+        <div class="description-field w-2/3">
+          <label for="${textId}" class="heading">Text</label>
           <textarea 
             id="${textId}" 
-            class="description-text" 
+            class="description-text input-base" 
             required 
             rows="5"
           ></textarea>

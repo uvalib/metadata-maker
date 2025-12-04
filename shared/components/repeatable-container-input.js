@@ -33,7 +33,7 @@ export class RepeatableContainerInput extends RepeatableFieldBase {
     }
 
     renderContainer(entriesContent, addControl) {
-        return html`<div class="container-container">
+        return html`<div class="container-container standard-block">
       <label class="heading">${this.heading}<span class="required_marker">${this.requiredMarker}</span></label>
       ${entriesContent}
       <div class="repeatable-add-control">${addControl}</div>
@@ -43,13 +43,13 @@ export class RepeatableContainerInput extends RepeatableFieldBase {
     renderEntry(key) {
         const typeId = `${this.fieldPrefix}_type_${key}`;
         const labelId = `${this.fieldPrefix}_label_${key}`;
-        const wrapperClass = key === '0' ? 'container-entry' : 'container-entry added';
+        const wrapperClass = key === '0' ? 'container-entry flex gap-4' : 'container-entry added flex gap-4 mt-2';
 
         return html`
       <div class="${wrapperClass}" data-container-index="${key}">
-        <div class="container-field">
-          <label for="${typeId}" class="heading">Type</label><br>
-          <select id="${typeId}" class="container-type" required>
+        <div class="container-field w-1/3">
+          <label for="${typeId}" class="heading">Type</label>
+          <select id="${typeId}" class="container-type input-base" required>
             <option value="" selected disabled hidden></option>
             <option value="box">box</option>
             <option value="folder">folder</option>
@@ -64,7 +64,7 @@ export class RepeatableContainerInput extends RepeatableFieldBase {
           </select>
         </div>
         <standard-text-input
-          container-class="container-field"
+          container-class="container-field flex-1"
           field-id="${labelId}"
           heading="Label"
           input-class="container-label"

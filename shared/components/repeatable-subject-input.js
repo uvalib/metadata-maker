@@ -44,9 +44,9 @@ export class RepeatableSubjectInput extends RepeatableFieldBase {
     const wrapperClass = isFirst ? 'subject-entry' : 'subject-entry added';
 
     return html`
-      <div class="${wrapperClass}" data-subject-index="${key}">
+      <div class="${wrapperClass} flex gap-4" data-subject-index="${key}">
         <standard-text-input
-          container-class="subject-field"
+          container-class="subject-field flex-1"
           field-id="${termId}"
           heading="Term"
           input-class="subject-term"
@@ -54,15 +54,15 @@ export class RepeatableSubjectInput extends RepeatableFieldBase {
           required-marker="*"
         ></standard-text-input>
 
-        <div class="subject-field">
+        <div class="subject-field flex-1">
           <label for="${typeId}" class="heading">Type<span class="required_marker">*</span></label><br>
-          <select id="${typeId}" class="subject-type" required>
+          <select id="${typeId}" class="subject-type border rounded px-2 py-1 w-full" required>
             ${SUBJECT_TYPES.map((value) => html`<option value="${value}">${value}</option>`)}
           </select>
         </div>
 
         <standard-text-input
-          container-class="subject-field"
+          container-class="subject-field flex-1"
           field-id="${sourceId}"
           heading="Source"
           input-class="subject-source"
