@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>EAD Test</title>
+</head>
+
+<body>
+    <h1>EAD Test Output</h1>
+    <pre id="output"></pre>
+
+    <!-- Load the script -->
+    <script src="collections/metadatamaker/downloadEAD.js"></script>
+
+    <script>
+        // Mock downloadFile to capture output
+        window.downloadFile = function (content, type, filename) {
+            document.getElementById('output').textContent = content;
+        };
+
+        // Mock getTimestamp
+        window.getTimestamp = function () { return '20231027'; };
+
+        // Mock Data
+        const record = {
+            identifier: '12345',
+            level: 'series',
+            collection_title: 'My Collection',
+            collection_identifier: 'C001',
+            parent_identifier: 'P001',
+            title: [{ title: 'Series Title' }],
+            coverage_start: '2000',
+            coverage_end: '2020',
+            coverage_type: 'inclusive',
+            dimensions: { value: '1.5', units: 'linear ft.' },
+            extent: [{ text: '100 letters', units: 'letters' }],
+            languages: ['English'],
+            originators_personal: [{ family: 'Doe', given: 'John', birth: '1900', death: '1980' }],
+            originators_corporate: [{ name: 'Corp Inc.', start: '1950', end: '2000' }],
+            containers: [{ type: 'Box', label: '1' }],
+            descriptions: [{ type: 'bioghist', text: 'Bio info here.' }],
+            subjects: [{ term: 'Art', type: 'topic', source: 'lcsh' }],
+            notes: ['General note.']
+        };
+
+        const institution_info = {
+            html: { name: 'My Repository' },
+            mods: { physicalLocation: 'My Location' }
+        };
+
+        // Run when loaded
+        window.onload = function () {
+            if (window.downloadEAD) {
+                window.downloadEAD(record, institution_info);
+            } else {
+                document.getElementById('output').textContent = 'Error: downloadEAD not found';
+            }
+        };
+    </script>
+</body>
+
+</html>

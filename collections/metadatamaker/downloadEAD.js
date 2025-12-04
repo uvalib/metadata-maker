@@ -19,56 +19,43 @@ function downloadEAD(record, institution_info) {
             .replace(/'/g, '&apos;');
     }
 
-    // Collect data from form
-    const identifier = get('#identifier');
-    const level = get('#level');
-    const otherLevel = get('#other_level');
-    const parentIdentifier = get('#parent_identifier');
-    const collectionTitle = get('#collection_title');
-    const collectionIdentifier = get('#collection_identifier');
-    const locationWithinCollection = get('#location_within_collection');
-    const title = get('#title');
-    const coverageStart = get('#coverage_start');
-    const coverageEnd = get('#coverage_end');
-    const coverageType = get('#coverage_type') || 'inclusive';
+    // Collect data from record object
+    const identifier = record.identifier || '';
+    const level = record.level || '';
+    const otherLevel = record.other_level || '';
+    const parentIdentifier = record.parent_identifier || '';
+    const collectionTitle = record.collection_title || '';
+    const collectionIdentifier = record.collection_identifier || '';
+    const locationWithinCollection = record.location_within_collection || '';
+    const title = record.title && record.title[0] ? record.title[0].title : '';
+    const coverageStart = record.coverage_start || '';
+    const coverageEnd = record.coverage_end || '';
+    const coverageType = record.coverage_type || 'inclusive';
 
     // Get dimensions
-    const dimensionsValue = get('#dimensions_text');
-    const dimensionsUnits = get('#dimensions_units');
+    const dimensionsValue = record.dimensions ? record.dimensions.value : '';
+    const dimensionsUnits = record.dimensions ? record.dimensions.units : '';
 
     // Get repeatable fields
-    const containerComponent = document.querySelector('repeatable-container-input');
-    const containers = containerComponent && typeof containerComponent.getEntries === 'function'
-        ? containerComponent.getEntries()
-        : [];
-
-    const descriptionComponent = document.querySelector('repeatable-description-input');
-    const descriptions = descriptionComponent && typeof descriptionComponent.getEntries === 'function'
-        ? descriptionComponent.getEntries()
-        : [];
-
-    const referenceInputs = Array.from(document.querySelectorAll('.reference-input'))
-        .map(input => (input.value || '').trim())
-        .filter(value => value !== '');
-
-    // Get extents from record object
+    const containers = record.containers || [];
+    const descriptions = record.descriptions || [];
+    const references = record.references || [];
     const extentEntries = record.extent || [];
-
-    // Get languages from record object
     const languages = record.languages || [];
-
-    // Get subjects/keywords from record object
     const subjects = record.subjects || [];
+    const notes = record.notes || [];
 
     // Get originators from record object
     const personalOriginators = record.originators_personal || [];
     const corporateOriginators = record.originators_corporate || [];
 
     // Build XML
-    let xml = '';
+    let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
+    xml += '<!DOCTYPE c SYSTEM "https://raw.githubusercontent.com/SAA-SDT/EAD2002/refs/heads/main/ead.dtd">\n';
+    xml += '<!-- c/@level attribute comes from Level field -->\n';
 
     // Start <c> element with attributes
-    xml += `<c id="${escapeXML(identifier)}" level="${escapeXML(level)}"`;
+    xml += `<c level="${escapeXML(level)}"`;
     if (level === 'otherlevel' && otherLevel) {
         xml += ` otherlevel="${escapeXML(otherLevel)}"`;
     }
@@ -76,10 +63,34 @@ function downloadEAD(record, institution_info) {
 
     // <did> section
     xml += '  <did>\n';
+    xml += '    <!-- @altrender attributes are needed to flag some elements for exclusion by downstream processing -->\n';
 
-    // Physical location
-    if (locationWithinCollection) {
-        xml += `    <physloc>${escapeXML(locationWithinCollection)}</physloc>\n`;
+    // Repository (Placeholder as per requirements, but using institution info if available could be an option. 
+    // However, the requirement says "Organization's Name" and "Physical Location". 
+    // We'll use the institution_info provided.)
+    xml += '    <repository altrender="display:none">\n';
+    // Use institution info for corpname if available, otherwise placeholder
+    const repoName = institution_info && institution_info.html && institution_info.html.name ? institution_info.html.name : "Organization's Name";
+    xml += `      <corpname>${escapeXML(repoName)}</corpname>\n`;
+
+    // Use institution info for address if available
+    const repoAddress = institution_info && institution_info.mods && institution_info.mods.physicalLocation ? institution_info.mods.physicalLocation : "Physical Location";
+    xml += `      <address><addressline>${escapeXML(repoAddress)}</addressline></address>\n`;
+    xml += '    </repository>\n';
+
+    // Collection Title
+    if (collectionTitle) {
+        xml += `    <unittitle type="collection title" altrender="display:none">${escapeXML(collectionTitle)}</unittitle>\n`;
+    }
+
+    // Collection Identifier
+    if (collectionIdentifier) {
+        xml += `    <unitid type="collection id" altrender="display:none">${escapeXML(collectionIdentifier)}</unitid>\n`;
+    }
+
+    // Parent Identifier
+    if (parentIdentifier) {
+        xml += `    <unitid type="parent id" altrender="display:none">${escapeXML(parentIdentifier)}</unitid>\n`;
     }
 
     // Title
@@ -88,15 +99,22 @@ function downloadEAD(record, institution_info) {
     }
 
     // Unit date
+    xml += '    <!-- @type = inclusive|bulk -->\n';
+    xml += '    <!-- Coverage start and coverage end must be separated by "/" even if one or the other is blank -->\n';
     if (coverageStart || coverageEnd) {
-        const dateRange = [coverageStart, coverageEnd].filter(d => d).join('/');
+        const dateRange = `${coverageStart}/${coverageEnd}`;
         xml += `    <unitdate type="${escapeXML(coverageType)}">${escapeXML(dateRange)}</unitdate>\n`;
+    }
+
+    // Identifier
+    if (identifier) {
+        xml += `    <unitid>${escapeXML(identifier)}</unitid>\n`;
     }
 
     // Origination (personal and corporate names)
     if (personalOriginators.length > 0 || corporateOriginators.length > 0) {
-
-        const originationParts = [];
+        xml += '    <!-- Birth and death dates for personal names must be separated by "/" even if one or the \n';
+        xml += '      other is blank. If both are blank, don\'t display the parentheses or slash. -->\n';
 
         personalOriginators.forEach(person => {
             const familyName = person.family || '';
@@ -112,14 +130,17 @@ function downloadEAD(record, institution_info) {
             }
 
             if (birthDate || deathDate) {
-                const dateRange = [birthDate, deathDate].filter(d => d).join('-') || birthDate || deathDate;
+                const dateRange = `${birthDate}/${deathDate}`;
                 namePart += ` (${dateRange})`;
             }
 
             if (namePart) {
-                originationParts.push(namePart);
+                xml += `    <origination>${escapeXML(namePart)}</origination>\n`;
             }
         });
+
+        xml += '    <!-- Start and end dates for corporate names must be separated by "/" even if one or the \n';
+        xml += '      other is blank. If both are blank, don\'t display the parentheses or slash. -->\n';
 
         corporateOriginators.forEach(corp => {
             const corpName = corp.name || '';
@@ -128,18 +149,14 @@ function downloadEAD(record, institution_info) {
 
             let namePart = corpName;
             if (startDate || endDate) {
-                const dateRange = [startDate, endDate].filter(d => d).join('-') || startDate || endDate;
+                const dateRange = `${startDate}/${endDate}`;
                 namePart += ` (${dateRange})`;
             }
 
             if (namePart) {
-                originationParts.push(namePart);
+                xml += `    <origination>${escapeXML(namePart)}</origination>\n`;
             }
         });
-
-        if (originationParts.length > 0) {
-            xml += `    <origination>${escapeXML(originationParts.join('; '))}</origination>\n`;
-        }
     }
 
     // Languages
@@ -168,28 +185,75 @@ function downloadEAD(record, institution_info) {
         xml += '    </physdesc>\n';
     }
 
+    // Material spec placeholder
+    xml += '    <materialspec>_materialspec_</materialspec>\n';
+
+    // Physical location
+    if (locationWithinCollection) {
+        xml += `    <physloc>${escapeXML(locationWithinCollection)}</physloc>\n`;
+    }
+
     // Containers
-    containers.forEach(container => {
-        if (container.type && container.label) {
-            xml += `    <container type="${escapeXML(container.type)}" label="${escapeXML(container.label)}"/>\n`;
-        }
-    });
+    if (containers.length > 0) {
+        containers.forEach(container => {
+            if (container.type && container.label) {
+                xml += '    <container>\n';
+                xml += `      <!-- ${escapeXML(container.type)} -->\n`;
+                xml += `      ${escapeXML(container.label)}\n`;
+                xml += '    </container>\n';
+            }
+        });
+    }
 
     xml += '  </did>\n';
 
+    // Notes
+    if (notes.length > 0) {
+        xml += '  <note>\n';
+        notes.forEach(note => {
+            if (note) {
+                xml += `    <p>${escapeXML(note)}</p>\n`;
+            }
+        });
+        xml += '  </note>\n';
+    }
+
     // Description elements (based on type)
+    // Map element name to <head> text
+    const headMap = {
+        'accessrestrict': 'Access Restrictions',
+        'accruals': 'Accruals',
+        'acqinfo': 'Acquisition',
+        'altformavail': 'Alternative Form',
+        'appraisal': 'Appraisal',
+        'arrangement': 'Arrangement',
+        'bibliography': 'Bibliography',
+        'bioghist': 'Biographical Information', // Updated to match requirement
+        'custodhist': 'Custodial History',
+        'originalsloc': 'Location of Originals',
+        'phystech': 'Physical/Technical Info',
+        'prefercite': 'Preferred Citation',
+        'relatedmaterial': 'Related Material',
+        'scopecontent': 'Scope and Content',
+        'separatedmaterial': 'Separated Material',
+        'userestrict': 'Use Restrictions'
+    };
+
     descriptions.forEach(desc => {
         if (desc.type && desc.text) {
+            const headText = headMap[desc.type] || desc.type;
             xml += `  <${escapeXML(desc.type)}>\n`;
+            xml += `    <head>${escapeXML(headText)}</head>\n`;
             xml += `    <p>${escapeXML(desc.text)}</p>\n`;
             xml += `  </${escapeXML(desc.type)}>\n`;
         }
     });
 
-    // Bibliography
-    if (referenceInputs.length > 0) {
+    // Bibliography (Separate field in form)
+    if (references.length > 0) {
         xml += '  <bibliography>\n';
-        referenceInputs.forEach(ref => {
+        xml += '    <head>Bibliography</head>\n';
+        references.forEach(ref => {
             if (ref) {
                 xml += `    <bibref>${escapeXML(ref)}</bibref>\n`;
             }
@@ -197,21 +261,11 @@ function downloadEAD(record, institution_info) {
         xml += '  </bibliography>\n';
     }
 
-    // Notes  
-    const notes = record.notes || [];
-    notes.forEach(note => {
-        if (note) {
-            xml += `  <odd>\n`;
-            xml += `    <note>\n`;
-            xml += `      <p>${escapeXML(note)}</p>\n`;
-            xml += `    </note>\n`;
-            xml += `  </odd>\n`;
-        }
-    });
-
     // Control access (keywords/subjects)
     if (subjects.length > 0) {
         xml += '  <controlaccess>\n';
+        xml += '    <head>Controlled Access Terms</head>\n';
+        xml += '    <!-- @source must be a NMTOKEN, so replace illegal chars with underscore -->\n';
 
         subjects.forEach(subject => {
             if (subject.term && subject.type) {
@@ -228,7 +282,10 @@ function downloadEAD(record, institution_info) {
                 };
 
                 const elementName = typeMap[subject.type] || 'subject';
-                const source = subject.source || '';
+                let source = subject.source || '';
+
+                // Sanitize source for NMTOKEN (replace illegal chars with underscore)
+                source = source.replace(/[^a-zA-Z0-9._:-]/g, '_');
 
                 if (source) {
                     xml += `    <${elementName} source="${escapeXML(source)}">${escapeXML(subject.term)}</${elementName}>\n`;
@@ -246,9 +303,24 @@ function downloadEAD(record, institution_info) {
     // Download the XML file
     const timestamp = getTimestamp();
     const filename = identifier ? `${identifier}_ead` : `collection_component_${timestamp}_ead`;
-    downloadFile(xml, 'xml', filename);
+    // downloadFile(xml, 'xml', filename);
 
-    console.log('EAD XML generated and downloaded');
+    // TEMPORARY: Display XML on page for verification
+    let pre = document.getElementById('debug-xml-output');
+    if (!pre) {
+        pre = document.createElement('pre');
+        pre.id = 'debug-xml-output';
+        pre.style.whiteSpace = 'pre-wrap';
+        pre.style.border = '1px solid black';
+        pre.style.padding = '10px';
+        pre.style.margin = '20px';
+        pre.style.backgroundColor = '#f0f0f0';
+        document.body.appendChild(pre);
+    }
+    pre.textContent = xml;
+    pre.scrollIntoView();
+
+    console.log('EAD XML generated and displayed');
 }
 
 // Make function available globally
